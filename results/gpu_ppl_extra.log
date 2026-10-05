@@ -1,0 +1,51 @@
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 89/320 [00:00<00:00, 872.07it/s]Loading weights:  87%|████████▋ | 279/320 [00:00<00:00, 1466.83it/s]Loading weights: 100%|██████████| 320/320 [00:00<00:00, 1435.23it/s]
+[   10s] prose L=16384 doc0 bf16     PPL  22.2812 bits 16.00
+[   16s] prose L=16384 doc0 dyn5-2stage PPL  22.1290 bits 2.52
+[   21s] prose L=16384 doc0 specache5 PPL  22.0394 bits 3.26
+[   26s] prose L=16384 doc0 specache5-eqtraffic PPL  22.2841 bits 2.56
+[   36s] prose L=16384 doc1 bf16     PPL  13.5289 bits 16.00
+[   41s] prose L=16384 doc1 dyn5-2stage PPL  13.5206 bits 2.52
+[   47s] prose L=16384 doc1 specache5 PPL  13.5987 bits 3.26
+[   52s] prose L=16384 doc1 specache5-eqtraffic PPL  14.0750 bits 2.56
+[   62s] prose L=16384 doc2 bf16     PPL  16.8932 bits 16.00
+[   67s] prose L=16384 doc2 dyn5-2stage PPL  16.8889 bits 2.52
+[   72s] prose L=16384 doc2 specache5 PPL  16.9784 bits 3.26
+[   78s] prose L=16384 doc2 specache5-eqtraffic PPL  17.4839 bits 2.56
+[  100s] prose L=32768 doc0 bf16     PPL  21.7376 bits 16.00
+[  105s] prose L=32768 doc0 dyn5-2stage PPL  21.9335 bits 2.41
+[  111s] prose L=32768 doc0 specache5 PPL  21.7498 bits 3.16
+[  116s] prose L=32768 doc0 specache5-eqtraffic PPL  22.6176 bits 2.46
+[  138s] prose L=32768 doc1 bf16     PPL  26.2202 bits 16.00
+[  144s] prose L=32768 doc1 dyn5-2stage PPL  26.1107 bits 2.41
+[  149s] prose L=32768 doc1 specache5 PPL  26.2467 bits 3.16
+[  155s] prose L=32768 doc1 specache5-eqtraffic PPL  26.9403 bits 2.46
+[  177s] prose L=32768 doc2 bf16     PPL  16.2521 bits 16.00
+[  182s] prose L=32768 doc2 dyn5-2stage PPL  16.2356 bits 2.41
+[  188s] prose L=32768 doc2 specache5 PPL  16.3643 bits 3.16
+[  193s] prose L=32768 doc2 specache5-eqtraffic PPL  17.0726 bits 2.46
+[  203s] code L=16384 doc0 bf16     PPL   1.8837 bits 16.00
+[  208s] code L=16384 doc0 dyn5-2stage PPL   1.8774 bits 2.52
+[  213s] code L=16384 doc0 specache5 PPL   1.8913 bits 3.26
+[  219s] code L=16384 doc0 specache5-eqtraffic PPL   1.9364 bits 2.56
+[  228s] code L=16384 doc1 bf16     PPL   1.6755 bits 16.00
+[  234s] code L=16384 doc1 dyn5-2stage PPL   1.6746 bits 2.52
+[  239s] code L=16384 doc1 specache5 PPL   1.6824 bits 3.26
+[  244s] code L=16384 doc1 specache5-eqtraffic PPL   1.7042 bits 2.56
+[  254s] code L=16384 doc2 bf16     PPL   1.6770 bits 16.00
+[  259s] code L=16384 doc2 dyn5-2stage PPL   1.6846 bits 2.52
+[  265s] code L=16384 doc2 specache5 PPL   1.6737 bits 3.26
+[  270s] code L=16384 doc2 specache5-eqtraffic PPL   1.6923 bits 2.56
+[  292s] code L=32768 doc0 bf16     PPL   3.9995 bits 16.00
+[  298s] code L=32768 doc0 dyn5-2stage PPL   4.0058 bits 2.41
+[  303s] code L=32768 doc0 specache5 PPL   3.9743 bits 3.16
+[  309s] code L=32768 doc0 specache5-eqtraffic PPL   3.9755 bits 2.46
+[  331s] code L=32768 doc1 bf16     PPL   1.0559 bits 16.00
+[  336s] code L=32768 doc1 dyn5-2stage PPL   1.0589 bits 2.41
+[  342s] code L=32768 doc1 specache5 PPL   1.0544 bits 3.16
+[  347s] code L=32768 doc1 specache5-eqtraffic PPL   1.0545 bits 2.46
+[  369s] code L=32768 doc2 bf16     PPL   1.1029 bits 16.00
+[  375s] code L=32768 doc2 dyn5-2stage PPL   1.1023 bits 2.41
+[  380s] code L=32768 doc2 specache5 PPL   1.1049 bits 3.16
+[  385s] code L=32768 doc2 specache5-eqtraffic PPL   1.1115 bits 2.46
+[W1004 21:32:36.190295676 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

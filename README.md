@@ -19,28 +19,43 @@ refined token. The error model below comes from Laus et al. (2026). See [Related
 
 ## Results
 
-Qwen3.5-0.8B, RTX 4050 Laptop GPU, the compressed cache is used for every decoding step. Perplexity is the mean change
-over prose and code at 16K and 32K context (256 decoded tokens, 3 documents each). Retrieval is a RULER-style needle test
-at 8K–32K where the question itself is decoded through the compressed cache. "Same answer" counts generations identical to
-the bf16 generation.
+Qwen3.5-0.8B on an RTX 4050 Laptop GPU, with the compressed cache used at every decoding step.
 
-| Method | Bits read / value | Perplexity vs bf16 | Retrieval acc. | Same answer as bf16 |
-|---|---:|---:|---:|---:|
-| bf16 (reference) | 16 | 0 | 93.8% | 100% |
-| **FoveaKV, 5% hot tokens** | **2.42** | **+0.03%** | **94.4%** | **93%** |
-| FoveaKV, 2% hot tokens | 2.36 | +0.12% | 93.8% | 94% |
-| TurboQuant-MSE, 4-bit | 4.20 | +0.46% | 94.8% | 88% |
-| TurboQuant-MSE, 2-bit | 2.23 | +13.0% | 90.6% | 72% |
-| KIVI, 4-bit | 4.39 | +0.26% | 94.4% | 88% |
-| KIVI, 2-bit | 2.41 | +29.0% | 77.4% | 60% |
-| Quest, 5% of pages (bf16 cache kept in memory) | 1.99 | +3.0% | 90.6% | 83% |
+- **Perplexity** is the mean change vs bf16 over prose and code at 16K and 32K context (256 decoded tokens, 3 documents each).
+- **Retrieval** is a RULER-style needle test at 8K-32K where the question itself is decoded through the compressed cache.
+  "Same answer" counts generations identical to the bf16 generation.
+- **Step** is the time of a full decoding step (all 24 layers, one token). **Attention** is one attention layer at 128K.
 
-Bits include gains, scales, block means and the exact recent window at this context length. Every compressed method gets
-the same exact 128-token recent window. Retrieval uses 8 samples per cell, so small accuracy differences are noise.
+| Method | Bits read / value | Perplexity vs bf16 | Retrieval | Same answer | Step @32K | Step @64K | Attention @128K |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| bf16 (reference) | 16 | 0 | 93.8% | 100% | 15.0 ms | 20.3 ms | 3772 µs |
+| **FoveaKV, 5% hot** | **2.42** | **+0.03%** | **94.4%** | **93%** | 16.0 ms | 16.1 ms | 1010 µs |
+| FoveaKV, 5% hot, two-stage | 2.47 | +0.01% | 94.4% | 94% | 17.6 ms | 18.7 ms | 1394 µs |
+| FoveaKV, 2% hot | 2.36 | +0.12% | 93.8% | 94% | 16.0 ms | 16.1 ms | 924 µs |
+| FoveaKV, 10% hot | 2.52 | +0.09% | 94.4% | 93% | 16.0 ms | 16.1 ms | 1081 µs |
+| TurboQuant-MSE, 4-bit | 4.20 | +0.46% | 94.8% | 88% | 15.1 ms | 15.2 ms | 755 µs |
+| TurboQuant-MSE, 3-bit | 3.21 | +1.33% | 93.8% | 79% | 15.1 ms | 15.2 ms | 773 µs |
+| TurboQuant-MSE, 2-bit | 2.23 | +13.0% | 90.6% | 72% | 15.1 ms | 15.1 ms | 715 µs |
+| KIVI, 4-bit | 4.39 | +0.26% | 94.4% | 88% | 14.2 ms | 14.2 ms | 566 µs |
+| KIVI, 2-bit | 2.41 | +29.0% | 77.4% | 60% | 14.1 ms | 14.1 ms | 463 µs |
+| Quest, 5% of pages | 1.99 | +3.0% | 90.6% | 83% | 14.9 ms | 14.9 ms | 878 µs |
+| Quest, 10% of pages | 2.78 | +1.8% | 93.8% | 88% | 14.9 ms | 15.1 ms | 947 µs |
+| SpeCache-style, 5% exact tokens | 3.21 | +0.07% | 94.1% | 96% | 17.6 ms | 17.7 ms | 1694 µs |
+| SpeCache-style, same traffic as FoveaKV 5% | 2.51 | +2.07% | 93.8% | 86% | 17.5 ms | 19.3 ms | 837 µs |
 
-Speed (one attention layer, one token, 128K context): bf16 SDPA 3.72 ms, TurboQuant 4-bit 0.72 ms, KIVI 2-bit 0.46 ms,
-FoveaKV 0.99 ms. Our kernels are compute-bound on this GPU, so the smaller reads of FoveaKV do not yet make it faster than
-4-bit kernels. Its advantage today is memory: about half the resident size of a 4-bit cache at the same quality.
+How to read it:
+
+- Bits include gains, scales, block means and the exact recent window at this context length. Every compressed method gets
+  the same exact 128-token recent window.
+- Quest keeps the full bf16 cache in GPU memory. SpeCache-style keeps a 16-bit copy in CPU memory and its timings exclude the
+  CPU-to-GPU transfer; its bits read include the 16-bit refined tokens.
+- Retrieval uses 8 samples per cell, so small accuracy differences are noise.
+- Up to 32K the decoding step is dominated by the rest of the model and by kernel launch overhead in our PyTorch loop, so
+  cache compression does not make it faster; FoveaKV adds about 1 ms for selection and the correction pass. At 64K the bf16
+  cache starts to dominate (20.3 ms) and every compressed method is faster.
+- Our gain-shape kernels are compute-bound on this GPU, so reading 2 bits does not make FoveaKV faster than 4-bit kernels.
+  Its advantage today is memory: about half the resident size of a 4-bit cache at the same quality. Fusing the selection
+  step and using CUDA graphs would remove most of the extra milliseconds; we have not done this yet.
 
 Offline findings on the captured cache (attention-output error, 5 texts x 6 layers, see `results/`):
 
@@ -48,7 +63,7 @@ Offline findings on the captured cache (attention-output error, 5 texts x 6 laye
 - Choosing the 4-bit tokens again at every step matters: a fixed set chosen once from earlier queries, at the same number
   of 4-bit tokens, has 2 times higher error (0.0342 vs 0.0174).
 - Selecting from 2-bit keys loses a little to selecting with the true attention (0.0175 vs 0.0169). Two-stage selection
-  (2k candidates from 2-bit keys, re-ranked with their 4-bit keys) closes the gap (0.0168). This is not yet in the CUDA kernels.
+  (2k candidates from 2-bit keys, re-ranked with their 4-bit keys) closes the gap (0.0168).
 
 ## How it works
 
@@ -112,7 +127,9 @@ python -m pytest -q                      # codebooks, nesting, delta correction,
 # GPU part (CUDA toolkit with nvcc needed; kernels compile on first use)
 pip install -r requirements-gpu.txt
 python gpu/test_kernels.py               # every kernel vs an fp64 reference (needs the captured cache below)
-python gpu/bench_kernels.py              # per-layer decode latency, 8K-128K
+python gpu/bench_kernels.py              # per-layer attention latency of all methods, 8K-128K
+python gpu/bench_e2e.py                  # full decoding-step latency of all methods, 16K and 32K
+BENCH_LENS=65536 BENCH_TAG=_64k python gpu/bench_e2e.py   # same at 64K
 python gpu/eval_e2e.py check             # our decode loop vs HF transformers
 python gpu/eval_e2e.py ppl               # long-context perplexity, all methods
 python gpu/eval_e2e.py retrieval         # RULER-style retrieval, all methods
@@ -171,7 +188,8 @@ The full list (90 references), with what each one supports and where the paper c
 - Offloading residuals to CPU memory is modeled from measured hit rates, not measured end to end.
 - The hot set changes quickly between steps (about 56% overlap), so prefetching is harder than it looks. Missed tokens
   carry little attention, so serving them coarse for one step costs little.
-- The CUDA kernels are compute-bound on a laptop GPU; a faster kernel is the main open engineering task.
+- The CUDA kernels are compute-bound on a laptop GPU, and selection adds kernel launches; a fused, faster kernel is the main
+  open engineering task.
 
 ## Citation
 

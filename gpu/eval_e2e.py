@@ -12,6 +12,7 @@ from types import SimpleNamespace
 import numpy as np
 import torch
 import torch.nn.functional as F
+from torch.nn.attention.bias import causal_lower_right
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -86,8 +87,8 @@ class Runner:
             cache._store(kk, vv)
             K = cache.kraw[:cache.n].transpose(0, 1)[None]                     # (1, Hkv, n, D)
             V = cache.vraw[:cache.n].transpose(0, 1)[None]
-            mask = torch.ones(T, cache.n, dtype=torch.bool, device=DEV).tril(n0)
-            o = F.scaled_dot_product_attention(q.to(torch.bfloat16), K, V, attn_mask=mask, enable_gqa=True)
+            # lower-right causal bias: fused SDPA kernels, no materialized mask or score matrix
+            o = F.scaled_dot_product_attention(q.to(torch.bfloat16), K, V, attn_mask=causal_lower_right(T, cache.n), enable_gqa=True)
             o = o.transpose(1, 2).reshape(B, T, -1)
         else:
             outs = []
@@ -124,8 +125,9 @@ class Runner:
             return self.m.lm_head(h).float()
 
     @torch.no_grad()
-    def prefill(self, ids, chunk=512):
+    def prefill(self, ids, chunk=None):
         T = len(ids)
+        chunk = chunk or 512
         caches = {i: Recorder(self.Hkv, T + 512) for i in self.attn_ids}
         lin = LinCache(self.lin_ids)
         h = None

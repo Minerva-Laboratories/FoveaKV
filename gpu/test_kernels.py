@@ -13,7 +13,8 @@ L = kvdata.load_layer("prose", 11)
 K = torch.tensor(L["k"], device="cuda"); V = torch.tensor(L["v"], device="cuda")
 Q = torch.tensor(L["q"], device="cuda")                 # (512, 8, 256) post-RoPE, for positions 7680..8191
 T0 = 7000
-names = ["bf16", "bf16-kernel", "tq2", "tq3", "tq4", "gs2", "gs4", "dyn5", "dyn5-gmean", "dyn5-noshrink", "kivi2", "kivi4", "quest5"]
+names = ["bf16", "bf16-kernel", "tq2", "tq3", "tq4", "gs2", "gs4", "dyn5", "dyn5-gmean", "dyn5-noshrink", "dyn5-2stage", "static5",
+         "kivi2", "kivi4", "quest5", "specache5", "specache5-eqtraffic"]
 ok = True
 for nm in names:
     c = make(nm, 2, 8192)

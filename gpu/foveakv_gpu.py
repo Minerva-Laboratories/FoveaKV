@@ -39,6 +39,10 @@ LUT4N = torch.tensor(_CB.lut4, dtype=torch.float32)          # nested coarse lev
 BND16 = torch.tensor(_CB.bnd16, dtype=torch.float32)
 _b, _l = lloyd_max(4); BND_TQ2, LUT_TQ2 = torch.tensor(_b, dtype=torch.float32), torch.tensor(_l, dtype=torch.float32)
 _b, _l = lloyd_max(8); BND_TQ3, LUT_TQ3 = torch.tensor(_b, dtype=torch.float32), torch.tensor(_l, dtype=torch.float32)
+# 3-bit code c stored as hi = c >> 1 (2-bit plane), lo = c & 1 (residual plane); kernel index = (hi << 2) | lo
+LUT_TQ3_16 = torch.zeros(16, dtype=torch.float32)
+for _c in range(8):
+    LUT_TQ3_16[((_c >> 1) << 2) | (_c & 1)] = LUT_TQ3[_c]
 
 
 _PASS_FIELDS = ["kb", "vb", "khi", "klo", "vhi", "vlo", "kg8", "vg8", "kglut", "vglut", "kg16", "vg16", "kmu", "vmu",
@@ -236,6 +240,7 @@ class GainShape(Base):
         sv = (lambda D: 1 / (1 - D)) if self.shrink else (lambda D: 1.0)
         self.k4, self.k16 = (self.lut4n * sk(Dc)).contiguous(), (self.lut16 * sk(Df)).contiguous()
         self.v4, self.v16 = (self.lut4n * sv(Dc)).contiguous(), (self.lut16 * sv(Df)).contiguous()
+        self.v4_16 = self.v4.repeat_interleave(4).contiguous()     # coarse levels addressed by a 4-bit index (hi<<2|lo)
         self.name = (f"TurboQuant-MSE {bits}b" if mode == "tq" else f"GS {bits}b" + (" blkmean" if block_mean else ""))
 
     def _calibrate(self):
@@ -290,15 +295,9 @@ class GainShape(Base):
                 elif self.bits == 4:
                     c = torch.bucketize(z, self.bnd16)
                     hi, lo = c >> 2, c & 3
-                else:   # 3-bit: keep dequantized values for the reference path
+                else:   # 3-bit: hi plane = c >> 1, lo plane = c & 1 (4-bit container, see LUT_TQ3_16)
                     c = torch.bucketize(z, BND_TQ3.to(self.dev))
-                    rec = LUT_TQ3.to(self.dev)[c] / 16.0 * gg.float()[..., None]
-                    buf = torch.zeros(self.cap, self.Hkv, D, device=self.dev) if (self.k3 if name == "k" else self.v3) is None \
-                        else (self.k3 if name == "k" else self.v3)
-                    buf[a:b] = rec
-                    if name == "k": self.k3 = buf
-                    else: self.v3 = buf
-                    continue
+                    hi, lo = c >> 1, c & 1
             else:
                 n_lev = 1 << self.gain_bits
                 lg = torch.log(g.clamp_min(1e-30))
@@ -323,14 +322,12 @@ class GainShape(Base):
     def _levels(self, fine):
         """-> (key LUT, value LUT, fine flag)"""
         if self.mode == "tq":
-            lv = LUT_TQ2.to(self.dev) if self.bits == 2 else self.lut16
-            return lv, lv, int(self.bits == 4)
+            lv = {2: LUT_TQ2, 3: LUT_TQ3_16, 4: LUT16}[self.bits].to(self.dev)
+            return lv, lv, int(self.bits >= 3)
         return (self.k16, self.v16, 1) if fine else (self.k4, self.v4, 0)
 
     def attend(self, q, tpb=None):
         tpb = tpb or tpb_for(self.n_comp, self.Hkv)
-        if self.mode == "tq" and self.bits == 3:
-            return self.reference(q).float()
         qk = self._qk(q)
         klev, vlev, fine = self._levels(self.bits == 4)
         nb_c = -(-self.n_comp // tpb)
@@ -357,15 +354,13 @@ class GainShape(Base):
         n = self.n_comp
         out = []
         for name in ("k", "v"):
-            if self.mode == "tq" and self.bits == 3:
-                out.append((self.k3 if name == "k" else self.v3)[:n] @ self.R)
-                continue
             hi = getattr(self, name + "hi")[:, :n]
             lo = getattr(self, name + "lo")[:, :n]
             unpack = lambda p: torch.stack([(p >> (2 * i)) & 3 for i in range(4)], -1).view(self.Hkv, n, D).long()
             ch, cl = unpack(hi), unpack(lo)
             if self.mode == "tq":
-                lev = LUT_TQ2.to(self.dev)[ch] if self.bits == 2 else self.lut16[(ch << 2) | cl]
+                lev = {2: LUT_TQ2.to(self.dev)[ch], 3: LUT_TQ3_16.to(self.dev)[(ch << 2) | cl],
+                       4: self.lut16[(ch << 2) | cl]}[self.bits]
                 g = getattr(self, name + "g16")[:, :n].float()[..., None] / 16.0
                 y = g * lev
             else:
@@ -382,8 +377,10 @@ class GainShape(Base):
             out.append((y @ self.R).transpose(0, 1))                         # (n, Hkv, D)
         return out
 
-    def reference(self, q, fine_mask=None):
+    def reference(self, q, fine_mask=None, key_mask=None):
         K, V = self.dequant(fine_mask)
+        if key_mask is not None:                     # two-stage: fine keys for all candidates
+            K = self.dequant(key_mask)[0]
         K = torch.cat([K, self.kraw[self.n_comp:self.n].float()])
         V = torch.cat([V, self.vraw[self.n_comp:self.n].float()])
         return softmax_attend_ref(q, K, V, self.scale)
@@ -394,13 +391,39 @@ class FoveaKV(GainShape):
     shared by the GQA group: max over the group of estimated log-prob). Exact bf16 recent window outside the budget.
     Two kernels: coarse pass (writes logits for selection) and a delta-correction pass over hot tokens."""
 
-    def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05, block_mean=True, **kw):
+    def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05, block_mean=True, two_stage=False, static=False, **kw):
         super().__init__(Hkv, Tmax, device, mode="gs", bits=2, block_mean=block_mean, **kw)
         self.name_suffix = "" if self.shrink else " noshrink"
         self.k_frac = k_frac
+        self.two_stage, self.static = two_stage, static
         self.logits = torch.empty(Hkv, G, self.cap, device=device)
-        self.name = f"FoveaKV k={k_frac*100:g}%" + (" blkmean" if block_mean else "") + self.name_suffix
+        self.logits2 = torch.empty(Hkv, G, self.cap, device=device) if two_stage else None
+        self.static_idx = None
+        tag = " two-stage" if two_stage else (" static set" if static else "")
+        self.name = f"FoveaKV k={k_frac*100:g}%" + tag + self.name_suffix
         self.last_hot = None
+        self.last_cand = None
+
+    def prefill(self, k, v):
+        super().prefill(k, v)
+        if self.static and self.static_idx is None and self.n_comp:
+            kk = min(self.n_comp, math.ceil(self.k_frac * self.n))
+            # placeholder set for latency measurements (quality of static sets is measured offline, E18)
+            self.set_static(torch.topk(self.kg8[:, :self.n_comp].float(), kk, dim=-1).indices)
+
+    def set_static(self, idx):
+        """Fix the 4-bit set (Hkv, k) int32 (static mixed precision; selection is skipped)."""
+        self.static_idx = idx.int().contiguous()
+
+    def _delta(self, qk, idx, m1, klev_f, vlev_f):
+        e = ext()
+        tpb_d = 64
+        nbd = -(-idx.shape[1] // tpb_d)
+        _, pl, pacc = self._partials(nbd)
+        e.delta(qk, self.Hkv, self.cap, idx, tpb_d, m1.view(self.Hkv, G).contiguous(), pl, pacc,
+                self.khi, self.klo, self.vhi, self.vlo, self.kg8, self.vg8, self.glut["k"], self.glut["v"],
+                self.kmu, self.vmu, BLK if self.block_mean else self.cap, self.k4, klev_f, self.v4, vlev_f)
+        return pl.view(nbd, -1).sum(0), pacc.view(nbd, -1, D).sum(0)
 
     def attend(self, q, tpb=None):
         tpb = tpb or tpb_for(self.n_comp, self.Hkv)
@@ -416,37 +439,59 @@ class FoveaKV(GainShape):
                  logits=self.logits, **self._gs_args(0, 0, self.k4, self.v4))
         _, m1, l1, acc1 = e.combine_partials(*part, nb_c, False)
         k = min(self.n_comp, math.ceil(self.k_frac * self.n))
+        self.last_cand = None
         if k:
-            # estimated log-prob uses the full normalizer (compressed coarse + exact window)
-            if win is not None:
-                M = torch.maximum(m1, win[0])
-                lse = M + torch.log(l1 * torch.exp(m1 - M) + win[1] * torch.exp(win[0] - M))
+            if self.static and self.static_idx is not None:
+                idx = self.static_idx
             else:
-                lse = m1 + torch.log(l1)
-            sel = (self.logits[:, :, :self.n_comp] - lse.view(self.Hkv, G, 1)).amax(1)     # (Hkv, n_comp)
-            idx = torch.topk(sel, k, dim=-1, sorted=False).indices.int().contiguous()
+                # estimated log-prob uses the full normalizer (compressed coarse + exact window)
+                if win is not None:
+                    M = torch.maximum(m1, win[0])
+                    lse = M + torch.log(l1 * torch.exp(m1 - M) + win[1] * torch.exp(win[0] - M))
+                else:
+                    lse = m1 + torch.log(l1)
+                lse = lse.view(self.Hkv, G, 1)
+                sel = (self.logits[:, :, :self.n_comp] - lse).amax(1)                           # (Hkv, n_comp)
+                if not self.two_stage:
+                    idx = torch.topk(sel, k, dim=-1, sorted=False).indices.int().contiguous()
+                else:
+                    # stage 1: 2k candidates by coarse logits; stage 2: fine-key logits re-rank them
+                    k2 = min(self.n_comp, 2 * k)
+                    cand = torch.topk(sel, k2, dim=-1, sorted=False).indices.int().contiguous()
+                    tpb_c = 128
+                    part2 = self._partials(-(-k2 // tpb_c))
+                    run_pass(1, qk, self.Hkv, self.cap, 0, k2, cand, tpb_c, 0, part2, logits=self.logits2,
+                             **self._gs_args(1, 0, self.k16, self.v4))
+                    s2 = (torch.gather(self.logits2, 2, cand.long()[:, None, :].expand(-1, G, -1)) - lse).amax(1)
+                    order = torch.topk(s2, k, dim=-1, sorted=False).indices
+                    idx = torch.gather(cand, 1, order).contiguous()
+                    keep = torch.ones_like(cand, dtype=torch.bool).scatter_(1, order, False)
+                    rest = cand[keep].view(self.Hkv, k2 - k).contiguous()
+                    self.last_cand = cand
+                    dl, da = self._delta(qk, rest, m1, self.k16, self.v4_16)    # fine keys only (values stay coarse)
+                    l1, acc1 = l1 + dl, acc1 + da
             self.last_hot = idx
-            tpb_d = 64
-            nbd = -(-k // tpb_d)
-            _, pl, pacc = self._partials(nbd)
-            e.delta(qk, self.Hkv, self.cap, idx, tpb_d, m1.view(self.Hkv, G).contiguous(), pl, pacc,
-                    self.khi, self.klo, self.vhi, self.vlo, self.kg8, self.vg8, self.glut["k"], self.glut["v"],
-                    self.kmu, self.vmu, BLK if self.block_mean else self.cap, self.k4, self.k16, self.v4, self.v16)
-            l1 = l1 + pl.view(nbd, -1).sum(0)
-            acc1 = acc1 + pacc.view(nbd, -1, D).sum(0)
+            dl, da = self._delta(qk, idx, m1, self.k16, self.v16)               # fine keys and values
+            l1, acc1 = l1 + dl, acc1 + da
         return self._merge((m1, l1, acc1 @ self.R), win)
 
     def read_bits(self):
         nw = self.n - self.n_comp
         b = 2 + self.gain_bits / D + (16 / BLK if self.block_mean else 0)
         k = min(self.n_comp, math.ceil(self.k_frac * self.n))
-        return (b * self.n_comp + 2 * k + 16 * nw) / self.n
+        # residual bits averaged over K and V: plain = 2 bits on k tokens (K and V);
+        # two-stage = 2-bit key residuals on 2k candidates + 2-bit value residuals on k tokens = (2*2k + 2*k)/2
+        extra = (min(self.n_comp, 2 * k) + k) if self.two_stage else 2 * k
+        return (b * self.n_comp + extra + 16 * nw) / self.n
 
     def reference(self, q):
         mask = torch.zeros(self.Hkv, self.n_comp, dtype=torch.bool, device=self.dev)
         if self.last_hot is not None:
             mask.scatter_(1, self.last_hot.long(), True)
-        return GainShape.reference(self, q, mask)
+        kmask = None
+        if self.last_cand is not None:
+            kmask = torch.zeros_like(mask).scatter_(1, self.last_cand.long(), True)
+        return GainShape.reference(self, q, mask, kmask)
 
 
 class KIVI(Base):
@@ -577,6 +622,103 @@ class Quest(Base):
         return torch.cat(outs)
 
 
+
+class SpeCacheStyle(Base):
+    """SpeCache-style decode (Jie et al., ICML 2025): KIVI-2b copy of every token, top-k selected from the KIVI logits,
+    selected tokens replaced by exact bf16 copies. Here the exact copies sit in GPU memory, so the timing covers the GPU
+    work only (SpeCache fetches them from host memory over PCIe)."""
+
+    def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05):
+        super().__init__(Hkv, Tmax, device)
+        self.kivi = KIVI(Hkv, Tmax, device, 2)
+        self.k_frac = k_frac
+        self.cap = self.kivi.cap
+        self.logits = torch.empty(Hkv, G, self.cap, device=device)
+        self.Kt = torch.zeros(Hkv, self.cap, D, dtype=torch.bfloat16, device=device)
+        self.Vt = torch.zeros_like(self.Kt)
+        self.name = f"SpeCache-style k={k_frac*100:g}%"
+        self.last_hot = None
+
+    def _store(self, k, v):
+        super()._store(k, v)
+        self.kivi._store(k, v)
+
+    def _encode_ready(self):
+        self.kivi._encode_ready()
+        a, b = self.n_comp, self.kivi.n_comp
+        if b > a:
+            self.Kt[:, a:b] = self.kraw[a:b].transpose(0, 1)
+            self.Vt[:, a:b] = self.vraw[a:b].transpose(0, 1)
+        self.n_comp = b
+
+    def _vc_rows(self, idx):
+        """Dequantized KIVI-2b values of tokens idx (Hkv, k) -> (Hkv, k, D)."""
+        kv = self.kivi
+        li = idx.long()
+        codes = torch.gather(kv.vc, 1, li[..., None].expand(-1, -1, kv.vc.shape[-1]))
+        c = torch.stack([(codes >> (2 * i)) & 3 for i in range(4)], -1).view(self.Hkv, -1, D).float()
+        sc = torch.gather(kv.vsc, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
+        zp = torch.gather(kv.vzp, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
+        return c * sc + zp
+
+    def attend(self, q, tpb=None):
+        kv = self.kivi
+        tpb = tpb or tpb_for(self.n_comp, self.Hkv)
+        qk = self._qk(q)
+        win = self._window_stats(q)
+        nb_c = -(-self.n_comp // tpb)
+        self.last_hot = None
+        if nb_c == 0:
+            return self._merge(win, None)
+        part = self._partials(nb_c)
+        run_pass(2, qk, self.Hkv, self.cap, 0, self.n_comp, None, tpb, 0, part, kc=kv.kc, vc=kv.vc, kbits=2,
+                 ksc=kv.ksc, kzp=kv.kzp, vsc=kv.vsc, vzp=kv.vzp, logits=self.logits)
+        _, m1, l1, a1 = ext().combine_partials(*part, nb_c, False)
+        k = min(self.n_comp, max(1, math.ceil(self.k_frac * self.n)))
+        if win is not None:
+            M = torch.maximum(m1, win[0])
+            lse = M + torch.log(l1 * torch.exp(m1 - M) + win[1] * torch.exp(win[0] - M))
+        else:
+            lse = m1 + torch.log(l1)
+        lse = lse.view(self.Hkv, G, 1)
+        idx = torch.topk((self.logits[:, :, :self.n_comp] - lse).amax(1), k, dim=-1, sorted=False).indices.int().contiguous()
+        self.last_hot = idx
+        # remove the coarse contribution of the selected tokens (same frame as the coarse pass)
+        sc = torch.gather(self.logits, 2, idx.long()[:, None, :].expand(-1, G, -1))          # (Hkv, G, k)
+        ec = torch.exp(sc - m1.view(self.Hkv, G, 1))
+        l1 = l1 - ec.sum(-1).view(-1)
+        a1 = a1 - torch.einsum("hgk,hkd->hgd", ec, self._vc_rows(idx)).reshape(-1, D)
+        # add their exact contribution
+        tpb_h = 64
+        nbh = -(-k // tpb_h)
+        ph = self._partials(nbh)
+        run_pass(0, qk, self.Hkv, self.cap, 0, k, idx, tpb_h, 0, ph, kb=self.Kt, vb=self.Vt)
+        _, mh, lh, ah = ext().combine_partials(*ph, nbh, False)
+        Mx = torch.maximum(m1, mh)
+        f1, fh = torch.exp(m1 - Mx), torch.exp(mh - Mx)
+        seg = (Mx, l1 * f1 + lh * fh, a1 * f1[:, None] + ah * fh[:, None])
+        return self._merge(seg, win)
+
+    def read_bits(self):
+        k = min(self.n_comp, max(1, math.ceil(self.k_frac * self.n)))
+        return (self.kivi.read_bits() * self.n + 16 * k) / self.n
+
+    def reference(self, q):
+        kv = self.kivi
+        n = self.n_comp
+        unp = lambda p: torch.stack([(p >> (2 * i)) & 3 for i in range(4)], -1)
+        K = (unp(kv.kc[:, :n]).view(self.Hkv, n, D).float() * kv.ksc.float().repeat_interleave(BLK, 1)[:, :n]
+             + kv.kzp.float().repeat_interleave(BLK, 1)[:, :n])
+        V = (unp(kv.vc[:, :n]).view(self.Hkv, n, D // 128, 128).float() * kv.vsc[:, :n].float()[..., None]
+             + kv.vzp[:, :n].float()[..., None]).view(self.Hkv, n, D)
+        if self.last_hot is not None:
+            li = self.last_hot.long()
+            K.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(self.Kt[:, :n].float(), 1, li[..., None].expand(-1, -1, D)))
+            V.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(self.Vt[:, :n].float(), 1, li[..., None].expand(-1, -1, D)))
+        K = torch.cat([K.transpose(0, 1), self.kraw[n:self.n].float()])
+        V = torch.cat([V.transpose(0, 1), self.vraw[n:self.n].float()])
+        return softmax_attend_ref(q, K, V, self.scale)
+
 def make(name, Hkv, Tmax, device="cuda"):
     """Factory for benchmark/eval scheme names."""
     table = {
@@ -596,4 +738,8 @@ def make(name, Hkv, Tmax, device="cuda"):
         table[f"dyn{int(kf*100)}-gmean"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, block_mean=False))
         table[f"dyn{int(kf*100)}-noshrink"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, shrink=False))
         table[f"quest{int(kf*100)}"] = (lambda kf=kf: Quest(Hkv, Tmax, device, kf))
+        table[f"dyn{int(kf*100)}-2stage"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, two_stage=True))
+        table[f"static{int(kf*100)}"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, static=True))
+        table[f"specache{int(kf*100)}"] = (lambda kf=kf: SpeCacheStyle(Hkv, Tmax, device, kf))
+    table["specache5-eqtraffic"] = lambda: SpeCacheStyle(Hkv, Tmax, device, 0.05 / 8)
     return table[name]()
