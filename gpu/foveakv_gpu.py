@@ -25,7 +25,9 @@ def ext():
     global _EXT
     if _EXT is None:
         from torch.utils.cpp_extension import load
-        os.environ.setdefault("TORCH_CUDA_ARCH_LIST", "8.9")
+        if "TORCH_CUDA_ARCH_LIST" not in os.environ:          # build for the GPU in this machine
+            major, minor = torch.cuda.get_device_capability()
+            os.environ["TORCH_CUDA_ARCH_LIST"] = f"{major}.{minor}"
         bd = os.path.join(ROOT, "gpu", "build")
         os.makedirs(bd, exist_ok=True)
         _EXT = load("foveakv_kernels", [os.path.join(ROOT, "gpu", "kernels.cu")], build_directory=bd,

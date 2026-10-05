@@ -6,7 +6,11 @@ import numpy as np
 HF_HUB = os.path.expanduser("~/.cache/huggingface/hub")
 
 
-def snapshot_dir(repo="Qwen/Qwen3.5-0.8B"):
+DEFAULT_MODEL = os.environ.get("FOVEAKV_MODEL", "Qwen/Qwen3.5-0.8B")   # any Qwen3.5 checkpoint in the local HF cache
+
+
+def snapshot_dir(repo=None):
+    repo = repo or DEFAULT_MODEL
     d = glob.glob(os.path.join(HF_HUB, "models--" + repo.replace("/", "--"), "snapshots", "*"))
     if not d:
         raise FileNotFoundError(repo)

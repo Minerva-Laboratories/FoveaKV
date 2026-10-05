@@ -76,7 +76,7 @@ def causal_attention(q, k, v, scale, block=256):
 
 
 class Qwen35:
-    def __init__(self, repo="Qwen/Qwen3.5-0.8B"):
+    def __init__(self, repo=None):
         self.dir = snapshot_dir(repo)
         self.cfg = c = load_config(self.dir)
         self.st = SafeTensors(self.dir)

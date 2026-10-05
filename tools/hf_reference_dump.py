@@ -5,7 +5,9 @@ Run capped:  systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 <venv
 import sys, glob, os, numpy as np, torch
 from transformers import Qwen3_5ForCausalLM
 
-d = glob.glob(os.path.expanduser("~/.cache/huggingface/hub/models--Qwen--Qwen3.5-0.8B/snapshots/*"))[0]
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from foveakv.load import snapshot_dir
+d = snapshot_dir()
 ids = np.load(sys.argv[1]).astype(np.int64)
 m = Qwen3_5ForCausalLM.from_pretrained(d, dtype=torch.float32, low_cpu_mem_usage=True, device_map="cuda").eval()
 x = torch.tensor(ids[None], device="cuda")

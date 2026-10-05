@@ -18,7 +18,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from gpu.foveakv_gpu import make, ext, Base
 
-MDIR = glob.glob(os.path.expanduser("~/.cache/huggingface/hub/models--Qwen--Qwen3.5-0.8B/snapshots/*"))[0]
+from foveakv.load import snapshot_dir
+MDIR = snapshot_dir()          # set FOVEAKV_MODEL to use another Qwen3.5 checkpoint
 DEV = "cuda"
 SCHEMES = ["bf16", "tq2", "tq3", "tq4", "gs4", "kivi2", "kivi4", "quest5", "quest10", "dyn2", "dyn5", "dyn10"]
 

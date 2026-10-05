@@ -26,7 +26,10 @@ ap.add_argument("--fp16_ref", default="prose")
 ap.add_argument("--corpora", default="")
 args = ap.parse_args()
 
-mdir = glob.glob(os.path.expanduser("~/.cache/huggingface/hub/models--Qwen--Qwen3.5-0.8B/snapshots/*"))[0]
+import sys
+sys.path.insert(0, ROOT)
+from foveakv.load import snapshot_dir
+mdir = snapshot_dir()          # FOVEAKV_MODEL selects the checkpoint; FOVEAKV_KV_DIR the output folder
 dev = "cuda"
 model = Qwen3_5ForCausalLM.from_pretrained(mdir, dtype=torch.float32, low_cpu_mem_usage=True, device_map=dev).eval()
 tok = AutoTokenizer.from_pretrained(mdir)
@@ -76,7 +79,7 @@ for name in names:
                 qg = L.self_attn.q_proj(x).view(E, -1, 2 * hd)[..., :hd]
                 cap[j]["q_spec"] = L.self_attn.q_norm(qg)
 
-    od = os.path.join(ROOT, "data/kv", name)
+    od = os.path.join(os.environ.get("FOVEAKV_KV_DIR", os.path.join(ROOT, "data", "kv")), name)
     os.makedirs(od, exist_ok=True)
     Hkv = model.config.num_key_value_heads
     for i in attn_ids:
