@@ -1,0 +1,5 @@
+# GPU part: KV capture, CUDA kernels, end-to-end evaluation
+-r requirements.txt
+torch>=2.5        # CUDA build; kernels are JIT-compiled with the local nvcc (sm_80+)
+transformers>=5.0 # Qwen3.5 support
+flash-linear-attention  # optional, faster Gated DeltaNet kernels

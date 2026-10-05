@@ -1,0 +1,86 @@
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights:   3%|▎         | 9/320 [00:00<00:03, 86.08it/s]Loading weights:  38%|███▊      | 120/320 [00:00<00:00, 677.22it/s]Loading weights:  71%|███████▏  | 228/320 [00:00<00:00, 859.11it/s]Loading weights:  98%|█████████▊| 315/320 [00:00<00:00, 832.65it/s]Loading weights: 100%|██████████| 320/320 [00:00<00:00, 765.87it/s]
+[   15s] prose L=16384 doc0 bf16     PPL  22.2812 bits 16.00
+[   23s] prose L=16384 doc0 dyn2     PPL  22.1495 bits 2.41
+[   32s] prose L=16384 doc0 dyn5     PPL  22.1403 bits 2.47
+[   40s] prose L=16384 doc0 dyn10    PPL  22.1213 bits 2.57
+[   48s] prose L=16384 doc0 gs4      PPL  22.1818 bits 4.34
+[   57s] prose L=16384 doc0 dyn5-noshrink PPL  22.2140 bits 2.47
+[   65s] prose L=16384 doc0 gs4-noshrink PPL  22.2166 bits 4.34
+[   78s] prose L=16384 doc1 bf16     PPL  13.5289 bits 16.00
+[   86s] prose L=16384 doc1 dyn2     PPL  13.5769 bits 2.41
+[   94s] prose L=16384 doc1 dyn5     PPL  13.5367 bits 2.47
+[  103s] prose L=16384 doc1 dyn10    PPL  13.5241 bits 2.57
+[  111s] prose L=16384 doc1 gs4      PPL  13.4747 bits 4.34
+[  120s] prose L=16384 doc1 dyn5-noshrink PPL  13.5886 bits 2.47
+[  128s] prose L=16384 doc1 gs4-noshrink PPL  13.5482 bits 4.34
+[  138s] prose L=16384 doc2 bf16     PPL  16.8932 bits 16.00
+[  143s] prose L=16384 doc2 dyn2     PPL  16.8851 bits 2.41
+[  148s] prose L=16384 doc2 dyn5     PPL  16.8839 bits 2.47
+[  153s] prose L=16384 doc2 dyn10    PPL  16.9509 bits 2.57
+[  157s] prose L=16384 doc2 gs4      PPL  16.8750 bits 4.34
+[  163s] prose L=16384 doc2 dyn5-noshrink PPL  16.9680 bits 2.47
+[  167s] prose L=16384 doc2 gs4-noshrink PPL  16.8899 bits 4.34
+[  190s] prose L=32768 doc0 bf16     PPL  21.7376 bits 16.00
+[  195s] prose L=32768 doc0 dyn2     PPL  21.9858 bits 2.30
+[  201s] prose L=32768 doc0 dyn5     PPL  21.9320 bits 2.36
+[  206s] prose L=32768 doc0 dyn10    PPL  21.9835 bits 2.46
+[  211s] prose L=32768 doc0 gs4      PPL  21.9782 bits 4.25
+[  216s] prose L=32768 doc0 dyn5-noshrink PPL  21.9121 bits 2.36
+[  221s] prose L=32768 doc0 gs4-noshrink PPL  21.9568 bits 4.25
+[  243s] prose L=32768 doc1 bf16     PPL  26.2202 bits 16.00
+[  248s] prose L=32768 doc1 dyn2     PPL  26.1669 bits 2.30
+[  253s] prose L=32768 doc1 dyn5     PPL  26.1818 bits 2.36
+[  259s] prose L=32768 doc1 dyn10    PPL  26.1534 bits 2.46
+[  264s] prose L=32768 doc1 gs4      PPL  26.1090 bits 4.25
+[  269s] prose L=32768 doc1 dyn5-noshrink PPL  26.1994 bits 2.36
+[  274s] prose L=32768 doc1 gs4-noshrink PPL  26.1031 bits 4.25
+[  296s] prose L=32768 doc2 bf16     PPL  16.2521 bits 16.00
+[  301s] prose L=32768 doc2 dyn2     PPL  16.3050 bits 2.30
+[  306s] prose L=32768 doc2 dyn5     PPL  16.2092 bits 2.36
+[  311s] prose L=32768 doc2 dyn10    PPL  16.2382 bits 2.46
+[  316s] prose L=32768 doc2 gs4      PPL  16.2312 bits 4.25
+[  322s] prose L=32768 doc2 dyn5-noshrink PPL  16.2624 bits 2.36
+[  326s] prose L=32768 doc2 gs4-noshrink PPL  16.2827 bits 4.25
+[  336s] code L=16384 doc0 bf16     PPL   1.8837 bits 16.00
+[  341s] code L=16384 doc0 dyn2     PPL   1.8787 bits 2.41
+[  346s] code L=16384 doc0 dyn5     PPL   1.8768 bits 2.47
+[  351s] code L=16384 doc0 dyn10    PPL   1.8774 bits 2.57
+[  356s] code L=16384 doc0 gs4      PPL   1.8763 bits 4.34
+[  361s] code L=16384 doc0 dyn5-noshrink PPL   1.8786 bits 2.47
+[  366s] code L=16384 doc0 gs4-noshrink PPL   1.8813 bits 4.34
+[  375s] code L=16384 doc1 bf16     PPL   1.6755 bits 16.00
+[  380s] code L=16384 doc1 dyn2     PPL   1.6755 bits 2.41
+[  385s] code L=16384 doc1 dyn5     PPL   1.6774 bits 2.47
+[  390s] code L=16384 doc1 dyn10    PPL   1.6779 bits 2.57
+[  395s] code L=16384 doc1 gs4      PPL   1.6798 bits 4.34
+[  400s] code L=16384 doc1 dyn5-noshrink PPL   1.6803 bits 2.47
+[  405s] code L=16384 doc1 gs4-noshrink PPL   1.6808 bits 4.34
+[  414s] code L=16384 doc2 bf16     PPL   1.6770 bits 16.00
+[  419s] code L=16384 doc2 dyn2     PPL   1.6821 bits 2.41
+[  424s] code L=16384 doc2 dyn5     PPL   1.6836 bits 2.47
+[  429s] code L=16384 doc2 dyn10    PPL   1.6847 bits 2.57
+[  434s] code L=16384 doc2 gs4      PPL   1.6832 bits 4.34
+[  439s] code L=16384 doc2 dyn5-noshrink PPL   1.6850 bits 2.47
+[  444s] code L=16384 doc2 gs4-noshrink PPL   1.6852 bits 4.34
+[  466s] code L=32768 doc0 bf16     PPL   3.9995 bits 16.00
+[  472s] code L=32768 doc0 dyn2     PPL   4.0052 bits 2.30
+[  477s] code L=32768 doc0 dyn5     PPL   4.0063 bits 2.36
+[  482s] code L=32768 doc0 dyn10    PPL   4.0054 bits 2.46
+[  487s] code L=32768 doc0 gs4      PPL   4.0004 bits 4.25
+[  492s] code L=32768 doc0 dyn5-noshrink PPL   4.0003 bits 2.36
+[  497s] code L=32768 doc0 gs4-noshrink PPL   3.9959 bits 4.25
+[  519s] code L=32768 doc1 bf16     PPL   1.0559 bits 16.00
+[  524s] code L=32768 doc1 dyn2     PPL   1.0594 bits 2.30
+[  530s] code L=32768 doc1 dyn5     PPL   1.0596 bits 2.36
+[  535s] code L=32768 doc1 dyn10    PPL   1.0598 bits 2.46
+[  540s] code L=32768 doc1 gs4      PPL   1.0600 bits 4.25
+[  545s] code L=32768 doc1 dyn5-noshrink PPL   1.0600 bits 2.36
+[  550s] code L=32768 doc1 gs4-noshrink PPL   1.0599 bits 4.25
+[  572s] code L=32768 doc2 bf16     PPL   1.1029 bits 16.00
+[  577s] code L=32768 doc2 dyn2     PPL   1.1019 bits 2.30
+[  582s] code L=32768 doc2 dyn5     PPL   1.1018 bits 2.36
+[  588s] code L=32768 doc2 dyn10    PPL   1.1024 bits 2.46
+[  592s] code L=32768 doc2 gs4      PPL   1.1019 bits 4.25
+[  598s] code L=32768 doc2 dyn5-noshrink PPL   1.1018 bits 2.36
+[  603s] code L=32768 doc2 gs4-noshrink PPL   1.1016 bits 4.25

@@ -1,0 +1,66 @@
+code 3 7s
+code 7 12s
+code 11 18s
+code 15 26s
+code 19 33s
+code 23 38s
+needle10 3 46s
+needle10 7 52s
+needle10 11 60s
+needle10 15 66s
+needle10 19 73s
+needle10 23 78s
+needle50 3 85s
+needle50 7 92s
+needle50 11 99s
+needle50 15 106s
+needle50 19 112s
+needle50 23 118s
+needle90 3 125s
+needle90 7 132s
+needle90 11 139s
+needle90 15 145s
+needle90 19 151s
+needle90 23 157s
+prose 3 164s
+prose 7 170s
+prose 11 177s
+prose 15 183s
+prose 19 191s
+prose 23 198s
+# E6b Lazy fetch: is the low step-to-step reuse harmful? (k=5%, S=4, W=64)
+
+**TL;DR:** count hit-rates LRU 1×/2×/4×: 0.559 / 0.726 / 0.853; *mass-weighted* hit-rates 0.771 / 0.866 / 0.928.
+Attention error with lazy fetch (misses served coarse this step, fetched for the next): 0.0714 / 0.0664 / 0.0637 vs ideal 0.0606 (and 0.1450 with no dynamic residuals at all).
+Lazy fetch with LRU 2× recovers 93% of the error reduction that ideal dynamic residuals give over S+W-only.
+
+## Config
+Walk-forward over 512 consecutive decode steps; per KV head LRU; capacities in units of the mean dynamic hot-set size.
+Reference = exact attention on int8 cache; GS planes as in E8 (post-RoPE, RHT, 8-bit gain).
+
+| metric | value |
+|---|---|
+| ideal (all hot fine) | 0.0606 |
+| no dynamic residuals (only S+W fine) | 0.1450 |
+| count hit LRU1× | 0.5587 |
+| mass hit LRU1× | 0.7712 |
+| err lazy LRU1× | 0.0714 |
+| count hit LRU2× | 0.7257 |
+| mass hit LRU2× | 0.8660 |
+| err lazy LRU2× | 0.0664 |
+| count hit LRU4× | 0.8528 |
+| mass hit LRU4× | 0.9282 |
+| err lazy LRU4× | 0.0637 |
+
+## Per layer
+| layer | ideal | S+W only | cnt1 | mass1 | err1 | cnt2 | mass2 | err2 | cnt4 | mass4 | err4 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 3 | 0.0508 | 0.0960 | 0.4158 | 0.5707 | 0.0666 | 0.5859 | 0.7207 | 0.0607 | 0.7541 | 0.8419 | 0.0562 |
+| 7 | 0.0742 | 0.1471 | 0.5645 | 0.7825 | 0.0843 | 0.7396 | 0.8780 | 0.0797 | 0.8648 | 0.9356 | 0.0770 |
+| 11 | 0.0770 | 0.2040 | 0.6313 | 0.8491 | 0.0886 | 0.7925 | 0.9210 | 0.0829 | 0.8913 | 0.9586 | 0.0802 |
+| 15 | 0.0820 | 0.2105 | 0.6291 | 0.8519 | 0.0921 | 0.7778 | 0.9154 | 0.0875 | 0.8718 | 0.9505 | 0.0853 |
+| 19 | 0.0658 | 0.1797 | 0.6017 | 0.8199 | 0.0790 | 0.7807 | 0.9120 | 0.0714 | 0.9033 | 0.9622 | 0.0681 |
+| 23 | 0.0141 | 0.0325 | 0.5096 | 0.7529 | 0.0175 | 0.6775 | 0.8486 | 0.0161 | 0.8315 | 0.9203 | 0.0151 |
+
+runtime 198s
+

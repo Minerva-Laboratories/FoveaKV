@@ -1,0 +1,67 @@
+code 3 7s
+code 7 14s
+code 11 21s
+code 15 27s
+code 19 34s
+code 23 41s
+needle10 3 52s
+needle10 7 63s
+needle10 11 75s
+needle10 15 87s
+needle10 19 100s
+needle10 23 112s
+needle50 3 124s
+needle50 7 134s
+needle50 11 141s
+needle50 15 148s
+needle50 19 156s
+needle50 23 164s
+needle90 3 175s
+needle90 7 186s
+needle90 11 196s
+needle90 15 208s
+needle90 19 218s
+needle90 23 229s
+prose 3 241s
+prose 7 254s
+prose 11 265s
+prose 15 276s
+prose 19 287s
+prose 23 298s
+# E15 Logit shrinkage correction alpha = 1/(1-D) (free: one multiply on the rotated query)
+
+**TL;DR:** DynReq k=5% (+A, block means): attn err 0.0205 → 0.0181 with alpha_c = 1/(1−D_c) = 1.137
+(alpha_f = 1.0096); GS-2b 0.0801 → 0.0703; TurboQuant-MSE 2b 0.1494 → 0.1258,
+4b 0.0246 → 0.0240; GS-4b 0.0165 → 0.0162.
+
+## Why
+MMSE reconstruction satisfies E[z | z_hat] = z_hat but E[z_hat | z] ≈ (1−D) z: high-attention tokens (large true logits) are
+reconstructed with logits shrunk by (1−D), which raises the softmax temperature coherently across tokens (a correlated error that
+the independent-error weighted-MSE model misses; E14). Scaling the key-residual logits (not the block-mean offsets) by 1/(1−D)
+undoes the shrinkage on average; values keep the MMSE reconstruction (their error enters linearly).
+
+| scheme / alpha | attn err | layer-3 attn err |
+|---|---|---|
+| DynReq k=5% alpha_c=1 | 0.0205 | 0.0190 |
+| GS-2b +A alpha=1 | 0.0801 | 0.0571 |
+| DynReq k=5% alpha_c=1/sqrt(1-Dc) | 0.0178 | 0.0150 |
+| GS-2b +A alpha=1/sqrt(1-Dc) | 0.0640 | 0.0469 |
+| DynReq k=5% alpha_c=1/(1-Dc) | 0.0181 | 0.0157 |
+| GS-2b +A alpha=1/(1-Dc) | 0.0703 | 0.0524 |
+| DynReq k=5% alpha_c=1.20 | 0.0205 | 0.0206 |
+| GS-2b +A alpha=1.20 | 0.0935 | 0.0693 |
+| DynReq k=5% alpha_k=renorm alpha_v=1 | 0.0181 | 0.0154 |
+| GS-2b +A alpha_k=renorm alpha_v=1 | 0.0640 | 0.0469 |
+| DynReq k=5% alpha_k=renorm alpha_v=1/sqrt(1-D) | 0.0177 | 0.0144 |
+| GS-2b +A alpha_k=renorm alpha_v=1/sqrt(1-D) | 0.0610 | 0.0423 |
+| DynReq k=5% alpha_k=renorm alpha_v=1/(1-D) | 0.0176 | 0.0137 |
+| GS-2b +A alpha_k=renorm alpha_v=1/(1-D) | 0.0600 | 0.0398 |
+| GS-4b +A alpha=1 | 0.0165 | 0.0104 |
+| GS-4b +A alpha=1/(1-Df) | 0.0162 | 0.0102 |
+| TQ-2b +A alpha=1 | 0.1494 | 0.0901 |
+| TQ-2b +A alpha=1/(1-D) | 0.1258 | 0.1035 |
+| TQ-4b +A alpha=1 | 0.0246 | 0.0151 |
+| TQ-4b +A alpha=1/(1-D) | 0.0240 | 0.0153 |
+
+runtime 298s
+

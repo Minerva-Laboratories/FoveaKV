@@ -1,0 +1,25 @@
+# E7 Hybrid prefetch for attention layer L+4 (dynamic hot set; hit = fraction of the actual set predicted)
+
+**TL;DR:** at k=5%: (a) previous step same layer 0.591, (b) layer L's current hot set 0.429, (c) speculative query 0.561
+(over-fetch 2× → 0.778); (a)∪(c) 0.802 at 1.60× the transfer of the actual set. Target ≥ 0.85.
+
+## Config
+Speculative query = q_norm(W_Q(L+4) · RMSNorm_{L+4}(h_L)) with RoPE at the true position, scored against the coarse keys of L+4.
+The 3 linear-attention layers in between are skipped (that is the latency window for the prefetch).
+
+| k | (a) prev step | (b) layer L hot set | (c) spec query | (c) 2× over-fetch | (a)∪(c) | (a)∪(c) size / actual |
+|---|---|---|---|---|---|---|
+| 2% | 0.4998 | 0.3458 | 0.4977 | 0.7408 | 0.7301 | 1.6907 |
+| 5% | 0.5914 | 0.4292 | 0.5615 | 0.7784 | 0.8016 | 1.6009 |
+| 10% | 0.6471 | 0.4874 | 0.6181 | 0.8371 | 0.8442 | 1.5262 |
+
+## Per layer pair (k=5%)
+| L→L+4 | (a) | (b) | (c) | (c)2× | (a)∪(c) | size |
+|---|---|---|---|---|---|---|
+| 3→7 | 0.5684 | 0.3221 | 0.3769 | 0.5832 | 0.7318 | 1.7444 |
+| 7→11 | 0.6356 | 0.4546 | 0.4900 | 0.7097 | 0.8012 | 1.6295 |
+| 11→15 | 0.6336 | 0.4642 | 0.5174 | 0.7483 | 0.7964 | 1.5948 |
+| 15→19 | 0.6059 | 0.4663 | 0.7673 | 0.9640 | 0.8631 | 1.4329 |
+| 19→23 | 0.5134 | 0.4387 | 0.6558 | 0.8867 | 0.8153 | 1.6031 |
+
+runtime 132s

@@ -1,0 +1,121 @@
+# E8 Per-layer output error vs bits (Qwen3.5-0.8B, 6 full-attn layers, 5 corpora, T=8192, 256 decode queries/layer)
+
+**TL;DR:** uniform gain-shape 4-bit: attn err 0.0590 at 4.03 bits; 2-bit: 0.2344 at 2.03 bits.
+Dynamic (coarse select, S=4, W=64): k=5% → 0.0610 at 2.13 read bits (2.03 resident); k=10% → 0.0593 at 2.23; sign-plane select k=5% → 0.0629.
+Residual-stream contribution error: GS-4b 0.0977, DYN k=5% 0.1005, DYN k=10% 0.0982, GS-2b 0.3702.
+
+## Config
+- Reference: exact attention on the int8 cache (8.06 bits). Errors: mean over corpora/layers of the per-(query, head) rel L2 error.
+- GS = gain-shape (mean removal from prefill, RHT seed 0, 8-bit log gain calibrated on prefill, Gaussian Lloyd-Max 4b with nested 2b).
+- DYN: budget mode — hot set shared by the GQA group, ranked by max over the group of estimated log-prob; k counts all hot tokens incl. sinks S=4 and window W=64.
+- Bits: resident = coarse planes + gains; read/step = coarse (all) + 2·(hot fraction) for the residual plane. KIVI: bits + 32/group (fp16 scale+zero), incomplete trailing group kept at int8.
+- mu vectors (one per head) are not counted (≈0.0005 bits/elem at 8K).
+
+## Main comparison
+| scheme | resident bits/elem | read bits/elem/step | attn err mean | attn err worst (corpus,layer) | resid err mean | resid err worst |
+|---|---|---|---|---|---|---|
+| GS-2b post-RoPE RHT g8 | 2.0312 | 2.0312 | 0.2344 | 0.3805 | 0.3702 | 0.5247 |
+| DYN sel=coarse k=1% post-RoPE RHT g8 | 2.0312 | 2.0514 | 0.0974 | 0.1400 | 0.1496 | 0.2224 |
+| DYN sel=sign k=1% post-RoPE RHT g8 | 2.0312 | 2.0514 | 0.1045 | 0.1507 | 0.1598 | 0.2427 |
+| DYN sel=sign k=2% post-RoPE RHT g8 | 2.0312 | 2.0714 | 0.0742 | 0.1049 | 0.1174 | 0.1676 |
+| DYN sel=coarse k=2% post-RoPE RHT g8 | 2.0312 | 2.0714 | 0.0692 | 0.0978 | 0.1111 | 0.1594 |
+| DYN sel=coarse k=5% post-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0610 | 0.0854 | 0.1005 | 0.1511 |
+| DYN sel=sign k=5% post-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0629 | 0.0878 | 0.1028 | 0.1519 |
+| DYN sel=coarse k=5%/head UNION post-RoPE RHT g8 | 2.0312 | 2.2241 | 0.0593 | 0.0841 | 0.0982 | 0.1507 |
+| DYN sel=coarse k=10% post-RoPE RHT g8 | 2.0312 | 2.2314 | 0.0593 | 0.0840 | 0.0982 | 0.1506 |
+| DYN sel=sign k=10% post-RoPE RHT g8 | 2.0312 | 2.2314 | 0.0600 | 0.0846 | 0.0990 | 0.1507 |
+| DYN sel=coarse k=20% post-RoPE RHT g8 | 2.0312 | 2.4314 | 0.0589 | 0.0835 | 0.0976 | 0.1506 |
+| DYN sel=sign k=20% post-RoPE RHT g8 | 2.0312 | 2.4314 | 0.0590 | 0.0837 | 0.0978 | 0.1506 |
+| KIVI-2b g128 | 2.4844 | 2.4844 | 0.2823 | 0.4204 | 0.5747 | 0.9030 |
+| KIVI-2b g32 | 3.1735 | 3.1735 | 0.1868 | 0.2353 | 0.3620 | 0.6518 |
+| GS-4b post-RoPE RHT g8 | 4.0312 | 4.0312 | 0.0590 | 0.0833 | 0.0977 | 0.1508 |
+| KIVI-4b g128 | 4.4037 | 4.4037 | 0.0439 | 0.0682 | 0.0817 | 0.1469 |
+| KIVI-4b g32 | 5.1050 | 5.1050 | 0.0325 | 0.0506 | 0.0600 | 0.0889 |
+| int8 (reference) | 8.0625 | 8.0625 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+
+## Per layer (mean over corpora)
+| layer | scheme | attn err | resid err |
+|---|---|---|---|
+| 3 | GS-2b post-RoPE RHT g8 | 0.1998 | 0.3133 |
+| 3 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0508 | 0.0708 |
+| 3 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0481 | 0.0673 |
+| 3 | GS-4b post-RoPE RHT g8 | 0.0473 | 0.0670 |
+| 3 | KIVI-4b g128 | 0.0149 | 0.0296 |
+| 7 | GS-2b post-RoPE RHT g8 | 0.2695 | 0.4821 |
+| 7 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0746 | 0.1413 |
+| 7 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0740 | 0.1398 |
+| 7 | GS-4b post-RoPE RHT g8 | 0.0743 | 0.1396 |
+| 7 | KIVI-4b g128 | 0.0665 | 0.1315 |
+| 11 | GS-2b post-RoPE RHT g8 | 0.3409 | 0.4873 |
+| 11 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0780 | 0.1289 |
+| 11 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0764 | 0.1264 |
+| 11 | GS-4b post-RoPE RHT g8 | 0.0764 | 0.1258 |
+| 11 | KIVI-4b g128 | 0.0625 | 0.1073 |
+| 15 | GS-2b post-RoPE RHT g8 | 0.3139 | 0.4062 |
+| 15 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0824 | 0.1039 |
+| 15 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0802 | 0.1019 |
+| 15 | GS-4b post-RoPE RHT g8 | 0.0793 | 0.1013 |
+| 15 | KIVI-4b g128 | 0.0594 | 0.0908 |
+| 19 | GS-2b post-RoPE RHT g8 | 0.2267 | 0.2944 |
+| 19 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0661 | 0.0919 |
+| 19 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0635 | 0.0885 |
+| 19 | GS-4b post-RoPE RHT g8 | 0.0631 | 0.0877 |
+| 19 | KIVI-4b g128 | 0.0465 | 0.0669 |
+| 23 | GS-2b post-RoPE RHT g8 | 0.0558 | 0.2379 |
+| 23 | DYN sel=coarse k=5% post-RoPE RHT g8 | 0.0141 | 0.0663 |
+| 23 | DYN sel=coarse k=10% post-RoPE RHT g8 | 0.0135 | 0.0652 |
+| 23 | GS-4b post-RoPE RHT g8 | 0.0135 | 0.0649 |
+| 23 | KIVI-4b g128 | 0.0137 | 0.0640 |
+
+## RoPE: pre vs post (k=5% for DYN)
+| scheme | resident bits/elem | read bits/elem/step | attn err mean | attn err worst (corpus,layer) | resid err mean | resid err worst |
+|---|---|---|---|---|---|---|
+| GS-2b pre-RoPE RHT g8 | 2.0312 | 2.0312 | 0.2337 | 0.3930 | 0.3826 | 0.6828 |
+| GS-4b pre-RoPE RHT g8 | 4.0312 | 4.0312 | 0.0594 | 0.0903 | 0.0985 | 0.1680 |
+| DYN sel=coarse k=5% pre-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0614 | 0.0930 | 0.1017 | 0.1706 |
+| DYN sel=sign k=5% pre-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0631 | 0.0949 | 0.1038 | 0.1719 |
+| GS-2b post-RoPE RHT g8 | 2.0312 | 2.0312 | 0.2344 | 0.3805 | 0.3702 | 0.5247 |
+| GS-4b post-RoPE RHT g8 | 4.0312 | 4.0312 | 0.0590 | 0.0833 | 0.0977 | 0.1508 |
+| DYN sel=coarse k=5% post-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0610 | 0.0854 | 0.1005 | 0.1511 |
+
+## RHT on/off
+| scheme | resident bits/elem | read bits/elem/step | attn err mean | attn err worst (corpus,layer) | resid err mean | resid err worst |
+|---|---|---|---|---|---|---|
+| GS-2b post-RoPE noRHT g8 | 2.0312 | 2.0312 | 0.3408 | 0.5227 | 0.4783 | 0.6259 |
+| GS-4b post-RoPE noRHT g8 | 4.0312 | 4.0312 | 0.1908 | 0.3189 | 0.2461 | 0.3668 |
+| DYN sel=coarse k=5% post-RoPE noRHT g8 | 2.0312 | 2.1314 | 0.1900 | 0.3164 | 0.2472 | 0.3654 |
+| DYN sel=sign k=5% post-RoPE noRHT g8 | 2.0312 | 2.1314 | 0.1912 | 0.3161 | 0.2495 | 0.3659 |
+
+## Gain bits
+| scheme | resident bits/elem | read bits/elem/step | attn err mean | attn err worst (corpus,layer) | resid err mean | resid err worst |
+|---|---|---|---|---|---|---|
+| GS-2b post-RoPE RHT g4 | 2.0156 | 2.0156 | 0.2331 | 0.3735 | 0.3682 | 0.5169 |
+| GS-4b post-RoPE RHT g4 | 4.0156 | 4.0156 | 0.0620 | 0.0874 | 0.1024 | 0.1547 |
+| DYN sel=coarse k=5% post-RoPE RHT g4 | 2.0156 | 2.1158 | 0.0636 | 0.0891 | 0.1051 | 0.1548 |
+| DYN sel=sign k=5% post-RoPE RHT g4 | 2.0156 | 2.1158 | 0.0653 | 0.0909 | 0.1072 | 0.1555 |
+| GS-2b post-RoPE RHT g6 | 2.0234 | 2.0234 | 0.2347 | 0.3837 | 0.3703 | 0.5279 |
+| GS-4b post-RoPE RHT g6 | 4.0234 | 4.0234 | 0.0592 | 0.0847 | 0.0981 | 0.1529 |
+| DYN sel=coarse k=5% post-RoPE RHT g6 | 2.0234 | 2.1236 | 0.0611 | 0.0861 | 0.1008 | 0.1532 |
+| DYN sel=sign k=5% post-RoPE RHT g6 | 2.0234 | 2.1236 | 0.0630 | 0.0876 | 0.1031 | 0.1538 |
+
+## Sinks / recent window (coarse select, budget includes S+W)
+| scheme | resident bits/elem | read bits/elem/step | attn err mean | attn err worst (corpus,layer) | resid err mean | resid err worst |
+|---|---|---|---|---|---|---|
+| DYN sel=coarse k=2% S=0 W=0 | 2.0312 | 2.0714 | 0.0665 | 0.0942 | 0.1075 | 0.1549 |
+| DYN sel=coarse k=5% S=0 W=0 | 2.0312 | 2.1314 | 0.0608 | 0.0853 | 0.1002 | 0.1511 |
+| DYN sel=coarse k=2% S=4 W=0 | 2.0312 | 2.0714 | 0.0667 | 0.0946 | 0.1077 | 0.1552 |
+| DYN sel=coarse k=5% S=4 W=0 | 2.0312 | 2.1314 | 0.0608 | 0.0853 | 0.1002 | 0.1511 |
+| DYN sel=coarse k=2% S=0 W=64 | 2.0312 | 2.0714 | 0.0689 | 0.0973 | 0.1107 | 0.1589 |
+| DYN sel=coarse k=5% S=0 W=64 | 2.0312 | 2.1314 | 0.0610 | 0.0854 | 0.1005 | 0.1511 |
+| DYN sel=coarse k=2% S=16 W=256 | 2.0312 | 2.0998 | 0.1173 | 0.1846 | 0.1906 | 0.3173 |
+| DYN sel=coarse k=5% S=16 W=256 | 2.0312 | 2.1314 | 0.0639 | 0.0886 | 0.1045 | 0.1524 |
+| DYN sel=coarse k=2% post-RoPE RHT g8 | 2.0312 | 2.0714 | 0.0692 | 0.0978 | 0.1111 | 0.1594 |
+| DYN sel=coarse k=5% post-RoPE RHT g8 | 2.0312 | 2.1314 | 0.0610 | 0.0854 | 0.1005 | 0.1511 |
+
+## Plot
+![err vs bits](plots/e08_err_vs_bits.png)
+
+## Caveats
+- Per-layer only: no error propagation across layers (offline cache). End-to-end PPL needs E9.
+- Read-bits for DYN assume the residual plane is read only for hot tokens; on-GPU LRU hits (E6) do not cost PCIe but do cost HBM reads (counted here).
+runtime 806s

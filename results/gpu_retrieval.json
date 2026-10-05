@@ -1,0 +1,7778 @@
+[
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2978347.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2574702.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5468285.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1513214.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8081940.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "4910508.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7982340.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3028196.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "9377905.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "9477255.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7286473.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 0.0,
+  "out": "1729595.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 0.0,
+  "out": "1729595.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "1729595.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6176264.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6926956.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1941592.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6555564.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "528312.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5283123.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5870162.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 0.5,
+  "out": "9329781 and 8948558.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "9329781.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "9329781, 8948558, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 0.75,
+  "out": "9329781, 8948558, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 0.75,
+  "out": "9329781, 8948558, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 0.5,
+  "out": "9329781, 1396522, 1396522, 1396522, 139",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "9558325, 4507964, 8241978, 1349269, 100",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 0.75,
+  "out": "9558325, 4507964, 8241978.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "4701049, 9667101, 8563924, 4744603, 470",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "4701049, 9667101, 8563924, 4744603.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "4701049, 9667101, 8563924, 4744603, 470",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 0.25,
+  "out": "4701049.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6009776, 3108616, 4558979, 1795914, 179",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 0.75,
+  "out": "1142275, 1636133, 4650560.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "1142275, 1636133, 1142275, 1636133, 114",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 0.25,
+  "out": "3187600.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 0.25,
+  "out": "2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "4362279, 6820534, 4452109, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 0.75,
+  "out": "4362279, 6820534, 2661369.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, and 12",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "5967275, 5967275, 5967275, 5967275, 596",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 0.75,
+  "out": "5967275, 9457518, 9385251, 9385251, 938",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 0.75,
+  "out": "5967275, 9457518, 1288571, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5967275, 9457518, 9385251, 1288571, 128",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "6498576, 3267325, 6689080.",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "6498576, 6689080, 6689080, 6689080, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 8192,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6498576, 3267325, 6689080, 8201459, 668",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "9934210.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3794288.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7175827.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3270728.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2227981<|im_end|>",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2227981.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7342452.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7121868.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2807420.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2931099.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 0.0,
+  "out": "3666650.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "8299814<|im_end|>",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 0.0,
+  "out": "3666650.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8299814.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6372924.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8867173.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "4815579.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2693620.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "9275547.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3374616.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613, 153",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3377006, 1532843, 4446613, 6302752, 153",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613, 100",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613, 100",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "3377006, 3377006, 3377006, 3377006, 337",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613, 153",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3377006, 1532843, 6302752, 4446613.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 0.75,
+  "out": "8494298, 8217078, 5197991.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "8494298, 8217078, 5197991.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 0.75,
+  "out": "8494298, 8217078, 5197991.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8217078, 8217078, 821",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "8494298, 8217078, 5197991.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 0.5,
+  "out": "8494298, 8217078, 8494298, 8217078, 849",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 0.5,
+  "out": "1409506, 1317273, 1317273, 1317273, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1409506, 1317273, 2045583, 7990795, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "1409506.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1409506, 7990795, 1317273, 2045583, 131",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 0.5,
+  "out": "7673931, 7729041, 7673931, 7729041, 767",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "7673931, 7673931, 7673931, 7673931, 767",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7673931, 7729041, 3888604, 2497320, 388",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 0.75,
+  "out": "4999263, 6251014, 9305934.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "4999263, 6251014, 9305934.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "4999263, 9033822, 9305934.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 0.25,
+  "out": "4999263.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 0.75,
+  "out": "7185593, 3675424, 9584762, 7185593, 367",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 367",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "7185593, 3675424, 3675424, 3675424, 367",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 367",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 220",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2200433, 9584762, 7185593, 3675424, 106",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 377",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "3771238, 8797686, 2425613, 2425613, 242",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 377",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 377",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 377",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3771238, 8797686, 2425613, 3067689, 306",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633, 187",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, and 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, and 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "4651035, 1874650, 9305155, 1874650, 187",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633, 465",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633, 465",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 16384,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "4651035, 1874650, 9305155, 7603633.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "251690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2516690.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2375870.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "3764177<|im_end|>",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3764117.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 0.0,
+  "out": "823530.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8235350.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5164379.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8361390.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3899979.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5209105<|im_end|>",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5209105.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3043465.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "9394840.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "6113681.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 0.0,
+  "out": "4421110.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1065022.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1059043.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5880257.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5438970.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mk-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "8090014.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "5627082, 6107039, 9859926.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5627082, 6107039, 4504582, 9859926, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "5627082, 6107039, 9859926, 9859926, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "5627082, 6107039, 4504582, 9859926, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 0,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5627082, 6107039, 9859926, 4504582, 985",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "bf16",
+  "score": 0.25,
+  "out": "8850673.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq2",
+  "score": 0.25,
+  "out": "3827860.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq3",
+  "score": 0.5,
+  "out": "1834538, 3827860, 3827860, 3827860, 382",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "tq4",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "gs4",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "1834538.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest5",
+  "score": 0.25,
+  "out": "8850673.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "quest10",
+  "score": 0.25,
+  "out": "8850673.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn2",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn5",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 1,
+  "scheme": "dyn10",
+  "score": 0.75,
+  "out": "1834538, 3827860, 9581863, 100000000000",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 38",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 38",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "7586049, 9113864, 9113864, 9113864, 911",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, 758",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 75",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 2,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7586049, 7706115, 9113864, 3891770, and 38",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, and 77",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 100",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 775",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi2",
+  "score": 0.75,
+  "out": "7754480, 6310477, 5167904, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 775",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 775",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 775",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 3,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "7754480, 6310477, 8243825, 5167904, 516",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5395362, 8707310, 9834753, and 3726898.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq2",
+  "score": 0.25,
+  "out": "3726898, 3726898, 3726898, 3726898, 372",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq3",
+  "score": 0.75,
+  "out": "3726898, 8707310, 9834753, 3726898, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5395362, 8707310, 9834753, and 3726898.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5395362, 8707310, 9834753, and 3726898.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi2",
+  "score": 0.25,
+  "out": "3726898, 3726898, 3726898, 3726898, 372",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "3726898, 8707310, 9834753, 3726898, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest5",
+  "score": 0.75,
+  "out": "3726898, 8707310, 9834753, 3726898, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "quest10",
+  "score": 0.75,
+  "out": "3726898, 8707310, 9834753, 3726898, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "3726898, 8707310, 9834753, 5395362, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "3726898, 8707310, 9834753, 5395362, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 4,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "3726898, 8707310, 9834753, 5395362, 870",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi2",
+  "score": 0.5,
+  "out": "5034813, 2943421, 2943421, 2943421, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "kivi4",
+  "score": 0.75,
+  "out": "5034813, 2943421, 6125370, 2943421, 445",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 5,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "5034813, 2943421, 6125370, 4459280, 294",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 192",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "1928502, 4633236, 1390631, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "1928502, 4633236, 1390631, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 6,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "1928502, 1390631, 4633236, 1582394, 158",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "bf16",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq2",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq3",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "tq4",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708.",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "gs4",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi2",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 259",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "kivi4",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest5",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "quest10",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn2",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn5",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ },
+ {
+  "L": 32768,
+  "task": "mv-niah",
+  "sample": 7,
+  "scheme": "dyn10",
+  "score": 1.0,
+  "out": "2980837, 3897226, 4725635, 2597708, 389",
+  "from_log": true
+ }
+]

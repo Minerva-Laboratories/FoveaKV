@@ -1,0 +1,140 @@
+# E10 Budget model (PCIe residual fetches vs estimated decode step)
+
+**TL;DR:** measured hit rates at k=5%: LRU 2× 0.726, LRU 4× 0.853, prefetch (a)∪(c) 0.802 (target 0.85).
+With the best measured hit rate (0.853) at 128K and Q4 weights, PCIe time is 0.8B: 2%, 2B: 1%, 9B: 1% of the estimated decode step (criterion ≤ 20%).
+Hit rates are measured at 8K context and assumed to hold at 32K–256K — this is the main extrapolation.
+
+## Config (ESTIMATED unless noted)
+- PCIe 25 GB/s; HBM 192 GB/s (RTX 4050 Laptop); step time = bytes read / HBM (memory-bound decode, batch 1).
+- Step bytes (DYN): weights + coarse K/V (2 + 8/256 bits) + hot residual planes (2 bits × k=5%) + fp32 DeltaNet states.
+- PCIe bytes = (1 − hit) × hot residual bytes. Hit rates MEASURED on Qwen3.5-0.8B at 8K (E6/E7); applied unchanged to 2B/9B.
+- Model sizes from local config.json (2B/9B: only configs are on disk; their attention statistics are not measured).
+
+## Main table (Q4 weights)
+| model | ctx | weights | hit source | coarse KV MiB | uniform-4b KV MiB | PCIe MiB/step | PCIe ms | DYN step ms | U4 step ms | PCIe/step |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.8B | 32K | Q4 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 32K | Q4 | target | 48.75 | 96.75 | 0.36 | 0.02 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 128K | Q4 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 128K | Q4 | target | 195.00 | 387.00 | 1.44 | 0.06 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 256K | Q4 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 4.54 | 6.53 | 0.03 |
+| 0.8B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 4.54 | 6.53 | 0.04 |
+| 0.8B | 256K | Q4 | target | 390.00 | 774.00 | 2.88 | 0.12 | 4.54 | 6.53 | 0.03 |
+| 2B | 32K | Q4 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 5.89 | 6.14 | 0.00 |
+| 2B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 5.89 | 6.14 | 0.00 |
+| 2B | 32K | Q4 | target | 48.75 | 96.75 | 0.36 | 0.02 | 5.89 | 6.14 | 0.00 |
+| 2B | 128K | Q4 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 6.73 | 7.72 | 0.01 |
+| 2B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 6.73 | 7.72 | 0.01 |
+| 2B | 128K | Q4 | target | 195.00 | 387.00 | 1.44 | 0.06 | 6.73 | 7.72 | 0.01 |
+| 2B | 256K | Q4 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 7.84 | 9.84 | 0.02 |
+| 2B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 7.84 | 9.84 | 0.02 |
+| 2B | 256K | Q4 | target | 390.00 | 774.00 | 2.88 | 0.12 | 7.84 | 9.84 | 0.02 |
+| 9B | 32K | Q4 | LRU 4×k (E6, measured) | 130.00 | 258.00 | 0.94 | 0.04 | 24.26 | 24.92 | 0.00 |
+| 9B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 130.00 | 258.00 | 1.27 | 0.05 | 24.26 | 24.92 | 0.00 |
+| 9B | 32K | Q4 | target | 130.00 | 258.00 | 0.96 | 0.04 | 24.26 | 24.92 | 0.00 |
+| 9B | 128K | Q4 | LRU 4×k (E6, measured) | 520.00 | 1032.00 | 3.77 | 0.16 | 26.49 | 29.15 | 0.01 |
+| 9B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 520.00 | 1032.00 | 5.08 | 0.21 | 26.49 | 29.15 | 0.01 |
+| 9B | 128K | Q4 | target | 520.00 | 1032.00 | 3.84 | 0.16 | 26.49 | 29.15 | 0.01 |
+| 9B | 256K | Q4 | LRU 4×k (E6, measured) | 1040.00 | 2064.00 | 7.54 | 0.32 | 29.47 | 34.78 | 0.01 |
+| 9B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 1040.00 | 2064.00 | 10.16 | 0.43 | 29.47 | 34.78 | 0.01 |
+| 9B | 256K | Q4 | target | 1040.00 | 2064.00 | 7.68 | 0.32 | 29.47 | 34.78 | 0.01 |
+
+## All rows
+| model | ctx | weights | hit source | coarse KV MiB | uniform-4b KV MiB | PCIe MiB/step | PCIe ms | DYN step ms | U4 step ms | PCIe/step |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.8B | 32K | bf16 | no reuse (all dynamic hot fetched) | 48.75 | 96.75 | 2.40 | 0.10 | 8.21 | 8.46 | 0.01 |
+| 0.8B | 32K | bf16 | LRU 2×k (E6, measured) | 48.75 | 96.75 | 0.66 | 0.03 | 8.21 | 8.46 | 0.00 |
+| 0.8B | 32K | bf16 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 8.21 | 8.46 | 0.00 |
+| 0.8B | 32K | bf16 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 8.21 | 8.46 | 0.00 |
+| 0.8B | 32K | bf16 | target | 48.75 | 96.75 | 0.36 | 0.02 | 8.21 | 8.46 | 0.00 |
+| 0.8B | 32K | Q4 | no reuse (all dynamic hot fetched) | 48.75 | 96.75 | 2.40 | 0.10 | 2.58 | 2.83 | 0.04 |
+| 0.8B | 32K | Q4 | LRU 2×k (E6, measured) | 48.75 | 96.75 | 0.66 | 0.03 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 32K | Q4 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 32K | Q4 | target | 48.75 | 96.75 | 0.36 | 0.02 | 2.58 | 2.83 | 0.01 |
+| 0.8B | 128K | bf16 | no reuse (all dynamic hot fetched) | 195.00 | 387.00 | 9.60 | 0.40 | 9.05 | 10.04 | 0.04 |
+| 0.8B | 128K | bf16 | LRU 2×k (E6, measured) | 195.00 | 387.00 | 2.63 | 0.11 | 9.05 | 10.04 | 0.01 |
+| 0.8B | 128K | bf16 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 9.05 | 10.04 | 0.01 |
+| 0.8B | 128K | bf16 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 9.05 | 10.04 | 0.01 |
+| 0.8B | 128K | bf16 | target | 195.00 | 387.00 | 1.44 | 0.06 | 9.05 | 10.04 | 0.01 |
+| 0.8B | 128K | Q4 | no reuse (all dynamic hot fetched) | 195.00 | 387.00 | 9.60 | 0.40 | 3.42 | 4.41 | 0.12 |
+| 0.8B | 128K | Q4 | LRU 2×k (E6, measured) | 195.00 | 387.00 | 2.63 | 0.11 | 3.42 | 4.41 | 0.03 |
+| 0.8B | 128K | Q4 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 128K | Q4 | target | 195.00 | 387.00 | 1.44 | 0.06 | 3.42 | 4.41 | 0.02 |
+| 0.8B | 256K | bf16 | no reuse (all dynamic hot fetched) | 390.00 | 774.00 | 19.20 | 0.81 | 10.17 | 12.16 | 0.08 |
+| 0.8B | 256K | bf16 | LRU 2×k (E6, measured) | 390.00 | 774.00 | 5.27 | 0.22 | 10.17 | 12.16 | 0.02 |
+| 0.8B | 256K | bf16 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 10.17 | 12.16 | 0.01 |
+| 0.8B | 256K | bf16 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 10.17 | 12.16 | 0.02 |
+| 0.8B | 256K | bf16 | target | 390.00 | 774.00 | 2.88 | 0.12 | 10.17 | 12.16 | 0.01 |
+| 0.8B | 256K | Q4 | no reuse (all dynamic hot fetched) | 390.00 | 774.00 | 19.20 | 0.81 | 4.54 | 6.53 | 0.18 |
+| 0.8B | 256K | Q4 | LRU 2×k (E6, measured) | 390.00 | 774.00 | 5.27 | 0.22 | 4.54 | 6.53 | 0.05 |
+| 0.8B | 256K | Q4 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 4.54 | 6.53 | 0.03 |
+| 0.8B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 4.54 | 6.53 | 0.04 |
+| 0.8B | 256K | Q4 | target | 390.00 | 774.00 | 2.88 | 0.12 | 4.54 | 6.53 | 0.03 |
+| 2B | 32K | bf16 | no reuse (all dynamic hot fetched) | 48.75 | 96.75 | 2.40 | 0.10 | 19.97 | 20.22 | 0.01 |
+| 2B | 32K | bf16 | LRU 2×k (E6, measured) | 48.75 | 96.75 | 0.66 | 0.03 | 19.97 | 20.22 | 0.00 |
+| 2B | 32K | bf16 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 19.97 | 20.22 | 0.00 |
+| 2B | 32K | bf16 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 19.97 | 20.22 | 0.00 |
+| 2B | 32K | bf16 | target | 48.75 | 96.75 | 0.36 | 0.02 | 19.97 | 20.22 | 0.00 |
+| 2B | 32K | Q4 | no reuse (all dynamic hot fetched) | 48.75 | 96.75 | 2.40 | 0.10 | 5.89 | 6.14 | 0.02 |
+| 2B | 32K | Q4 | LRU 2×k (E6, measured) | 48.75 | 96.75 | 0.66 | 0.03 | 5.89 | 6.14 | 0.00 |
+| 2B | 32K | Q4 | LRU 4×k (E6, measured) | 48.75 | 96.75 | 0.35 | 0.01 | 5.89 | 6.14 | 0.00 |
+| 2B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 48.75 | 96.75 | 0.48 | 0.02 | 5.89 | 6.14 | 0.00 |
+| 2B | 32K | Q4 | target | 48.75 | 96.75 | 0.36 | 0.02 | 5.89 | 6.14 | 0.00 |
+| 2B | 128K | bf16 | no reuse (all dynamic hot fetched) | 195.00 | 387.00 | 9.60 | 0.40 | 20.81 | 21.81 | 0.02 |
+| 2B | 128K | bf16 | LRU 2×k (E6, measured) | 195.00 | 387.00 | 2.63 | 0.11 | 20.81 | 21.81 | 0.01 |
+| 2B | 128K | bf16 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 20.81 | 21.81 | 0.00 |
+| 2B | 128K | bf16 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 20.81 | 21.81 | 0.00 |
+| 2B | 128K | bf16 | target | 195.00 | 387.00 | 1.44 | 0.06 | 20.81 | 21.81 | 0.00 |
+| 2B | 128K | Q4 | no reuse (all dynamic hot fetched) | 195.00 | 387.00 | 9.60 | 0.40 | 6.73 | 7.72 | 0.06 |
+| 2B | 128K | Q4 | LRU 2×k (E6, measured) | 195.00 | 387.00 | 2.63 | 0.11 | 6.73 | 7.72 | 0.02 |
+| 2B | 128K | Q4 | LRU 4×k (E6, measured) | 195.00 | 387.00 | 1.41 | 0.06 | 6.73 | 7.72 | 0.01 |
+| 2B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 195.00 | 387.00 | 1.90 | 0.08 | 6.73 | 7.72 | 0.01 |
+| 2B | 128K | Q4 | target | 195.00 | 387.00 | 1.44 | 0.06 | 6.73 | 7.72 | 0.01 |
+| 2B | 256K | bf16 | no reuse (all dynamic hot fetched) | 390.00 | 774.00 | 19.20 | 0.81 | 21.93 | 23.92 | 0.04 |
+| 2B | 256K | bf16 | LRU 2×k (E6, measured) | 390.00 | 774.00 | 5.27 | 0.22 | 21.93 | 23.92 | 0.01 |
+| 2B | 256K | bf16 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 21.93 | 23.92 | 0.01 |
+| 2B | 256K | bf16 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 21.93 | 23.92 | 0.01 |
+| 2B | 256K | bf16 | target | 390.00 | 774.00 | 2.88 | 0.12 | 21.93 | 23.92 | 0.01 |
+| 2B | 256K | Q4 | no reuse (all dynamic hot fetched) | 390.00 | 774.00 | 19.20 | 0.81 | 7.84 | 9.84 | 0.10 |
+| 2B | 256K | Q4 | LRU 2×k (E6, measured) | 390.00 | 774.00 | 5.27 | 0.22 | 7.84 | 9.84 | 0.03 |
+| 2B | 256K | Q4 | LRU 4×k (E6, measured) | 390.00 | 774.00 | 2.83 | 0.12 | 7.84 | 9.84 | 0.02 |
+| 2B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 390.00 | 774.00 | 3.81 | 0.16 | 7.84 | 9.84 | 0.02 |
+| 2B | 256K | Q4 | target | 390.00 | 774.00 | 2.88 | 0.12 | 7.84 | 9.84 | 0.02 |
+| 9B | 32K | bf16 | no reuse (all dynamic hot fetched) | 130.00 | 258.00 | 6.40 | 0.27 | 83.67 | 84.33 | 0.00 |
+| 9B | 32K | bf16 | LRU 2×k (E6, measured) | 130.00 | 258.00 | 1.76 | 0.07 | 83.67 | 84.33 | 0.00 |
+| 9B | 32K | bf16 | LRU 4×k (E6, measured) | 130.00 | 258.00 | 0.94 | 0.04 | 83.67 | 84.33 | 0.00 |
+| 9B | 32K | bf16 | prefetch (a)∪(c) (E7, measured) | 130.00 | 258.00 | 1.27 | 0.05 | 83.67 | 84.33 | 0.00 |
+| 9B | 32K | bf16 | target | 130.00 | 258.00 | 0.96 | 0.04 | 83.67 | 84.33 | 0.00 |
+| 9B | 32K | Q4 | no reuse (all dynamic hot fetched) | 130.00 | 258.00 | 6.40 | 0.27 | 24.26 | 24.92 | 0.01 |
+| 9B | 32K | Q4 | LRU 2×k (E6, measured) | 130.00 | 258.00 | 1.76 | 0.07 | 24.26 | 24.92 | 0.00 |
+| 9B | 32K | Q4 | LRU 4×k (E6, measured) | 130.00 | 258.00 | 0.94 | 0.04 | 24.26 | 24.92 | 0.00 |
+| 9B | 32K | Q4 | prefetch (a)∪(c) (E7, measured) | 130.00 | 258.00 | 1.27 | 0.05 | 24.26 | 24.92 | 0.00 |
+| 9B | 32K | Q4 | target | 130.00 | 258.00 | 0.96 | 0.04 | 24.26 | 24.92 | 0.00 |
+| 9B | 128K | bf16 | no reuse (all dynamic hot fetched) | 520.00 | 1032.00 | 25.60 | 1.07 | 85.90 | 88.56 | 0.01 |
+| 9B | 128K | bf16 | LRU 2×k (E6, measured) | 520.00 | 1032.00 | 7.02 | 0.29 | 85.90 | 88.56 | 0.00 |
+| 9B | 128K | bf16 | LRU 4×k (E6, measured) | 520.00 | 1032.00 | 3.77 | 0.16 | 85.90 | 88.56 | 0.00 |
+| 9B | 128K | bf16 | prefetch (a)∪(c) (E7, measured) | 520.00 | 1032.00 | 5.08 | 0.21 | 85.90 | 88.56 | 0.00 |
+| 9B | 128K | bf16 | target | 520.00 | 1032.00 | 3.84 | 0.16 | 85.90 | 88.56 | 0.00 |
+| 9B | 128K | Q4 | no reuse (all dynamic hot fetched) | 520.00 | 1032.00 | 25.60 | 1.07 | 26.49 | 29.15 | 0.04 |
+| 9B | 128K | Q4 | LRU 2×k (E6, measured) | 520.00 | 1032.00 | 7.02 | 0.29 | 26.49 | 29.15 | 0.01 |
+| 9B | 128K | Q4 | LRU 4×k (E6, measured) | 520.00 | 1032.00 | 3.77 | 0.16 | 26.49 | 29.15 | 0.01 |
+| 9B | 128K | Q4 | prefetch (a)∪(c) (E7, measured) | 520.00 | 1032.00 | 5.08 | 0.21 | 26.49 | 29.15 | 0.01 |
+| 9B | 128K | Q4 | target | 520.00 | 1032.00 | 3.84 | 0.16 | 26.49 | 29.15 | 0.01 |
+| 9B | 256K | bf16 | no reuse (all dynamic hot fetched) | 1040.00 | 2064.00 | 51.20 | 2.15 | 88.88 | 94.20 | 0.02 |
+| 9B | 256K | bf16 | LRU 2×k (E6, measured) | 1040.00 | 2064.00 | 14.05 | 0.59 | 88.88 | 94.20 | 0.01 |
+| 9B | 256K | bf16 | LRU 4×k (E6, measured) | 1040.00 | 2064.00 | 7.54 | 0.32 | 88.88 | 94.20 | 0.00 |
+| 9B | 256K | bf16 | prefetch (a)∪(c) (E7, measured) | 1040.00 | 2064.00 | 10.16 | 0.43 | 88.88 | 94.20 | 0.00 |
+| 9B | 256K | bf16 | target | 1040.00 | 2064.00 | 7.68 | 0.32 | 88.88 | 94.20 | 0.00 |
+| 9B | 256K | Q4 | no reuse (all dynamic hot fetched) | 1040.00 | 2064.00 | 51.20 | 2.15 | 29.47 | 34.78 | 0.07 |
+| 9B | 256K | Q4 | LRU 2×k (E6, measured) | 1040.00 | 2064.00 | 14.05 | 0.59 | 29.47 | 34.78 | 0.02 |
+| 9B | 256K | Q4 | LRU 4×k (E6, measured) | 1040.00 | 2064.00 | 7.54 | 0.32 | 29.47 | 34.78 | 0.01 |
+| 9B | 256K | Q4 | prefetch (a)∪(c) (E7, measured) | 1040.00 | 2064.00 | 10.16 | 0.43 | 29.47 | 34.78 | 0.01 |
+| 9B | 256K | Q4 | target | 1040.00 | 2064.00 | 7.68 | 0.32 | 29.47 | 34.78 | 0.01 |
+
+## Caveats
+- PCIe transfers can overlap with compute of the 3 linear-attention layers between attention layers only if they are predicted in time (E7); misses are counted as fully serialized here (pessimistic) but PCIe latency/small-transfer inefficiency is ignored (optimistic).
+- k=5% of a 128K context is ~6.5K hot tokens per head; whether 5% suffices at long context is not measured (E2 is at 8K).

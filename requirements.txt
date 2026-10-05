@@ -1,0 +1,9 @@
+# Offline experiments and tests (CPU, NumPy only)
+numpy>=2.0
+scipy>=1.11
+matplotlib>=3.8
+safetensors>=0.4
+tokenizers>=0.20
+huggingface_hub>=0.25
+pyarrow>=15      # only to export WikiText from the HF datasets cache
+pytest>=8

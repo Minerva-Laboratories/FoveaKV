@@ -1,0 +1,1298 @@
+[
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "bf16",
+  "nll": 3.1037432735727806,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq2",
+  "nll": 3.25497243231194,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq3",
+  "nll": 3.114510369529161,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq4",
+  "nll": 3.1184940060167383,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "gs4",
+  "nll": 3.100839757201918,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "kivi2",
+  "nll": 3.408325251268173,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "kivi4",
+  "nll": 3.1093153907761635,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "quest5",
+  "nll": 3.158259203019766,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "quest10",
+  "nll": 3.145922263049464,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn2",
+  "nll": 3.100502114798028,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn5",
+  "nll": 3.1007227207449284,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn10",
+  "nll": 3.1042996417592836,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "bf16",
+  "nll": 2.6048281380645983,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq2",
+  "nll": 2.746251163717374,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq3",
+  "nll": 2.619903634574133,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq4",
+  "nll": 2.6046950807018945,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "gs4",
+  "nll": 2.6062536971731056,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "kivi2",
+  "nll": 2.9393047690053438,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "kivi4",
+  "nll": 2.605315863647344,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "quest5",
+  "nll": 2.668893485901016,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "quest10",
+  "nll": 2.6342314178985635,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn2",
+  "nll": 2.611238227503226,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn5",
+  "nll": 2.6092312059322356,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn10",
+  "nll": 2.6072496433858103,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "bf16",
+  "nll": 2.826911174093855,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq2",
+  "nll": 3.0211806980075786,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq3",
+  "nll": 2.860839955290127,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq4",
+  "nll": 2.8348414297698326,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "gs4",
+  "nll": 2.8267158101390675,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "kivi2",
+  "nll": 3.1591555440121852,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "kivi4",
+  "nll": 2.827467456249768,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "quest5",
+  "nll": 2.9055121175714027,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "quest10",
+  "nll": 2.8804673148790227,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn2",
+  "nll": 2.8319478377584475,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn5",
+  "nll": 2.831329217262381,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn10",
+  "nll": 2.8300023118529563,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "bf16",
+  "nll": 3.0790434800148456,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq2",
+  "nll": 3.224177744817856,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq3",
+  "nll": 3.0959802423879395,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq4",
+  "nll": 3.095500682488052,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "gs4",
+  "nll": 3.0890768865332316,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "kivi2",
+  "nll": 3.3929366892323616,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "kivi4",
+  "nll": 3.0834729678604136,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "quest5",
+  "nll": 3.110635611301993,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "quest10",
+  "nll": 3.1024184101879566,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn2",
+  "nll": 3.091360584567398,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn5",
+  "nll": 3.0870389956597464,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn10",
+  "nll": 3.090742408349314,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "bf16",
+  "nll": 3.2665301060715275,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq2",
+  "nll": 3.397236213249997,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq3",
+  "nll": 3.283205574214458,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq4",
+  "nll": 3.2725341204344933,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "gs4",
+  "nll": 3.262054081221941,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "kivi2",
+  "nll": 3.484848954157766,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "kivi4",
+  "nll": 3.2706633970803387,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "quest5",
+  "nll": 3.299046524350436,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "quest10",
+  "nll": 3.2936752721835743,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn2",
+  "nll": 3.2702265176084344,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn5",
+  "nll": 3.265736509741466,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn10",
+  "nll": 3.2663546534223142,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "bf16",
+  "nll": 2.7882221311954005,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq2",
+  "nll": 2.841152334941695,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq3",
+  "nll": 2.785659180429193,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq4",
+  "nll": 2.7864238243212407,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "gs4",
+  "nll": 2.790103194489038,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "kivi2",
+  "nll": 3.1122433895522934,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "kivi4",
+  "nll": 2.786713496285177,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "quest5",
+  "nll": 2.797500822935998,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "quest10",
+  "nll": 2.7854987776945994,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn2",
+  "nll": 2.7920420238229555,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn5",
+  "nll": 2.788855694703653,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "prose",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn10",
+  "nll": 2.7854062259503958,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "bf16",
+  "nll": 0.6332379278060364,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq2",
+  "nll": 0.7557932872102159,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq3",
+  "nll": 0.6612952511107631,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "tq4",
+  "nll": 0.6355710324223494,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "gs4",
+  "nll": 0.6319630272349478,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "kivi2",
+  "nll": 0.944917060662478,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "kivi4",
+  "nll": 0.6310589882465236,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "quest5",
+  "nll": 0.6327069167485291,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "quest10",
+  "nll": 0.6402209747505402,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn2",
+  "nll": 0.6275414234619514,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn5",
+  "nll": 0.630526818578278,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 0,
+  "scheme": "dyn10",
+  "nll": 0.6297280326902904,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "bf16",
+  "nll": 0.516111628195228,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq2",
+  "nll": 0.6735565307949412,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq3",
+  "nll": 0.5328023565693595,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "tq4",
+  "nll": 0.5182579355832866,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "gs4",
+  "nll": 0.5192698705486537,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "kivi2",
+  "nll": 0.7260982806996313,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "kivi4",
+  "nll": 0.5203402161345763,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "quest5",
+  "nll": 0.555263473196559,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "quest10",
+  "nll": 0.5281546058877655,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn2",
+  "nll": 0.5196862521981872,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn5",
+  "nll": 0.5189723489017593,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 1,
+  "scheme": "dyn10",
+  "nll": 0.5187342678340314,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "bf16",
+  "nll": 0.5170064828410719,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq2",
+  "nll": 0.6327600305448502,
+  "bits": 2.28,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq3",
+  "nll": 0.5382462193419829,
+  "bits": 3.26,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "tq4",
+  "nll": 0.5212312964798715,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "gs4",
+  "nll": 0.5218842511227244,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "kivi2",
+  "nll": 0.6857700362208962,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "kivi4",
+  "nll": 0.5199241067512501,
+  "bits": 4.43,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "quest5",
+  "nll": 0.5018050605449076,
+  "bits": 2.05,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "quest10",
+  "nll": 0.5140205146625099,
+  "bits": 2.84,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn2",
+  "nll": 0.5201024605461998,
+  "bits": 2.41,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn5",
+  "nll": 0.521765563804325,
+  "bits": 2.47,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 16384,
+  "doc": 2,
+  "scheme": "dyn10",
+  "nll": 0.5240182175519739,
+  "bits": 2.57,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "bf16",
+  "nll": 1.3861693533067394,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq2",
+  "nll": 1.4345844002476402,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq3",
+  "nll": 1.3875935168515108,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "tq4",
+  "nll": 1.3919533189715692,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "gs4",
+  "nll": 1.3852688354481508,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "kivi2",
+  "nll": 1.4532518292447716,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "kivi4",
+  "nll": 1.391207272980535,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "quest5",
+  "nll": 1.4032989599357144,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "quest10",
+  "nll": 1.396170431790097,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn2",
+  "nll": 1.3863943561202239,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn5",
+  "nll": 1.3863693583075314,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 0,
+  "scheme": "dyn10",
+  "nll": 1.3880677876690324,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "bf16",
+  "nll": 0.0543934838303317,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq2",
+  "nll": 0.19144646457095527,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq3",
+  "nll": 0.06109509935981083,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "tq4",
+  "nll": 0.054298773407378875,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "gs4",
+  "nll": 0.058174564051072235,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "kivi2",
+  "nll": 0.36220959943720726,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "kivi4",
+  "nll": 0.058080211076524724,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "quest5",
+  "nll": 0.07083118076059135,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "quest10",
+  "nll": 0.06137727967490334,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn2",
+  "nll": 0.057797098726216814,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn5",
+  "nll": 0.058268908123975824,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 1,
+  "scheme": "dyn10",
+  "nll": 0.058174564051072235,
+  "bits": 2.46,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "bf16",
+  "nll": 0.09794307432996417,
+  "bits": 16.0,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq2",
+  "nll": 0.1666155269723372,
+  "bits": 2.17,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq3",
+  "nll": 0.09139342842921046,
+  "bits": 3.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "tq4",
+  "nll": 0.09485553101267875,
+  "bits": 4.16,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "gs4",
+  "nll": 0.09676366843230796,
+  "bits": 4.25,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "kivi2",
+  "nll": 0.23964662341322399,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "kivi4",
+  "nll": 0.1020149254067297,
+  "bits": 4.34,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "quest5",
+  "nll": 0.11893792407151385,
+  "bits": 1.92,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "quest10",
+  "nll": 0.10544051245799693,
+  "bits": 2.72,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn2",
+  "nll": 0.09730818246699798,
+  "bits": 2.3,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn5",
+  "nll": 0.09694520605647901,
+  "bits": 2.36,
+  "from_log": true
+ },
+ {
+  "src": "code",
+  "L": 32768,
+  "doc": 2,
+  "scheme": "dyn10",
+  "nll": 0.09703596251159435,
+  "bits": 2.46,
+  "from_log": true
+ }
+]

@@ -1,0 +1,117 @@
+prose prefill done 195s
+prose fp32 (no cache quant) (21.242413222111086, None) 227s
+prose int8 (reference) (21.25520769094794, None) 234s
+prose GS-4b (21.411594029698293, None) 244s
+prose GS-2b (23.17199057182035, None) 254s
+prose DYN coarse k=2% (21.509126979664693, None) 266s
+prose DYN coarse k=5% (21.386478753660995, None) 279s
+prose DYN coarse k=10% (21.36933549198771, None) 291s
+prose DYN sign k=5% (21.408061954151563, None) 304s
+prose KIVI-4b g128 (21.23287571782908, None) 313s
+prose KIVI-2b g128 (31.035626758964202, None) 322s
+code prefill done 516s
+code fp32 (no cache quant) (4.269356731945807, None) 548s
+code int8 (reference) (4.26541809520513, None) 554s
+code GS-4b (4.25447317487144, None) 563s
+code GS-2b (4.675057437382748, None) 572s
+code DYN coarse k=2% (4.2578359209630205, None) 583s
+code DYN coarse k=5% (4.286043693147005, None) 595s
+code DYN coarse k=10% (4.264719184058473, None) 606s
+code DYN sign k=5% (4.262902857454694, None) 617s
+code KIVI-4b g128 (4.3007156265587705, None) 625s
+code KIVI-2b g128 (6.091154178691158, None) 633s
+needle10 prefill done 853s
+needle10 fp32 (no cache quant) (0.016856592187228257, True) 858s
+needle10 int8 (reference) (0.016911773461594136, True) 860s
+needle10 GS-4b (0.01799301685451695, True) 864s
+needle10 GS-2b (0.0418046633443069, True) 868s
+needle10 DYN coarse k=2% (0.017135001201736343, True) 872s
+needle10 DYN coarse k=5% (0.018210634510036173, True) 877s
+needle10 DYN coarse k=10% (0.01804079595344099, True) 881s
+needle10 DYN sign k=5% (0.018546496289924618, True) 886s
+needle10 KIVI-4b g128 (0.016520981165984595, True) 888s
+needle10 KIVI-2b g128 (0.27012668275814133, False) 890s
+needle50 prefill done 1108s
+needle50 fp32 (no cache quant) (0.01555933394129454, True) 1113s
+needle50 int8 (reference) (0.015713443279111415, True) 1115s
+needle50 GS-4b (0.018572303448434014, True) 1119s
+needle50 GS-2b (0.04171386745569165, True) 1123s
+needle50 DYN coarse k=2% (0.017911467014869585, True) 1127s
+needle50 DYN coarse k=5% (0.0178196556416939, True) 1132s
+needle50 DYN coarse k=10% (0.01706698765312851, True) 1136s
+needle50 DYN sign k=5% (0.017408604418391604, True) 1141s
+needle50 KIVI-4b g128 (0.0145851636945725, True) 1143s
+needle50 KIVI-2b g128 (0.28112569068997395, False) 1145s
+needle90 prefill done 1361s
+needle90 fp32 (no cache quant) (0.017189270890138886, True) 1366s
+needle90 int8 (reference) (0.017167542690196668, True) 1368s
+needle90 GS-4b (0.022639263649619677, True) 1372s
+needle90 GS-2b (0.05222463924718497, True) 1376s
+needle90 DYN coarse k=2% (0.020572594844992763, True) 1380s
+needle90 DYN coarse k=5% (0.022073704365228864, True) 1385s
+needle90 DYN coarse k=10% (0.021834600954192852, True) 1389s
+needle90 DYN sign k=5% (0.02050373064169584, True) 1394s
+needle90 KIVI-4b g128 (0.022405811632878782, True) 1396s
+needle90 KIVI-2b g128 (0.16726106148181047, True) 1398s
+# E9 End-to-end (quantized cache in the loop, Qwen3.5-0.8B NumPy forward)
+
+**TL;DR:** window PPL (prose / code): int8 ref 21.255 / 4.265; GS-4b 21.412 / 4.254; DYN k=5% 21.386 / 4.286 (-0.12% / +0.74% vs GS-4b); DYN k=10% -0.20% / +0.24%.
+Go/no-go "+1% PPL vs uniform 4-bit at ≤10% hot": PASS (worst corpus +0.24% at k=10%). Needle exact-match (10/50/90% depth): GS-4b ✓ ✓ ✓, DYN k=5% ✓ ✓ ✓.
+Only 512 decode positions per corpus at 8K context — small-sample PPL; differences < ~0.5% are within noise.
+
+## Config
+- Prefill P = N − window tokens with exact attention (shared by all schemes); window = 512 (prose, code) or question+answer (needle).
+- Reference cache = int8 per-token/head absmax of the NumPy model's K/V. Schemes quantize from it; calibration (mu, gain range) on prefill only.
+- "fp32 (no cache quant)" row: window K/V are fp32, prefill K/V are the int8 reference (fp32 prefill KV not stored) — near-reference sanity row.
+- DYN: coarse/sign selection, budget mode (GQA-shared), S=4, W=64. KIVI: per-channel K / per-token V, group 128.
+
+| scheme | prose PPL | Δ vs GS-4b % | code PPL | Δ vs GS-4b % | needle 10/50/90 | answer NLL |
+|---|---|---|---|---|---|---|
+| fp32 (no cache quant) | 21.2424 | -0.79 | 4.2694 | +0.35 | ✓ ✓ ✓ | 0.017 |
+| int8 (reference) | 21.2552 | -0.73 | 4.2654 | +0.26 | ✓ ✓ ✓ | 0.017 |
+| GS-4b | 21.4116 | +0.00 | 4.2545 | +0.00 | ✓ ✓ ✓ | 0.020 |
+| GS-2b | 23.1720 | +8.22 | 4.6751 | +9.89 | ✓ ✓ ✓ | 0.045 |
+| DYN coarse k=2% | 21.5091 | +0.46 | 4.2578 | +0.08 | ✓ ✓ ✓ | 0.019 |
+| DYN coarse k=5% | 21.3865 | -0.12 | 4.2860 | +0.74 | ✓ ✓ ✓ | 0.019 |
+| DYN coarse k=10% | 21.3693 | -0.20 | 4.2647 | +0.24 | ✓ ✓ ✓ | 0.019 |
+| DYN sign k=5% | 21.4081 | -0.02 | 4.2629 | +0.20 | ✓ ✓ ✓ | 0.019 |
+| KIVI-4b g128 | 21.2329 | -0.83 | 4.3007 | +1.09 | ✓ ✓ ✓ | 0.018 |
+| KIVI-2b g128 | 31.0356 | +44.95 | 6.0912 | +43.17 | ✗ ✗ ✓ | 0.240 |
+
+## Needle greedy outputs
+- needle10 / fp32 (no cache quant): `' 7-4-1-9-2'` (NLL 0.017)
+- needle10 / int8 (reference): `' 7-4-1-9-2'` (NLL 0.017)
+- needle10 / GS-4b: `' 7-4-1-9-2'` (NLL 0.018)
+- needle10 / GS-2b: `' 7-4-1-9-2'` (NLL 0.042)
+- needle10 / DYN coarse k=2%: `' 7-4-1-9-2'` (NLL 0.017)
+- needle10 / DYN coarse k=5%: `' 7-4-1-9-2'` (NLL 0.018)
+- needle10 / DYN coarse k=10%: `' 7-4-1-9-2'` (NLL 0.018)
+- needle10 / DYN sign k=5%: `' 7-4-1-9-2'` (NLL 0.019)
+- needle10 / KIVI-4b g128: `' 7-4-1-9-2'` (NLL 0.017)
+- needle10 / KIVI-2b g128: `' 7-4-1-9.2'` (NLL 0.270)
+- needle50 / fp32 (no cache quant): `' 7-4-1-9-2'` (NLL 0.016)
+- needle50 / int8 (reference): `' 7-4-1-9-2'` (NLL 0.016)
+- needle50 / GS-4b: `' 7-4-1-9-2'` (NLL 0.019)
+- needle50 / GS-2b: `' 7-4-1-9-2'` (NLL 0.042)
+- needle50 / DYN coarse k=2%: `' 7-4-1-9-2'` (NLL 0.018)
+- needle50 / DYN coarse k=5%: `' 7-4-1-9-2'` (NLL 0.018)
+- needle50 / DYN coarse k=10%: `' 7-4-1-9-2'` (NLL 0.017)
+- needle50 / DYN sign k=5%: `' 7-4-1-9-2'` (NLL 0.017)
+- needle50 / KIVI-4b g128: `' 7-4-1-9-2'` (NLL 0.015)
+- needle50 / KIVI-2b g128: `' **7-4-1-9-2'` (NLL 0.281)
+- needle90 / fp32 (no cache quant): `' 7-4-1-9-2'` (NLL 0.017)
+- needle90 / int8 (reference): `' 7-4-1-9-2'` (NLL 0.017)
+- needle90 / GS-4b: `' 7-4-1-9-2'` (NLL 0.023)
+- needle90 / GS-2b: `' 7-4-1-9-2'` (NLL 0.052)
+- needle90 / DYN coarse k=2%: `' 7-4-1-9-2'` (NLL 0.021)
+- needle90 / DYN coarse k=5%: `' 7-4-1-9-2'` (NLL 0.022)
+- needle90 / DYN coarse k=10%: `' 7-4-1-9-2'` (NLL 0.022)
+- needle90 / DYN sign k=5%: `' 7-4-1-9-2'` (NLL 0.021)
+- needle90 / KIVI-4b g128: `' 7-4-1-9-2'` (NLL 0.022)
+- needle90 / KIVI-2b g128: `' 7-4-1-9-2'` (NLL 0.167)
+
+## Caveats
+- Single model (0.8B), 8K context, 2 text corpora × 512 positions: PPL deltas below ~0.5% are not significant.
+- Needle at 8K is easy for this model; harder retrieval (longer context, multiple needles) is untested.
+runtime 1398s
+

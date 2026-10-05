@@ -1,0 +1,16 @@
+# large or regenerable data (see "Reproduce" in README)
+data/
+# build artifacts
+gpu/build/
+__pycache__/
+*.pyc
+.pytest_cache/
+# LaTeX intermediates
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
