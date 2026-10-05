@@ -63,6 +63,27 @@ def tpb_for(n, Hkv, target_blocks=160):
     return -(-t // 128) * 128
 
 
+WORKSPACE = ("logits", "logits2")         # per-step scratch buffers (counted separately from stored cache data)
+
+
+def footprint(cache):
+    """Measured memory of a cache object: {'gpu': stored bytes on GPU, 'gpu_workspace': scratch bytes on GPU,
+    'host': pinned host bytes}. Walks tensor attributes (and dicts of tensors), counting each storage once."""
+    seen, out = set(), {"gpu": 0, "gpu_workspace": 0, "host": 0}
+    for name, val in vars(cache).items():
+        items = val.items() if isinstance(val, dict) else [(name, val)]
+        for _, t in items:
+            if not torch.is_tensor(t) or t.data_ptr() in seen or t.numel() == 0:
+                continue
+            seen.add(t.data_ptr())
+            nb = t.untyped_storage().nbytes()
+            if t.is_cuda:
+                out["gpu_workspace" if name in WORKSPACE else "gpu"] += nb
+            else:
+                out["host"] += nb
+    return out
+
+
 def pack2(c):
     """c: (..., D) uint8 in [0,4) -> (..., D/4) uint8, dim 4j+i at bits 2i of byte j."""
     c = c.to(torch.uint8).view(*c.shape[:-1], D // 4, 4)
@@ -86,47 +107,67 @@ def softmax_attend_ref(q, K, V, scale):
 class Base:
     rotated = False
     name = "base"
+    full_raw = False      # True: keep every raw token (bf16 baseline, prefill recorder). False: keep only the unencoded tail.
 
     def __init__(self, Hkv, Tmax, device="cuda"):
         self.Hkv, self.Tmax, self.dev = Hkv, Tmax, device
-        self.kraw = torch.zeros(Tmax, Hkv, D, dtype=torch.bfloat16, device=device)
+        cap_raw = Tmax if self.full_raw else W + BLK          # tail = exact window + at most one block being filled
+        self.kraw = torch.zeros(cap_raw, Hkv, D, dtype=torch.bfloat16, device=device)
         self.vraw = torch.zeros_like(self.kraw)
         self.n = 0
         self.n_comp = 0
         self.scale = D ** -0.5
 
+    def _off(self):
+        """raw token t is stored at kraw[t - _off()]"""
+        return 0 if self.full_raw else self.n_comp
+
     def _store(self, k, v):
-        t = k.shape[0]
-        self.kraw[self.n:self.n + t] = k.to(torch.bfloat16)
-        self.vraw[self.n:self.n + t] = v.to(torch.bfloat16)
+        t, o = k.shape[0], self.n - self._off()
+        self.kraw[o:o + t] = k.to(torch.bfloat16)
+        self.vraw[o:o + t] = v.to(torch.bfloat16)
         self.n += t
 
     def prefill(self, k, v):
-        self._store(k, v)
-        self._calibrate()
-        self._encode_ready()
+        if self.full_raw:
+            self._store(k, v)
+            return
+        self._calibrate(k, v)
+        target = max(0, ((k.shape[0] - W) // BLK) * BLK)
+        if target:
+            self._encode(0, target, k[:target], v[:target])
+        self.n = self.n_comp = target
+        self._store(k[target:], v[target:])
 
     def append(self, k, v):
         self._store(k, v)
-        self._encode_ready()
+        if not self.full_raw:
+            self._encode_ready()
 
-    def _calibrate(self):
+    def _calibrate(self, k, v):
         pass
 
     def _encode_ready(self):
         target = max(0, ((self.n - W) // BLK) * BLK)
         if target > self.n_comp:
-            self._encode(self.n_comp, target)
+            nb, rem = target - self.n_comp, self.n - target
+            self._encode(self.n_comp, target, self.kraw[:nb], self.vraw[:nb])
+            self.kraw[:rem] = self.kraw[nb:nb + rem].clone()
+            self.vraw[:rem] = self.vraw[nb:nb + rem].clone()
             self.n_comp = target
 
-    def _encode(self, a, b):
+    def _encode(self, a, b, kx, vx):
         pass
+
+    def tail(self):
+        """raw (bf16) tokens [n_comp, n) as (nw, Hkv, D) views"""
+        o = self._off()
+        return self.kraw[self.n_comp - o:self.n - o], self.vraw[self.n_comp - o:self.n - o]
 
     # ---- window (exact bf16), possibly rotated, as a contiguous (Hkv, nw, D) buffer for the bf16 kernel
     def _window(self):
-        kw = self.kraw[self.n_comp:self.n].transpose(0, 1).contiguous()
-        vw = self.vraw[self.n_comp:self.n].transpose(0, 1).contiguous()
-        return kw, vw
+        kt, vt = self.tail()
+        return kt.transpose(0, 1).contiguous(), vt.transpose(0, 1).contiguous()
 
     def _partials(self, nb):
         HG = self.Hkv * G
@@ -170,14 +211,12 @@ class Base:
 
 class Dense(Base):
     """bf16 dense attention. impl='sdpa' (PyTorch flash/efficient SDPA) or 'kernel' (our bf16 kernel)."""
+    full_raw = True
 
     def __init__(self, Hkv, Tmax, device="cuda", impl="sdpa"):
         super().__init__(Hkv, Tmax, device)
         self.impl = impl
         self.name = f"bf16 dense ({impl})"
-
-    def _encode_ready(self):
-        pass
 
     def attend(self, q):
         n = self.n
@@ -209,8 +248,12 @@ class GainShape(Base):
     mode='gs'  : mean removal (global prefill mean or 128-token block means), 8-bit log gain, nested 4/2-bit codebook."""
     rotated = True
 
-    def __init__(self, Hkv, Tmax, device="cuda", mode="gs", bits=4, block_mean=True, gain_bits=8, seed=0, shrink=None):
+    def __init__(self, Hkv, Tmax, device="cuda", mode="gs", bits=4, block_mean=True, gain_bits=8, seed=0, shrink=None,
+                 offload=False, residual=None):
         super().__init__(Hkv, Tmax, device)
+        # the residual (lo) plane exists only where it is read: 3/4-bit codes and FoveaKV refinement
+        self.residual = (bits >= 3) if residual is None else residual
+        self.offload = offload            # residual (lo) planes in pinned host memory, read by the kernels over PCIe
         self.mode, self.bits, self.block_mean, self.gain_bits = mode, bits, block_mean, gain_bits
         # shrinkage correction (paper §nested): key shapes renormalized (x 1/sqrt(1-D)), value residuals unbiased (x 1/(1-D));
         # default on for our gain-shape code, off for TurboQuant (published method)
@@ -221,7 +264,14 @@ class GainShape(Base):
         cap = math.ceil(Tmax / BLK) * BLK
         self.cap = cap
         z8 = lambda *s: torch.zeros(*s, dtype=torch.uint8, device=device)
-        self.khi, self.klo, self.vhi, self.vlo = z8(Hkv, cap, D // 4), z8(Hkv, cap, D // 4), z8(Hkv, cap, D // 4), z8(Hkv, cap, D // 4)
+        self.khi, self.vhi = z8(Hkv, cap, D // 4), z8(Hkv, cap, D // 4)
+        if not self.residual:
+            self.klo = self.vlo = torch.zeros(1, 1, D // 4, dtype=torch.uint8, device=device)   # never read
+        elif offload:
+            hz = lambda *s: torch.zeros(*s, dtype=torch.uint8).pin_memory()
+            self.klo, self.vlo = hz(Hkv, cap, D // 4), hz(Hkv, cap, D // 4)
+        else:
+            self.klo, self.vlo = z8(Hkv, cap, D // 4), z8(Hkv, cap, D // 4)
         self.k3 = self.v3 = None                                       # 3-bit TurboQuant: reference path only
         if mode == "tq":
             self.kg16 = torch.zeros(Hkv, cap, dtype=torch.float16, device=device)
@@ -243,14 +293,14 @@ class GainShape(Base):
         self.v4_16 = self.v4.repeat_interleave(4).contiguous()     # coarse levels addressed by a 4-bit index (hi<<2|lo)
         self.name = (f"TurboQuant-MSE {bits}b" if mode == "tq" else f"GS {bits}b" + (" blkmean" if block_mean else ""))
 
-    def _calibrate(self):
+    def _calibrate(self, k, v):
         if self.mode == "tq":
             return
-        x = {"k": self.kraw[:self.n].float(), "v": self.vraw[:self.n].float()}
+        x = {"k": k.float(), "v": v.float()}
         self.mu_glob = {n: t.mean(0) for n, t in x.items()}             # (Hkv, D)
         self.glo, self.ghi = {}, {}
         for n, t in x.items():
-            mu = self._means(n, t, 0, self.n) if self.block_mean else self.mu_glob[n][None]
+            mu = self._means(n, t, 0, t.shape[0]) if self.block_mean else self.mu_glob[n][None]
             g = torch.linalg.norm((t - mu), dim=-1)                       # rotation preserves norm
             lg = torch.log(g.clamp_min(1e-30))
             self.glo[n], self.ghi[n] = lg.min(0).values, lg.max(0).values  # (Hkv,)
@@ -271,9 +321,9 @@ class GainShape(Base):
             M[nbk * BLK:] = t[nbk * BLK:].mean(0)
         return M.half().float()
 
-    def _encode(self, a, b):
+    def _encode(self, a, b, kx, vx):
         for name in ("k", "v"):
-            x = (self.kraw if name == "k" else self.vraw)[a:b].float()          # (n, Hkv, D)
+            x = (kx if name == "k" else vx).float()                            # raw tokens [a, b): (n, Hkv, D)
             if self.mode == "tq":
                 y = x @ self.Rt
             else:
@@ -307,7 +357,8 @@ class GainShape(Base):
                 c = torch.bucketize(z, self.bnd16)
                 hi, lo = c >> 2, c & 3
             (self.khi if name == "k" else self.vhi)[:, a:b] = pack2(hi).transpose(0, 1)
-            (self.klo if name == "k" else self.vlo)[:, a:b] = pack2(lo).transpose(0, 1)
+            if self.residual:
+                (self.klo if name == "k" else self.vlo)[:, a:b] = pack2(lo).transpose(0, 1)
 
     # ------------------------------------------------------------------ kernel launch helpers
     def _gs_args(self, kfine, vfine, klev, vlev):
@@ -355,7 +406,7 @@ class GainShape(Base):
         out = []
         for name in ("k", "v"):
             hi = getattr(self, name + "hi")[:, :n]
-            lo = getattr(self, name + "lo")[:, :n]
+            lo = getattr(self, name + "lo")[:, :n].to(self.dev) if self.residual else torch.zeros_like(hi)
             unpack = lambda p: torch.stack([(p >> (2 * i)) & 3 for i in range(4)], -1).view(self.Hkv, n, D).long()
             ch, cl = unpack(hi), unpack(lo)
             if self.mode == "tq":
@@ -381,8 +432,9 @@ class GainShape(Base):
         K, V = self.dequant(fine_mask)
         if key_mask is not None:                     # two-stage: fine keys for all candidates
             K = self.dequant(key_mask)[0]
-        K = torch.cat([K, self.kraw[self.n_comp:self.n].float()])
-        V = torch.cat([V, self.vraw[self.n_comp:self.n].float()])
+        kt, vt = self.tail()
+        K = torch.cat([K, kt.float()])
+        V = torch.cat([V, vt.float()])
         return softmax_attend_ref(q, K, V, self.scale)
 
 
@@ -392,7 +444,7 @@ class FoveaKV(GainShape):
     Two kernels: coarse pass (writes logits for selection) and a delta-correction pass over hot tokens."""
 
     def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05, block_mean=True, two_stage=False, static=False, **kw):
-        super().__init__(Hkv, Tmax, device, mode="gs", bits=2, block_mean=block_mean, **kw)
+        super().__init__(Hkv, Tmax, device, mode="gs", bits=2, block_mean=block_mean, residual=True, **kw)
         self.name_suffix = "" if self.shrink else " noshrink"
         self.k_frac = k_frac
         self.two_stage, self.static = two_stage, static
@@ -400,7 +452,7 @@ class FoveaKV(GainShape):
         self.logits2 = torch.empty(Hkv, G, self.cap, device=device) if two_stage else None
         self.static_idx = None
         tag = " two-stage" if two_stage else (" static set" if static else "")
-        self.name = f"FoveaKV k={k_frac*100:g}%" + tag + self.name_suffix
+        self.name = f"FoveaKV k={k_frac*100:g}%" + tag + self.name_suffix + (" offload" if self.offload else "")
         self.last_hot = None
         self.last_cand = None
 
@@ -512,10 +564,10 @@ class KIVI(Base):
         self.vzp = torch.zeros_like(self.vsc)
         self.name = f"KIVI {bits}b"
 
-    def _encode(self, a, b):
+    def _encode(self, a, b, kx, vx):
         L = (1 << self.bits) - 1
         pk = pack2 if self.bits == 2 else pack4
-        x = self.kraw[a:b].float().view(-1, BLK, self.Hkv, D)                   # (nb, BLK, Hkv, D)
+        x = kx.float().view(-1, BLK, self.Hkv, D)                               # (nb, BLK, Hkv, D)
         lo, hi = x.amin(1), x.amax(1)
         s = ((hi - lo) / L).clamp_min(1e-8)
         s16, z16 = s.half(), lo.half()
@@ -523,7 +575,7 @@ class KIVI(Base):
         self.kc[:, a:b] = pk(c.view(-1, self.Hkv, D)).transpose(0, 1)
         self.ksc[:, a // BLK:b // BLK] = s16.transpose(0, 1)
         self.kzp[:, a // BLK:b // BLK] = z16.transpose(0, 1)
-        v = self.vraw[a:b].float().view(-1, self.Hkv, D // 128, 128)
+        v = vx.float().view(-1, self.Hkv, D // 128, 128)
         lo, hi = v.amin(-1), v.amax(-1)
         s = ((hi - lo) / L).clamp_min(1e-8)
         s16, z16 = s.half(), lo.half()
@@ -556,8 +608,9 @@ class KIVI(Base):
         K = ck * self.ksc.float().repeat_interleave(BLK, 1)[:, :n] + self.kzp.float().repeat_interleave(BLK, 1)[:, :n]
         cv = unp(self.vc[:, :n]).view(self.Hkv, n, D // 128, 128).float()
         V = (cv * self.vsc[:, :n].float()[..., None] + self.vzp[:, :n].float()[..., None]).view(self.Hkv, n, D)
-        K = torch.cat([K.transpose(0, 1), self.kraw[n:self.n].float()])
-        V = torch.cat([V.transpose(0, 1), self.vraw[n:self.n].float()])
+        kt, vt = self.tail()
+        K = torch.cat([K.transpose(0, 1), kt.float()])
+        V = torch.cat([V.transpose(0, 1), vt.float()])
         return softmax_attend_ref(q, K, V, self.scale)
 
 
@@ -577,12 +630,12 @@ class Quest(Base):
         self.name = f"Quest k={k_frac*100:g}%"
         self.last_idx = None
 
-    def _encode(self, a, b):
-        x = self.kraw[a:b].view(-1, self.PAGE, self.Hkv, D)
+    def _encode(self, a, b, kx, vx):
+        x = kx.to(torch.bfloat16).view(-1, self.PAGE, self.Hkv, D)
         self.kmax[:, a // self.PAGE:b // self.PAGE] = x.amax(1).transpose(0, 1)
         self.kmin[:, a // self.PAGE:b // self.PAGE] = x.amin(1).transpose(0, 1)
-        self.Kt[:, a:b] = self.kraw[a:b].transpose(0, 1)
-        self.Vt[:, a:b] = self.vraw[a:b].transpose(0, 1)
+        self.Kt[:, a:b] = kx.to(torch.bfloat16).transpose(0, 1)
+        self.Vt[:, a:b] = vx.to(torch.bfloat16).transpose(0, 1)
 
     def attend(self, q, tpb=64):
         qk = self._qk(q)
@@ -611,58 +664,52 @@ class Quest(Base):
 
     def reference(self, q):
         if self.last_idx is None:
-            K, V = self.kraw[self.n_comp:self.n].float(), self.vraw[self.n_comp:self.n].float()
+            kt, vt = self.tail()
+            K, V = kt.float(), vt.float()
             return softmax_attend_ref(q, K, V, self.scale)
         outs = []
         for h in range(self.Hkv):
             ii = self.last_idx[h].long()
-            K = torch.cat([self.kraw[ii, h], self.kraw[self.n_comp:self.n, h]]).float()[:, None]
-            V = torch.cat([self.vraw[ii, h], self.vraw[self.n_comp:self.n, h]]).float()[:, None]
+            kt, vt = self.tail()
+            K = torch.cat([self.Kt[h, ii], kt[:, h]]).float()[:, None]
+            V = torch.cat([self.Vt[h, ii], vt[:, h]]).float()[:, None]
             outs.append(softmax_attend_ref(q.view(self.Hkv, G, D)[h].reshape(G, D), K, V, self.scale))
         return torch.cat(outs)
 
 
 
-class SpeCacheStyle(Base):
+class SpeCacheStyle(KIVI):
     """SpeCache-style decode (Jie et al., ICML 2025): KIVI-2b copy of every token, top-k selected from the KIVI logits,
-    selected tokens replaced by exact bf16 copies. Here the exact copies sit in GPU memory, so the timing covers the GPU
-    work only (SpeCache fetches them from host memory over PCIe)."""
+    selected tokens replaced by exact bf16 copies. offload=True keeps the exact copies in pinned host memory and the kernel
+    reads the selected rows over PCIe (as SpeCache does); offload=False keeps them in GPU memory."""
 
-    def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05):
-        super().__init__(Hkv, Tmax, device)
-        self.kivi = KIVI(Hkv, Tmax, device, 2)
-        self.k_frac = k_frac
-        self.cap = self.kivi.cap
+    def __init__(self, Hkv, Tmax, device="cuda", k_frac=0.05, offload=False):
+        super().__init__(Hkv, Tmax, device, 2)
+        self.k_frac, self.offload = k_frac, offload
         self.logits = torch.empty(Hkv, G, self.cap, device=device)
-        self.Kt = torch.zeros(Hkv, self.cap, D, dtype=torch.bfloat16, device=device)
-        self.Vt = torch.zeros_like(self.Kt)
-        self.name = f"SpeCache-style k={k_frac*100:g}%"
+        if offload:
+            self.Kt = torch.zeros(Hkv, self.cap, D, dtype=torch.bfloat16).pin_memory()
+        else:
+            self.Kt = torch.zeros(Hkv, self.cap, D, dtype=torch.bfloat16, device=device)
+        self.Vt = torch.zeros_like(self.Kt).pin_memory() if offload else torch.zeros_like(self.Kt)
+        self.name = f"SpeCache-style k={k_frac*100:g}%" + (" offload" if offload else "")
         self.last_hot = None
 
-    def _store(self, k, v):
-        super()._store(k, v)
-        self.kivi._store(k, v)
-
-    def _encode_ready(self):
-        self.kivi._encode_ready()
-        a, b = self.n_comp, self.kivi.n_comp
-        if b > a:
-            self.Kt[:, a:b] = self.kraw[a:b].transpose(0, 1)
-            self.Vt[:, a:b] = self.vraw[a:b].transpose(0, 1)
-        self.n_comp = b
+    def _encode(self, a, b, kx, vx):
+        super()._encode(a, b, kx, vx)
+        self.Kt[:, a:b] = kx.to(torch.bfloat16).transpose(0, 1)
+        self.Vt[:, a:b] = vx.to(torch.bfloat16).transpose(0, 1)
 
     def _vc_rows(self, idx):
         """Dequantized KIVI-2b values of tokens idx (Hkv, k) -> (Hkv, k, D)."""
-        kv = self.kivi
         li = idx.long()
-        codes = torch.gather(kv.vc, 1, li[..., None].expand(-1, -1, kv.vc.shape[-1]))
+        codes = torch.gather(self.vc, 1, li[..., None].expand(-1, -1, self.vc.shape[-1]))
         c = torch.stack([(codes >> (2 * i)) & 3 for i in range(4)], -1).view(self.Hkv, -1, D).float()
-        sc = torch.gather(kv.vsc, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
-        zp = torch.gather(kv.vzp, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
+        sc = torch.gather(self.vsc, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
+        zp = torch.gather(self.vzp, 1, li[..., None].expand(-1, -1, D // 128)).float().repeat_interleave(128, -1)
         return c * sc + zp
 
     def attend(self, q, tpb=None):
-        kv = self.kivi
         tpb = tpb or tpb_for(self.n_comp, self.Hkv)
         qk = self._qk(q)
         win = self._window_stats(q)
@@ -671,8 +718,8 @@ class SpeCacheStyle(Base):
         if nb_c == 0:
             return self._merge(win, None)
         part = self._partials(nb_c)
-        run_pass(2, qk, self.Hkv, self.cap, 0, self.n_comp, None, tpb, 0, part, kc=kv.kc, vc=kv.vc, kbits=2,
-                 ksc=kv.ksc, kzp=kv.kzp, vsc=kv.vsc, vzp=kv.vzp, logits=self.logits)
+        run_pass(2, qk, self.Hkv, self.cap, 0, self.n_comp, None, tpb, 0, part, kc=self.kc, vc=self.vc, kbits=2,
+                 ksc=self.ksc, kzp=self.kzp, vsc=self.vsc, vzp=self.vzp, logits=self.logits)
         _, m1, l1, a1 = ext().combine_partials(*part, nb_c, False)
         k = min(self.n_comp, max(1, math.ceil(self.k_frac * self.n)))
         if win is not None:
@@ -688,7 +735,7 @@ class SpeCacheStyle(Base):
         ec = torch.exp(sc - m1.view(self.Hkv, G, 1))
         l1 = l1 - ec.sum(-1).view(-1)
         a1 = a1 - torch.einsum("hgk,hkd->hgd", ec, self._vc_rows(idx)).reshape(-1, D)
-        # add their exact contribution
+        # add their exact contribution (rows read from host memory over PCIe when offloaded)
         tpb_h = 64
         nbh = -(-k // tpb_h)
         ph = self._partials(nbh)
@@ -701,23 +748,25 @@ class SpeCacheStyle(Base):
 
     def read_bits(self):
         k = min(self.n_comp, max(1, math.ceil(self.k_frac * self.n)))
-        return (self.kivi.read_bits() * self.n + 16 * k) / self.n
+        return (KIVI.read_bits(self) * self.n + 16 * k) / self.n
 
     def reference(self, q):
-        kv = self.kivi
         n = self.n_comp
         unp = lambda p: torch.stack([(p >> (2 * i)) & 3 for i in range(4)], -1)
-        K = (unp(kv.kc[:, :n]).view(self.Hkv, n, D).float() * kv.ksc.float().repeat_interleave(BLK, 1)[:, :n]
-             + kv.kzp.float().repeat_interleave(BLK, 1)[:, :n])
-        V = (unp(kv.vc[:, :n]).view(self.Hkv, n, D // 128, 128).float() * kv.vsc[:, :n].float()[..., None]
-             + kv.vzp[:, :n].float()[..., None]).view(self.Hkv, n, D)
+        K = (unp(self.kc[:, :n]).view(self.Hkv, n, D).float() * self.ksc.float().repeat_interleave(BLK, 1)[:, :n]
+             + self.kzp.float().repeat_interleave(BLK, 1)[:, :n])
+        V = (unp(self.vc[:, :n]).view(self.Hkv, n, D // 128, 128).float() * self.vsc[:, :n].float()[..., None]
+             + self.vzp[:, :n].float()[..., None]).view(self.Hkv, n, D)
         if self.last_hot is not None:
             li = self.last_hot.long()
-            K.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(self.Kt[:, :n].float(), 1, li[..., None].expand(-1, -1, D)))
-            V.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(self.Vt[:, :n].float(), 1, li[..., None].expand(-1, -1, D)))
-        K = torch.cat([K.transpose(0, 1), self.kraw[n:self.n].float()])
-        V = torch.cat([V.transpose(0, 1), self.vraw[n:self.n].float()])
+            Kt, Vt = self.Kt[:, :n].to(self.dev).float(), self.Vt[:, :n].to(self.dev).float()
+            K.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(Kt, 1, li[..., None].expand(-1, -1, D)))
+            V.scatter_(1, li[..., None].expand(-1, -1, D), torch.gather(Vt, 1, li[..., None].expand(-1, -1, D)))
+        kt, vt = self.tail()
+        K = torch.cat([K.transpose(0, 1), kt.float()])
+        V = torch.cat([V.transpose(0, 1), vt.float()])
         return softmax_attend_ref(q, K, V, self.scale)
+
 
 def make(name, Hkv, Tmax, device="cuda"):
     """Factory for benchmark/eval scheme names."""
@@ -742,4 +791,10 @@ def make(name, Hkv, Tmax, device="cuda"):
         table[f"static{int(kf*100)}"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, static=True))
         table[f"specache{int(kf*100)}"] = (lambda kf=kf: SpeCacheStyle(Hkv, Tmax, device, kf))
     table["specache5-eqtraffic"] = lambda: SpeCacheStyle(Hkv, Tmax, device, 0.05 / 8)
+    # offloaded variants: residual planes / exact copies in pinned host memory, read over PCIe
+    for kf in (0.02, 0.05, 0.10):
+        table[f"dyn{int(kf*100)}-off"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, offload=True))
+    table["dyn5-2stage-off"] = lambda: FoveaKV(Hkv, Tmax, device, 0.05, two_stage=True, offload=True)
+    table["specache5-off"] = lambda: SpeCacheStyle(Hkv, Tmax, device, 0.05, offload=True)
+    table["specache5-eqtraffic-off"] = lambda: SpeCacheStyle(Hkv, Tmax, device, 0.05 / 8, offload=True)
     return table[name]()

@@ -1,72 +1,96 @@
-T=  8192 bf16 dense (sdpa)             320.5 us  read 16.00 b/elem =  16.78 MB  ->   52.3 GB/s
-T=  8192 bf16 dense (kernel)           344.1 us  read 16.00 b/elem =  16.78 MB  ->   48.8 GB/s
-T=  8192 TurboQuant-MSE 2b             195.7 us  read  2.28 b/elem =   2.39 MB  ->   12.2 GB/s
-T=  8192 TurboQuant-MSE 3b             198.7 us  read  3.26 b/elem =   3.42 MB  ->   17.2 GB/s
-T=  8192 TurboQuant-MSE 4b             198.7 us  read  4.25 b/elem =   4.46 MB  ->   22.4 GB/s
+T=  8192 bf16 dense (sdpa)             319.5 us  read 16.00 b/elem =  16.78 MB  ->   52.5 GB/s
+T=  8192 bf16 dense (kernel)           344.0 us  read 16.00 b/elem =  16.78 MB  ->   48.8 GB/s
+T=  8192 TurboQuant-MSE 2b             195.6 us  read  2.28 b/elem =   2.39 MB  ->   12.2 GB/s
+T=  8192 TurboQuant-MSE 3b             197.6 us  read  3.26 b/elem =   3.42 MB  ->   17.3 GB/s
+T=  8192 TurboQuant-MSE 4b             197.6 us  read  4.25 b/elem =   4.46 MB  ->   22.5 GB/s
 T=  8192 GS 2b blkmean                 182.3 us  read  2.37 b/elem =   2.49 MB  ->   13.6 GB/s
-T=  8192 GS 4b blkmean                 187.4 us  read  4.34 b/elem =   4.55 MB  ->   24.3 GB/s
-T=  8192 KIVI 2b                       101.4 us  read  2.46 b/elem =   2.58 MB  ->   25.5 GB/s
-T=  8192 KIVI 4b                       109.6 us  read  4.43 b/elem =   4.65 MB  ->   42.4 GB/s
-T=  8192 Quest k=5%                    175.1 us  read  2.05 b/elem =   2.15 MB  ->   12.3 GB/s
-T=  8192 Quest k=10%                   173.1 us  read  2.86 b/elem =   3.00 MB  ->   17.3 GB/s
-T=  8192 FoveaKV k=2%                  295.7 us  read  2.41 b/elem =   2.53 MB  ->    8.6 GB/s
-T=  8192 FoveaKV k=5%                  303.2 us  read  2.47 b/elem =   2.59 MB  ->    8.6 GB/s
-T=  8192 FoveaKV k=10%                 294.5 us  read  2.57 b/elem =   2.70 MB  ->    9.2 GB/s
-T=  8192 FoveaKV k=5% two-stage        449.7 us  read  2.52 b/elem =   2.65 MB  ->    5.9 GB/s
-T=  8192 FoveaKV k=5% static set       219.0 us  read  2.47 b/elem =   2.59 MB  ->   11.8 GB/s
-T=  8192 SpeCache-style k=5%           507.9 us  read  3.27 b/elem =   3.42 MB  ->    6.7 GB/s
-T=  8192 SpeCache-style k=0.625%       508.4 us  read  2.57 b/elem =   2.69 MB  ->    5.3 GB/s
-T= 32768 bf16 dense (sdpa)             838.7 us  read 16.00 b/elem =  67.11 MB  ->   80.0 GB/s
-T= 32768 bf16 dense (kernel)          1304.6 us  read 16.00 b/elem =  67.11 MB  ->   51.4 GB/s
-T= 32768 TurboQuant-MSE 2b             284.7 us  read  2.12 b/elem =   8.88 MB  ->   31.2 GB/s
-T= 32768 TurboQuant-MSE 3b             304.1 us  read  3.11 b/elem =  13.06 MB  ->   42.9 GB/s
-T= 32768 TurboQuant-MSE 4b             270.3 us  read  4.11 b/elem =  17.23 MB  ->   63.8 GB/s
-T= 32768 GS 2b blkmean                 267.3 us  read  2.21 b/elem =   9.27 MB  ->   34.7 GB/s
-T= 32768 GS 4b blkmean                 286.6 us  read  4.20 b/elem =  17.63 MB  ->   61.5 GB/s
-T= 32768 KIVI 2b                       155.6 us  read  2.30 b/elem =   9.66 MB  ->   62.1 GB/s
+T=  8192 GS 4b blkmean                 185.3 us  read  4.34 b/elem =   4.55 MB  ->   24.6 GB/s
+T=  8192 KIVI 2b                       101.3 us  read  2.46 b/elem =   2.58 MB  ->   25.5 GB/s
+T=  8192 KIVI 4b                       108.5 us  read  4.43 b/elem =   4.65 MB  ->   42.8 GB/s
+T=  8192 Quest k=5%                    194.6 us  read  2.05 b/elem =   2.15 MB  ->   11.0 GB/s
+T=  8192 Quest k=10%                   196.0 us  read  2.86 b/elem =   3.00 MB  ->   15.3 GB/s
+T=  8192 FoveaKV k=2%                  309.2 us  read  2.41 b/elem =   2.53 MB  ->    8.2 GB/s
+T=  8192 FoveaKV k=5%                  307.2 us  read  2.47 b/elem =   2.59 MB  ->    8.4 GB/s
+T=  8192 FoveaKV k=10%                 317.4 us  read  2.57 b/elem =   2.70 MB  ->    8.5 GB/s
+T=  8192 FoveaKV k=5% two-stage        456.2 us  read  2.52 b/elem =   2.65 MB  ->    5.8 GB/s
+T=  8192 FoveaKV k=5% static set       214.1 us  read  2.47 b/elem =   2.59 MB  ->   12.1 GB/s
+T=  8192 SpeCache-style k=5%           503.3 us  read  3.27 b/elem =   3.42 MB  ->    6.8 GB/s
+T=  8192 SpeCache-style k=0.625%       501.9 us  read  2.57 b/elem =   2.69 MB  ->    5.4 GB/s
+T=  8192 FoveaKV k=2% offload          297.0 us  read  2.41 b/elem =   2.53 MB  ->    8.5 GB/s
+T=  8192 FoveaKV k=5% offload          292.0 us  read  2.47 b/elem =   2.59 MB  ->    8.9 GB/s
+T=  8192 FoveaKV k=10% offload         296.8 us  read  2.57 b/elem =   2.70 MB  ->    9.1 GB/s
+T=  8192 FoveaKV k=5% two-stage offload    477.7 us  read  2.52 b/elem =   2.65 MB  ->    5.5 GB/s
+T=  8192 SpeCache-style k=5% offload    611.3 us  read  3.27 b/elem =   3.42 MB  ->    5.6 GB/s
+T=  8192 SpeCache-style k=0.625% offload    504.8 us  read  2.57 b/elem =   2.69 MB  ->    5.3 GB/s
+T= 32768 bf16 dense (sdpa)             924.6 us  read 16.00 b/elem =  67.11 MB  ->   72.6 GB/s
+T= 32768 bf16 dense (kernel)          1299.9 us  read 16.00 b/elem =  67.11 MB  ->   51.6 GB/s
+T= 32768 TurboQuant-MSE 2b             295.3 us  read  2.12 b/elem =   8.88 MB  ->   30.1 GB/s
+T= 32768 TurboQuant-MSE 3b             282.6 us  read  3.11 b/elem =  13.06 MB  ->   46.2 GB/s
+T= 32768 TurboQuant-MSE 4b             273.4 us  read  4.11 b/elem =  17.23 MB  ->   63.0 GB/s
+T= 32768 GS 2b blkmean                 280.6 us  read  2.21 b/elem =   9.27 MB  ->   33.0 GB/s
+T= 32768 GS 4b blkmean                 270.3 us  read  4.20 b/elem =  17.63 MB  ->   65.2 GB/s
+T= 32768 KIVI 2b                       154.6 us  read  2.30 b/elem =   9.66 MB  ->   62.5 GB/s
 T= 32768 KIVI 4b                       189.4 us  read  4.30 b/elem =  18.02 MB  ->   95.1 GB/s
-T= 32768 Quest k=5%                    230.4 us  read  1.86 b/elem =   7.82 MB  ->   33.9 GB/s
-T= 32768 Quest k=10%                   245.1 us  read  2.66 b/elem =  11.16 MB  ->   45.5 GB/s
-T= 32768 FoveaKV k=2%                  382.0 us  read  2.25 b/elem =   9.44 MB  ->   24.7 GB/s
-T= 32768 FoveaKV k=5%                  397.3 us  read  2.31 b/elem =   9.69 MB  ->   24.4 GB/s
-T= 32768 FoveaKV k=10%                 447.0 us  read  2.41 b/elem =  10.11 MB  ->   22.6 GB/s
-T= 32768 FoveaKV k=5% two-stage        600.1 us  read  2.36 b/elem =   9.90 MB  ->   16.5 GB/s
-T= 32768 FoveaKV k=5% static set       318.5 us  read  2.31 b/elem =   9.69 MB  ->   30.4 GB/s
-T= 32768 SpeCache-style k=5%           556.1 us  read  3.10 b/elem =  13.02 MB  ->   23.4 GB/s
-T= 32768 SpeCache-style k=0.625%       541.3 us  read  2.40 b/elem =  10.08 MB  ->   18.6 GB/s
-T= 65536 bf16 dense (sdpa)            1882.5 us  read 16.00 b/elem = 134.22 MB  ->   71.3 GB/s
-T= 65536 bf16 dense (kernel)          2502.7 us  read 16.00 b/elem = 134.22 MB  ->   53.6 GB/s
-T= 65536 TurboQuant-MSE 2b             439.2 us  read  2.09 b/elem =  17.53 MB  ->   39.9 GB/s
-T= 65536 TurboQuant-MSE 3b             450.5 us  read  3.09 b/elem =  25.90 MB  ->   57.5 GB/s
-T= 65536 TurboQuant-MSE 4b             462.2 us  read  4.09 b/elem =  34.27 MB  ->   74.2 GB/s
-T= 65536 GS 2b blkmean                 420.7 us  read  2.18 b/elem =  18.31 MB  ->   43.5 GB/s
-T= 65536 GS 4b blkmean                 479.2 us  read  4.18 b/elem =  35.06 MB  ->   73.2 GB/s
-T= 65536 KIVI 2b                       255.0 us  read  2.28 b/elem =  19.10 MB  ->   74.9 GB/s
-T= 65536 KIVI 4b                       311.7 us  read  4.27 b/elem =  35.84 MB  ->  115.0 GB/s
-T= 65536 Quest k=5%                    405.0 us  read  1.83 b/elem =  15.35 MB  ->   37.9 GB/s
-T= 65536 Quest k=10%                   480.1 us  read  2.63 b/elem =  22.07 MB  ->   46.0 GB/s
-T= 65536 FoveaKV k=2%                  592.3 us  read  2.22 b/elem =  18.65 MB  ->   31.5 GB/s
-T= 65536 FoveaKV k=5%                  614.3 us  read  2.28 b/elem =  19.15 MB  ->   31.2 GB/s
-T= 65536 FoveaKV k=10%                 660.4 us  read  2.38 b/elem =  19.99 MB  ->   30.3 GB/s
-T= 65536 FoveaKV k=5% two-stage        864.8 us  read  2.33 b/elem =  19.57 MB  ->   22.6 GB/s
-T= 65536 FoveaKV k=5% static set       516.6 us  read  2.28 b/elem =  19.15 MB  ->   37.1 GB/s
-T= 65536 SpeCache-style k=5%           841.2 us  read  3.08 b/elem =  25.81 MB  ->   30.7 GB/s
-T= 65536 SpeCache-style k=0.625%       554.4 us  read  2.38 b/elem =  19.94 MB  ->   36.0 GB/s
-T=131072 bf16 dense (sdpa)            3772.4 us  read 16.00 b/elem = 268.44 MB  ->   71.2 GB/s
-T=131072 bf16 dense (kernel)          5014.0 us  read 16.00 b/elem = 268.44 MB  ->   53.5 GB/s
-T=131072 TurboQuant-MSE 2b             715.3 us  read  2.08 b/elem =  34.83 MB  ->   48.7 GB/s
-T=131072 TurboQuant-MSE 3b             773.0 us  read  3.08 b/elem =  51.59 MB  ->   66.7 GB/s
-T=131072 TurboQuant-MSE 4b             755.3 us  read  4.07 b/elem =  68.35 MB  ->   90.5 GB/s
-T=131072 GS 2b blkmean                 678.9 us  read  2.17 b/elem =  36.40 MB  ->   53.6 GB/s
-T=131072 GS 4b blkmean                 768.0 us  read  4.17 b/elem =  69.92 MB  ->   91.0 GB/s
-T=131072 KIVI 2b                       462.9 us  read  2.26 b/elem =  37.97 MB  ->   82.0 GB/s
-T=131072 KIVI 4b                       566.3 us  read  4.26 b/elem =  71.50 MB  ->  126.3 GB/s
-T=131072 Quest k=5%                    877.6 us  read  1.82 b/elem =  30.46 MB  ->   34.7 GB/s
-T=131072 Quest k=10%                   946.7 us  read  2.62 b/elem =  43.89 MB  ->   46.4 GB/s
-T=131072 FoveaKV k=2%                  923.6 us  read  2.21 b/elem =  37.07 MB  ->   40.1 GB/s
-T=131072 FoveaKV k=5%                 1010.2 us  read  2.27 b/elem =  38.08 MB  ->   37.7 GB/s
-T=131072 FoveaKV k=10%                1080.8 us  read  2.37 b/elem =  39.76 MB  ->   36.8 GB/s
-T=131072 FoveaKV k=5% two-stage       1394.2 us  read  2.32 b/elem =  38.92 MB  ->   27.9 GB/s
-T=131072 FoveaKV k=5% static set       794.1 us  read  2.27 b/elem =  38.08 MB  ->   48.0 GB/s
-T=131072 SpeCache-style k=5%          1693.7 us  read  3.06 b/elem =  51.40 MB  ->   30.3 GB/s
-T=131072 SpeCache-style k=0.625%       837.1 us  read  2.36 b/elem =  39.65 MB  ->   47.4 GB/s
+T= 32768 Quest k=5%                    234.9 us  read  1.86 b/elem =   7.82 MB  ->   33.3 GB/s
+T= 32768 Quest k=10%                   247.7 us  read  2.66 b/elem =  11.16 MB  ->   45.0 GB/s
+T= 32768 FoveaKV k=2%                  402.4 us  read  2.25 b/elem =   9.44 MB  ->   23.5 GB/s
+T= 32768 FoveaKV k=5%                  409.6 us  read  2.31 b/elem =   9.69 MB  ->   23.7 GB/s
+T= 32768 FoveaKV k=10%                 450.4 us  read  2.41 b/elem =  10.11 MB  ->   22.4 GB/s
+T= 32768 FoveaKV k=5% two-stage        589.3 us  read  2.36 b/elem =   9.90 MB  ->   16.8 GB/s
+T= 32768 FoveaKV k=5% static set       321.5 us  read  2.31 b/elem =   9.69 MB  ->   30.1 GB/s
+T= 32768 SpeCache-style k=5%           541.2 us  read  3.10 b/elem =  13.02 MB  ->   24.1 GB/s
+T= 32768 SpeCache-style k=0.625%       540.7 us  read  2.40 b/elem =  10.08 MB  ->   18.6 GB/s
+T= 32768 FoveaKV k=2% offload          404.0 us  read  2.25 b/elem =   9.44 MB  ->   23.4 GB/s
+T= 32768 FoveaKV k=5% offload          436.2 us  read  2.31 b/elem =   9.69 MB  ->   22.2 GB/s
+T= 32768 FoveaKV k=10% offload         527.4 us  read  2.41 b/elem =  10.11 MB  ->   19.2 GB/s
+T= 32768 FoveaKV k=5% two-stage offload    825.7 us  read  2.36 b/elem =   9.90 MB  ->   12.0 GB/s
+T= 32768 SpeCache-style k=5% offload   1484.1 us  read  3.10 b/elem =  13.02 MB  ->    8.8 GB/s
+T= 32768 SpeCache-style k=0.625% offload    561.7 us  read  2.40 b/elem =  10.08 MB  ->   18.0 GB/s
+T= 65536 bf16 dense (sdpa)            1897.0 us  read 16.00 b/elem = 134.22 MB  ->   70.8 GB/s
+T= 65536 bf16 dense (kernel)          2520.0 us  read 16.00 b/elem = 134.22 MB  ->   53.3 GB/s
+T= 65536 TurboQuant-MSE 2b             446.5 us  read  2.09 b/elem =  17.53 MB  ->   39.3 GB/s
+T= 65536 TurboQuant-MSE 3b             473.5 us  read  3.09 b/elem =  25.90 MB  ->   54.7 GB/s
+T= 65536 TurboQuant-MSE 4b             471.0 us  read  4.09 b/elem =  34.27 MB  ->   72.8 GB/s
+T= 65536 GS 2b blkmean                 438.3 us  read  2.18 b/elem =  18.31 MB  ->   41.8 GB/s
+T= 65536 GS 4b blkmean                 457.2 us  read  4.18 b/elem =  35.06 MB  ->   76.7 GB/s
+T= 65536 KIVI 2b                       257.0 us  read  2.28 b/elem =  19.10 MB  ->   74.3 GB/s
+T= 65536 KIVI 4b                       327.7 us  read  4.27 b/elem =  35.84 MB  ->  109.4 GB/s
+T= 65536 Quest k=5%                    448.5 us  read  1.83 b/elem =  15.35 MB  ->   34.2 GB/s
+T= 65536 Quest k=10%                   497.1 us  read  2.63 b/elem =  22.07 MB  ->   44.4 GB/s
+T= 65536 FoveaKV k=2%                  588.3 us  read  2.22 b/elem =  18.65 MB  ->   31.7 GB/s
+T= 65536 FoveaKV k=5%                  627.7 us  read  2.28 b/elem =  19.15 MB  ->   30.5 GB/s
+T= 65536 FoveaKV k=10%                 674.2 us  read  2.38 b/elem =  19.99 MB  ->   29.7 GB/s
+T= 65536 FoveaKV k=5% two-stage        870.3 us  read  2.33 b/elem =  19.57 MB  ->   22.5 GB/s
+T= 65536 FoveaKV k=5% static set       531.5 us  read  2.28 b/elem =  19.15 MB  ->   36.0 GB/s
+T= 65536 SpeCache-style k=5%           844.8 us  read  3.08 b/elem =  25.81 MB  ->   30.6 GB/s
+T= 65536 SpeCache-style k=0.625%       548.4 us  read  2.38 b/elem =  19.94 MB  ->   36.4 GB/s
+T= 65536 FoveaKV k=2% offload          629.8 us  read  2.22 b/elem =  18.65 MB  ->   29.6 GB/s
+T= 65536 FoveaKV k=5% offload          690.7 us  read  2.28 b/elem =  19.15 MB  ->   27.7 GB/s
+T= 65536 FoveaKV k=10% offload         818.2 us  read  2.38 b/elem =  19.99 MB  ->   24.4 GB/s
+T= 65536 FoveaKV k=5% two-stage offload   1365.0 us  read  2.33 b/elem =  19.57 MB  ->   14.3 GB/s
+T= 65536 SpeCache-style k=5% offload   2402.3 us  read  3.08 b/elem =  25.81 MB  ->   10.7 GB/s
+T= 65536 SpeCache-style k=0.625% offload    805.4 us  read  2.38 b/elem =  19.94 MB  ->   24.8 GB/s
+T=131072 bf16 dense (sdpa)            3774.5 us  read 16.00 b/elem = 268.44 MB  ->   71.1 GB/s
+T=131072 bf16 dense (kernel)          4970.5 us  read 16.00 b/elem = 268.44 MB  ->   54.0 GB/s
+T=131072 TurboQuant-MSE 2b             721.9 us  read  2.08 b/elem =  34.83 MB  ->   48.3 GB/s
+T=131072 TurboQuant-MSE 3b             749.5 us  read  3.08 b/elem =  51.59 MB  ->   68.8 GB/s
+T=131072 TurboQuant-MSE 4b             745.5 us  read  4.07 b/elem =  68.35 MB  ->   91.7 GB/s
+T=131072 GS 2b blkmean                 706.0 us  read  2.17 b/elem =  36.40 MB  ->   51.6 GB/s
+T=131072 GS 4b blkmean                 802.3 us  read  4.17 b/elem =  69.92 MB  ->   87.2 GB/s
+T=131072 KIVI 2b                       510.0 us  read  2.26 b/elem =  37.97 MB  ->   74.5 GB/s
+T=131072 KIVI 4b                       603.1 us  read  4.26 b/elem =  71.50 MB  ->  118.5 GB/s
+T=131072 Quest k=5%                    901.1 us  read  1.82 b/elem =  30.46 MB  ->   33.8 GB/s
+T=131072 Quest k=10%                   991.1 us  read  2.62 b/elem =  43.89 MB  ->   44.3 GB/s
+T=131072 FoveaKV k=2%                  933.7 us  read  2.21 b/elem =  37.07 MB  ->   39.7 GB/s
+T=131072 FoveaKV k=5%                 1024.5 us  read  2.27 b/elem =  38.08 MB  ->   37.2 GB/s
+T=131072 FoveaKV k=10%                1177.5 us  read  2.37 b/elem =  39.76 MB  ->   33.8 GB/s
+T=131072 FoveaKV k=5% two-stage       1400.8 us  read  2.32 b/elem =  38.92 MB  ->   27.8 GB/s
+T=131072 FoveaKV k=5% static set       847.4 us  read  2.27 b/elem =  38.08 MB  ->   44.9 GB/s
+T=131072 SpeCache-style k=5%          1709.5 us  read  3.06 b/elem =  51.40 MB  ->   30.1 GB/s
+T=131072 SpeCache-style k=0.625%       848.9 us  read  2.36 b/elem =  39.65 MB  ->   46.7 GB/s
+T=131072 FoveaKV k=2% offload         1005.6 us  read  2.21 b/elem =  37.07 MB  ->   36.9 GB/s
+T=131072 FoveaKV k=5% offload         1164.3 us  read  2.27 b/elem =  38.08 MB  ->   32.7 GB/s
+T=131072 FoveaKV k=10% offload        1378.7 us  read  2.37 b/elem =  39.76 MB  ->   28.8 GB/s
+T=131072 FoveaKV k=5% two-stage offload   2310.1 us  read  2.32 b/elem =  38.92 MB  ->   16.8 GB/s
+T=131072 SpeCache-style k=5% offload   5005.9 us  read  3.06 b/elem =  51.40 MB  ->   10.3 GB/s
+T=131072 SpeCache-style k=0.625% offload   1335.3 us  read  2.36 b/elem =  39.65 MB  ->   29.7 GB/s

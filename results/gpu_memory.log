@@ -1,0 +1,39 @@
+T= 32768 bf16 dense (sdpa)                  GPU    384.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 TurboQuant-MSE 2b                  GPU     55.5 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 TurboQuant-MSE 3b                  GPU    103.5 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 TurboQuant-MSE 4b                  GPU    103.5 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 GS 4b blkmean                      GPU    105.8 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 KIVI 2b                            GPU     57.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 KIVI 4b                            GPU    105.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 Quest k=5%                         GPU    411.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 32768 FoveaKV k=5%                       GPU    105.8 MiB (+  6.0 workspace)  host      0.0 MiB
+T= 32768 FoveaKV k=5% offload               GPU     57.8 MiB (+  6.0 workspace)  host     48.0 MiB
+T= 32768 FoveaKV k=5% two-stage offload     GPU     57.8 MiB (+ 12.0 workspace)  host     48.0 MiB
+T= 32768 SpeCache-style k=5%                GPU    441.0 MiB (+  6.0 workspace)  host      0.0 MiB
+T= 32768 SpeCache-style k=5% offload        GPU     57.0 MiB (+  6.0 workspace)  host    384.0 MiB
+T= 65536 bf16 dense (sdpa)                  GPU    768.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 TurboQuant-MSE 2b                  GPU    105.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 TurboQuant-MSE 3b                  GPU    201.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 TurboQuant-MSE 4b                  GPU    201.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 GS 4b blkmean                      GPU    205.5 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 KIVI 2b                            GPU    111.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 KIVI 4b                            GPU    207.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 Quest k=5%                         GPU    819.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T= 65536 FoveaKV k=5%                       GPU    205.5 MiB (+ 12.0 workspace)  host      0.0 MiB
+T= 65536 FoveaKV k=5% offload               GPU    109.5 MiB (+ 12.0 workspace)  host     96.0 MiB
+T= 65536 FoveaKV k=5% two-stage offload     GPU    109.5 MiB (+ 24.0 workspace)  host     96.0 MiB
+T= 65536 SpeCache-style k=5%                GPU    879.0 MiB (+ 12.0 workspace)  host      0.0 MiB
+T= 65536 SpeCache-style k=5% offload        GPU    111.0 MiB (+ 12.0 workspace)  host    768.0 MiB
+T=131072 bf16 dense (sdpa)                  GPU   1536.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 TurboQuant-MSE 2b                  GPU    204.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 TurboQuant-MSE 3b                  GPU    396.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 TurboQuant-MSE 4b                  GPU    396.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 GS 4b blkmean                      GPU    405.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 KIVI 2b                            GPU    219.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 KIVI 4b                            GPU    411.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 Quest k=5%                         GPU   1635.0 MiB (+  0.0 workspace)  host      0.0 MiB
+T=131072 FoveaKV k=5%                       GPU    405.0 MiB (+ 24.0 workspace)  host      0.0 MiB
+T=131072 FoveaKV k=5% offload               GPU    213.0 MiB (+ 24.0 workspace)  host    192.0 MiB
+T=131072 FoveaKV k=5% two-stage offload     GPU    213.0 MiB (+ 48.0 workspace)  host    192.0 MiB
+T=131072 SpeCache-style k=5%                GPU   1755.0 MiB (+ 24.0 workspace)  host      0.0 MiB
+T=131072 SpeCache-style k=5% offload        GPU    219.0 MiB (+ 24.0 workspace)  host   1536.0 MiB

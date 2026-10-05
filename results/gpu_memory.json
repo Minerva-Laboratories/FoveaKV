@@ -1,0 +1,314 @@
+[
+ {
+  "T": 32768,
+  "key": "bf16",
+  "name": "bf16 dense (sdpa)",
+  "gpu": 402653184,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "tq2",
+  "name": "TurboQuant-MSE 2b",
+  "gpu": 58198536,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "tq3",
+  "name": "TurboQuant-MSE 3b",
+  "gpu": 108529800,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "tq4",
+  "name": "TurboQuant-MSE 4b",
+  "gpu": 108529800,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "gs4",
+  "name": "GS 4b blkmean",
+  "gpu": 110938440,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "kivi2",
+  "name": "KIVI 2b",
+  "gpu": 59768832,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "kivi4",
+  "name": "KIVI 4b",
+  "gpu": 110100480,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "quest5",
+  "name": "Quest k=5%",
+  "gpu": 430964736,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "dyn5",
+  "name": "FoveaKV k=5%",
+  "gpu": 110938440,
+  "gpu_workspace": 6291456,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "dyn5-off",
+  "name": "FoveaKV k=5% offload",
+  "gpu": 60606792,
+  "gpu_workspace": 6291456,
+  "host": 50331648
+ },
+ {
+  "T": 32768,
+  "key": "dyn5-2stage-off",
+  "name": "FoveaKV k=5% two-stage offload",
+  "gpu": 60606792,
+  "gpu_workspace": 12582912,
+  "host": 50331648
+ },
+ {
+  "T": 32768,
+  "key": "specache5",
+  "name": "SpeCache-style k=5%",
+  "gpu": 462422016,
+  "gpu_workspace": 6291456,
+  "host": 0
+ },
+ {
+  "T": 32768,
+  "key": "specache5-off",
+  "name": "SpeCache-style k=5% offload",
+  "gpu": 59768832,
+  "gpu_workspace": 6291456,
+  "host": 402653184
+ },
+ {
+  "T": 65536,
+  "key": "bf16",
+  "name": "bf16 dense (sdpa)",
+  "gpu": 805306368,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "tq2",
+  "name": "TurboQuant-MSE 2b",
+  "gpu": 110103048,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "tq3",
+  "name": "TurboQuant-MSE 3b",
+  "gpu": 210765960,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "tq4",
+  "name": "TurboQuant-MSE 4b",
+  "gpu": 210765960,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "gs4",
+  "name": "GS 4b blkmean",
+  "gpu": 215533896,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "kivi2",
+  "name": "KIVI 2b",
+  "gpu": 116391936,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "kivi4",
+  "name": "KIVI 4b",
+  "gpu": 217055232,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "quest5",
+  "name": "Quest k=5%",
+  "gpu": 858783744,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "dyn5",
+  "name": "FoveaKV k=5%",
+  "gpu": 215533896,
+  "gpu_workspace": 12582912,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "dyn5-off",
+  "name": "FoveaKV k=5% offload",
+  "gpu": 114870600,
+  "gpu_workspace": 12582912,
+  "host": 100663296
+ },
+ {
+  "T": 65536,
+  "key": "dyn5-2stage-off",
+  "name": "FoveaKV k=5% two-stage offload",
+  "gpu": 114870600,
+  "gpu_workspace": 25165824,
+  "host": 100663296
+ },
+ {
+  "T": 65536,
+  "key": "specache5",
+  "name": "SpeCache-style k=5%",
+  "gpu": 921698304,
+  "gpu_workspace": 12582912,
+  "host": 0
+ },
+ {
+  "T": 65536,
+  "key": "specache5-off",
+  "name": "SpeCache-style k=5% offload",
+  "gpu": 116391936,
+  "gpu_workspace": 12582912,
+  "host": 805306368
+ },
+ {
+  "T": 131072,
+  "key": "bf16",
+  "name": "bf16 dense (sdpa)",
+  "gpu": 1610612736,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "tq2",
+  "name": "TurboQuant-MSE 2b",
+  "gpu": 213912072,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "tq3",
+  "name": "TurboQuant-MSE 3b",
+  "gpu": 415238280,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "tq4",
+  "name": "TurboQuant-MSE 4b",
+  "gpu": 415238280,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "gs4",
+  "name": "GS 4b blkmean",
+  "gpu": 424724808,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "kivi2",
+  "name": "KIVI 2b",
+  "gpu": 229638144,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "kivi4",
+  "name": "KIVI 4b",
+  "gpu": 430964736,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "quest5",
+  "name": "Quest k=5%",
+  "gpu": 1714421760,
+  "gpu_workspace": 0,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "dyn5",
+  "name": "FoveaKV k=5%",
+  "gpu": 424724808,
+  "gpu_workspace": 25165824,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "dyn5-off",
+  "name": "FoveaKV k=5% offload",
+  "gpu": 223398216,
+  "gpu_workspace": 25165824,
+  "host": 201326592
+ },
+ {
+  "T": 131072,
+  "key": "dyn5-2stage-off",
+  "name": "FoveaKV k=5% two-stage offload",
+  "gpu": 223398216,
+  "gpu_workspace": 50331648,
+  "host": 201326592
+ },
+ {
+  "T": 131072,
+  "key": "specache5",
+  "name": "SpeCache-style k=5%",
+  "gpu": 1840250880,
+  "gpu_workspace": 25165824,
+  "host": 0
+ },
+ {
+  "T": 131072,
+  "key": "specache5-off",
+  "name": "SpeCache-style k=5% offload",
+  "gpu": 229638144,
+  "gpu_workspace": 25165824,
+  "host": 1610612736
+ }
+]

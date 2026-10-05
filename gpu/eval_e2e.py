@@ -49,9 +49,7 @@ class LinCache:
 
 class Recorder(Base):
     """Stores raw K/V only (used during the shared exact prefill)."""
-
-    def _encode_ready(self):
-        pass
+    full_raw = True
 
 
 def load_model():

@@ -10,7 +10,8 @@ from gpu.foveakv_gpu import make, ext, D
 ext()
 torch.manual_seed(0)
 SCHEMES = ["bf16", "bf16-kernel", "tq2", "tq3", "tq4", "gs2", "gs4", "kivi2", "kivi4", "quest5", "quest10",
-           "dyn2", "dyn5", "dyn10", "dyn5-2stage", "static5", "specache5", "specache5-eqtraffic"]
+           "dyn2", "dyn5", "dyn10", "dyn5-2stage", "static5", "specache5", "specache5-eqtraffic",
+           "dyn2-off", "dyn5-off", "dyn10-off", "dyn5-2stage-off", "specache5-off", "specache5-eqtraffic-off"]
 CTX = [int(x) for x in os.environ.get("BENCH_CTX", "8192,32768,65536,131072").split(",")]
 N = 50
 out = []
