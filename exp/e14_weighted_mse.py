@@ -17,8 +17,7 @@ W_REC = 128
 rows = []
 ident_err = []
 for C in CORPORA:
-    for Li in LAYERS:
-        L = kvdata.load_layer(C, Li)
+    for Li, L in ((Li, Lc) for Li in LAYERS for Lc in head_chunks(kvdata.load_layer(C, Li))):   # chunks of <= 2 KV heads
         P = prefill_len(L)
         sl = slice(0, None, 4)
         q, qpos = L["q"][sl], L["qpos"][sl]

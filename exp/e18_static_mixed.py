@@ -14,8 +14,7 @@ Dc, Df = CB.mse_coarse, CB.mse_fine
 NPROBE = 64
 res = []
 for C in CORPORA:
-    for Li in LAYERS:
-        L = kvdata.load_layer(C, Li)
+    for Li, L in ((Li, Lc) for Li in LAYERS for Lc in head_chunks(kvdata.load_layer(C, Li))):   # chunks of <= 2 KV heads
         P = prefill_len(L)
         T = L["T"]
         gs = gain_shape_cache_v2(L, P, block=128, smooth=SMOOTH)
