@@ -35,7 +35,7 @@ for C in CORPORA:
         o_ref = attend(p_true, L["v"])
         t = np.arange(T)[None, :]
         A = (t < 4) | ((t > qpos[:, None] - W_REC) & (t <= qpos[:, None]))
-        gs = gain_shape_cache_v2(L, P, block=128)
+        gs = gain_shape_cache_v2(L, P, block=128, smooth=SMOOTH)
         Mk, Mv = block_means(L["k"], 128), block_means(L["v"], 128)
         Kc = Mk + (gs["Kc"] - Mk) / np.sqrt(1 - Dc); Kf = Mk + (gs["Kf"] - Mk) / np.sqrt(1 - Df)
         Vc = Mv + (gs["Vc"] - Mv) / (1 - Dc); Vf = Mv + (gs["Vf"] - Mv) / (1 - Df)
@@ -109,7 +109,7 @@ rows = []
 for kk in ("2%", "5%"):
     for name in dict.fromkeys(R[R[:, 2] == kk][:, 3]):
         a = R[(R[:, 2] == kk) & (R[:, 3] == name)]
-        rows.append((kk, name, float(a[:, 4].astype(float).mean()), float(a[a[:, 1] == 3][:, 4].astype(float).mean())))
+        rows.append((kk, name, float(a[:, 4].astype(float).mean()), float(a[a[:, 1] == LAYERS[0]][:, 4].astype(float).mean())))
 g = {(r[0], r[1]): r[2] for r in rows}
 mm = M_[:, 2:].astype(float).mean(0)
 gap = g[("5%", "est")] - g[("5%", "oracle")]
@@ -126,7 +126,7 @@ c=1 {g[('5%','est + 1.0·sigma²')]:.4f}, c=2 {g[('5%','est + 2.0·sigma²')]:.4
 sigma_i = ||q|| g_k,i sqrt(D_c)/d (per head and token). 'sim' replaces the coarse logits by true logits + N(0, sigma_i²).
 Rule: max over the GQA group of log-prob; window tokens excluded; error = attention-output rel err vs int8 reference.
 
-""" + md_table(["k", "selector", "attn err", "layer-3 attn err"], rows) + f"""
+""" + md_table(["k", "selector", "attn err", f"layer-{LAYERS[0]} attn err"], rows) + f"""
 ## Misses at k=5% (mean over corpora/layers)
 | missed tokens / k | missed mass / oracle mass | missed with rank > 0.8k | missed with rank > 0.5k |
 |---|---|---|---|

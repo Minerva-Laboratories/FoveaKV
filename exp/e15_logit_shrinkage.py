@@ -63,7 +63,7 @@ for C in CORPORA:
 
 R = np.array(res, dtype=object)
 np.save(os.path.join(RES, "e15_raw.npy"), R)
-rows = [(n, float(R[R[:, 2] == n][:, 3].astype(float).mean()), float(R[(R[:, 2] == n) & (R[:, 1] == 3)][:, 3].astype(float).mean()))
+rows = [(n, float(R[R[:, 2] == n][:, 3].astype(float).mean()), float(R[(R[:, 2] == n) & (R[:, 1] == LAYERS[0])][:, 3].astype(float).mean()))
         for n in dict.fromkeys(R[:, 2])]
 g = {r[0]: r[1] for r in rows}
 write("15_logit_shrinkage.md", f"""# E15 Logit shrinkage correction alpha = 1/(1-D) (free: one multiply on the rotated query)
@@ -78,6 +78,6 @@ reconstructed with logits shrunk by (1−D), which raises the softmax temperatur
 the independent-error weighted-MSE model misses; E14). Scaling the key-residual logits (not the block-mean offsets) by 1/(1−D)
 undoes the shrinkage on average; values keep the MMSE reconstruction (their error enters linearly).
 
-""" + md_table(["scheme / alpha", "attn err", "layer-3 attn err"], rows) + f"""
+""" + md_table(["scheme / alpha", "attn err", f"layer-{LAYERS[0]} attn err"], rows) + f"""
 runtime {time.time()-t0:.0f}s
 """)

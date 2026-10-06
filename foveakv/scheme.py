@@ -35,9 +35,10 @@ def gain_shape_cache(L, P, rope="post", rht=True, gain_bits=8, center_k=True, ce
         out["Vf"][:, h], out["Vc"][:, h] = rv["fine"], rv["coarse"]
         diag.append(dict(k=dk, v=dv))
     if rope == "pre":
-        cos, sin = rope_cos_sin(np.arange(T), 64, 1e7)
+        rot = L.get("rot_dim", 64)
+        cos, sin = rope_cos_sin(np.arange(T), rot, L.get("theta", 1e7))
         for n in ("Kf", "Kc", "Ks"):
-            out[n] = apply_rope(out[n], cos, sin, 64)
+            out[n] = apply_rope(out[n], cos, sin, rot)
     out["diag"] = diag
     out["bits_coarse"] = 2 + gain_bits / d
     out["bits_fine"] = 4 + gain_bits / d

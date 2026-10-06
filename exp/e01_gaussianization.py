@@ -6,7 +6,6 @@ from foveakv.rotate import rht_matrix
 
 t0 = time.time()
 CB = NestedCodebook()
-R = rht_matrix(256, 0)
 VARIANTS = {"raw": (False, False), "mean": (True, False), "mean+RHT": (True, True)}
 rows, flags = [], []
 hist = {}
@@ -14,6 +13,8 @@ for C in ("prose", "code"):
     for Li in LAYERS:
         L = kvdata.load_layer(C, Li)
         P = prefill_len(L)
+        d = L["k"].shape[-1]
+        R = rht_matrix(d, 0)
         for tname, X in (("K-post", L["k"]), ("K-pre", L["k_pre"]), ("V", L["v"])):
             for h in range(X.shape[1]):
                 x = X[:, h].astype(np.float64)
@@ -21,7 +22,7 @@ for C in ("prose", "code"):
                     y = x - x[:P].mean(0) if center else x
                     if rot:
                         y = y @ R.T
-                    z = y / np.linalg.norm(y, axis=1, keepdims=True) * 16.0
+                    z = y / np.linalg.norm(y, axis=1, keepdims=True) * np.sqrt(d)
                     kurt = float(np.mean(z ** 4) / np.mean(z ** 2) ** 2)
                     idx = CB.encode(z)
                     m4 = float(np.mean((CB.fine(idx) - z) ** 2))
@@ -30,7 +31,7 @@ for C in ("prose", "code"):
                     rows.append((C, Li, tname, h, vname, kurt, m2, g2, m4, g4))
                     if vname == "mean+RHT" and max(g2, g4) > 0.5:
                         flags.append((C, Li, tname, h, f"{g2:+.2f}", f"{g4:+.2f}", f"{kurt:.2f}"))
-                    if C == "prose" and h == 0 and Li in (3, 15) and tname != "K-pre":
+                    if C == "prose" and h == 0 and Li in (LAYERS[0], LAYERS[len(LAYERS) // 2]) and tname != "K-pre":
                         hist[(Li, tname, vname)] = z[:, ::8].ravel()
 
 # aggregate: median over (corpus, layer, head) for each tensor/variant
@@ -60,7 +61,7 @@ Empirical shape-MSE gap vs the Gaussian table after mean+RHT: keys post-RoPE med
 {len(flags)} (corpus, layer, tensor, head) cases exceed the 0.5 dB gap after mean+RHT.
 
 ## Config
-- z = u·sqrt(d), u = y/||y||; y = x − mu (mu from prefill tokens [0, T−512)) then optionally RHT (seed 0). d = 256.
+- z = u·sqrt(d), u = y/||y||; y = x − mu (mu from prefill tokens [0, T−512)) then optionally RHT (seed 0). d = head_dim.
 - Table: 2b nested-coarse MSE {CB.mse_coarse:.4f}, 4b Lloyd-Max {CB.mse_fine:.4f}. gap dB = 10·log10(empirical/table) (positive = worse than Gaussian).
 - Data: all 8192 tokens per corpus.
 
@@ -73,7 +74,7 @@ txt += "\n## Per layer (mean+RHT, keys post-RoPE / values, prose)\n" + md_table(
     [r for r in rows if r[0] == "prose" and r[4] == "mean+RHT" and r[2] != "K-pre"])
 txt += f"""
 ## Plots
-![hist](plots/e01_hist.png) — log-density of z (prose, head 0, layers 3/15) with N(0,1) dashed.
+![hist](plots/e01_hist.png) — log-density of z (prose, head 0, layers {LAYERS[0]}/{LAYERS[len(LAYERS) // 2]}) with N(0,1) dashed.
 
 ## Caveats
 - The reference is the int8 cache (user decision); int8 noise (~1% rel) is far below 4-bit shape error, so it does not affect these gaps.

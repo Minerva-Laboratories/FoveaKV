@@ -2,6 +2,7 @@
 import os, glob, numpy as np
 from tokenizers import Tokenizer
 DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+CORPUS = os.environ.get("FOVEAKV_CORPUS_DIR", os.path.join(DATA, "corpus"))   # token ids depend on the tokenizer: one folder per model family
 NEEDLE = " The secret passcode for the blue vault is 7-4-1-9-2. Remember it."
 QUESTION = "\n\nQuestion: What is the secret passcode for the blue vault?\nAnswer: The secret passcode for the blue vault is"
 
@@ -60,7 +61,7 @@ def needle(tok, n, depth):
 def build_corpora(model_dir, n=8192):
     ensure_wikitext()
     tok = tokenizer(model_dir)
-    out = os.path.join(DATA, "corpus")
+    out = CORPUS
     os.makedirs(out, exist_ok=True)
     meta = {}
     np.save(os.path.join(out, "prose.npy"), np.array(wikitext(tok, n), np.int32)); meta["prose"] = {}

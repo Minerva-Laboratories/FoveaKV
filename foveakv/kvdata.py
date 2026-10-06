@@ -3,7 +3,7 @@ import json, os, numpy as np
 from .model_hybrid import rope_cos_sin, apply_rope
 DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 KV_DIR = os.environ.get("FOVEAKV_KV_DIR", os.path.join(DATA, "kv"))     # captured caches (one folder per model if you set it)
-ROT_DIM, THETA, HD = 64, 1e7, 256   # verified against config.json in tests
+ROT_DIM, THETA, HD = 64, 1e7, 256   # Qwen3.5 defaults (verified in tests); captures record their own in meta.json
 
 
 def corpora():
@@ -24,15 +24,27 @@ def load_layer(corpus, layer, ref="int8"):
         k_pre = z["k_q"].astype(np.float32) * z["k_s"].astype(np.float32)[..., None]
         v = z["v_q"].astype(np.float32) * z["v_s"].astype(np.float32)[..., None]
     T = k_pre.shape[0]
+    m = meta(corpus)
+    rot, theta = m.get("rot_dim", ROT_DIM), m.get("theta", THETA)
     q_pre = z["q"].astype(np.float32)
     E = q_pre.shape[0]
     qpos = np.arange(T - E, T)
-    cos, sin = rope_cos_sin(np.arange(T), ROT_DIM, THETA)
-    out = dict(k_pre=k_pre, v=v, k=apply_rope(k_pre, cos, sin, ROT_DIM), q_pre=q_pre,
-               q=apply_rope(q_pre, cos[qpos], sin[qpos], ROT_DIM), qpos=qpos, T=T, E=E)
+    cos, sin = rope_cos_sin(np.arange(T), rot, theta)
+    out = dict(k_pre=k_pre, v=v, k=apply_rope(k_pre, cos, sin, rot), q_pre=q_pre,
+               q=apply_rope(q_pre, cos[qpos], sin[qpos], rot), qpos=qpos, T=T, E=E, rot_dim=rot, theta=theta)
     for extra in ("q_spec", "attn_in", "gate", "q2_pre", "q2_post"):
         if extra in z:
             out[extra] = z[extra].astype(np.float32)
     if "q_spec" in out:
-        out["q_spec"] = apply_rope(out["q_spec"], cos[qpos], sin[qpos], ROT_DIM)
+        out["q_spec"] = apply_rope(out["q_spec"], cos[qpos], sin[qpos], rot)
     return out
+
+
+def weight_name(layer, what="self_attn.o_proj.weight"):
+    """Checkpoint key of a layer weight (Qwen3.5 nests the language model under model.language_model)."""
+    from .load import SafeTensors, snapshot_dir
+    keys = SafeTensors(snapshot_dir()).keys()
+    for pre in ("model.language_model.layers", "model.layers"):
+        if f"{pre}.{layer}.{what}" in keys:
+            return f"{pre}.{layer}.{what}"
+    raise KeyError(what)

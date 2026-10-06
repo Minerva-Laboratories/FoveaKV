@@ -1,10 +1,10 @@
-// DynReq CUDA decode-attention kernels (batch 1, GQA group G=4, head_dim D=256).
-// Split-K flash-decoding: one warp per token, each lane owns 8 consecutive dims; the 4 query heads of a KV group
+// DynReq CUDA decode-attention kernels (batch 1, GQA group G=4, head_dim D=FKV_D in {128, 256}, default 256).
+// Split-K flash-decoding: one warp per token, each lane owns LD = D/32 consecutive dims; the 4 query heads of a KV group
 // are processed together so every compressed code is read once per KV head.
 //
 // Formats (all per KV head h, token t; Tcap = allocated capacity):
 //   BF16 : k,v (Hkv, Tcap, D) bf16                                     [dense baseline, recent window, Quest pages]
-//   GS   : 2-bit planes hi/lo (Hkv, Tcap, D/4 bytes) read as uint16 per lane (8 dims),
+//   GS   : 2-bit planes hi/lo (Hkv, Tcap, D/4 bytes), 2*LD bits per lane,
 //          gain: uint8 code + per-head LUT (256 floats, = g/sqrt(D)) or fp16 norm (TurboQuant, divided by sqrt(D)),
 //          optional rotated means (Hkv, Tcap/mu_block, D) fp16 added back (mu_block = Tcap -> one global mean),
 //          level LUT: 4 entries (hi plane only) or 16 entries (hi<<2|lo).
@@ -15,10 +15,28 @@
 #include <cuda_fp16.h>
 #include <c10/cuda/CUDAStream.h>
 
-constexpr int D = 256;
+#ifndef FKV_D
+#define FKV_D 256
+#endif
+constexpr int D = FKV_D;
+static_assert(D == 128 || D == 256, "head_dim must be 128 or 256");
 constexpr int G = 4;
-constexpr int LD = 8;            // dims per lane
+constexpr int LD = D / 32;       // dims per lane (8 or 4)
 constexpr int WARPS = 4;         // warps per block
+constexpr int RB = D / 4;        // bytes per 2-bit plane row
+constexpr int RU4 = RB / 16;     // uint4 per 2-bit plane row (4 or 2)
+constexpr float INV_SQRT_D = (D == 256) ? 0.0625f : 0.08838834764831845f;   // TurboQuant norms are stored unscaled
+
+// LD consecutive 16-bit values (bf16 / fp16) of one lane
+template <typename T> __device__ __forceinline__ void load_lane16(const T* src, T* dst) {
+  if constexpr (LD == 8) *reinterpret_cast<uint4*>(dst) = *reinterpret_cast<const uint4*>(src);
+  else *reinterpret_cast<uint2*>(dst) = *reinterpret_cast<const uint2*>(src);
+}
+// the 2*LD bits of 2-bit codes owned by `lane` in a plane row
+__device__ __forceinline__ unsigned lane_codes2(const uint8_t* row, int lane) {
+  if constexpr (LD == 8) return reinterpret_cast<const uint16_t*>(row)[lane];
+  else return row[lane];
+}
 
 struct Params {
   int Hkv, Tcap;
@@ -30,7 +48,7 @@ struct Params {
   // BF16
   const __nv_bfloat16 *kb, *vb;
   // GS
-  const uint16_t *khi, *klo, *vhi, *vlo;
+  const uint8_t *khi, *klo, *vhi, *vlo;                     // 2-bit planes, RB bytes per row
   const uint8_t *kg8, *vg8; const float *kglut, *vglut;     // (Hkv,256)
   const __half *kg16, *vg16;                                 // TurboQuant norms
   const __half *kmu, *vmu; int mu_block;                     // rotated means or nullptr
@@ -60,26 +78,26 @@ enum { F_BF16 = 0, F_GS = 1, F_KIVI = 2 };
 
 template <> struct Loader<F_BF16> {
   __device__ static void k(const Params& p, int h, int t, int lane, float* x) {
-    const uint4 r = *reinterpret_cast<const uint4*>(p.kb + ((size_t)h * p.Tcap + t) * D + lane * LD);
-    const __nv_bfloat16* b = reinterpret_cast<const __nv_bfloat16*>(&r);
+    __nv_bfloat16 b[LD];
+    load_lane16(p.kb + ((size_t)h * p.Tcap + t) * D + lane * LD, b);
 #pragma unroll
     for (int i = 0; i < LD; i++) x[i] = __bfloat162float(b[i]);
   }
   __device__ static void v(const Params& p, int h, int t, int lane, float* x) {
-    const uint4 r = *reinterpret_cast<const uint4*>(p.vb + ((size_t)h * p.Tcap + t) * D + lane * LD);
-    const __nv_bfloat16* b = reinterpret_cast<const __nv_bfloat16*>(&r);
+    __nv_bfloat16 b[LD];
+    load_lane16(p.vb + ((size_t)h * p.Tcap + t) * D + lane * LD, b);
 #pragma unroll
     for (int i = 0; i < LD; i++) x[i] = __bfloat162float(b[i]);
   }
 };
 
-__device__ __forceinline__ void gs_load(const uint16_t* hi, const uint16_t* lo, const uint8_t* g8, const float* glut,
+__device__ __forceinline__ void gs_load(const uint8_t* hi, const uint8_t* lo, const uint8_t* g8, const float* glut,
                                         const __half* g16, const __half* mu, int mu_block, const float* lev, int fine,
                                         int Tcap, int h, int t, int lane, float* x) {
   const size_t row = (size_t)h * Tcap + t;
-  const unsigned a = hi[row * (D / 8) + lane];
-  const unsigned b = fine ? lo[row * (D / 8) + lane] : 0u;
-  const float g = g8 ? glut[h * 256 + g8[row]] : __half2float(g16[row]) * (1.0f / 16.0f);
+  const unsigned a = lane_codes2(hi + row * RB, lane);
+  const unsigned b = fine ? lane_codes2(lo + row * RB, lane) : 0u;
+  const float g = g8 ? glut[h * 256 + g8[row]] : __half2float(g16[row]) * INV_SQRT_D;
 #pragma unroll
   for (int i = 0; i < LD; i++) {
     const int c = (a >> (2 * i)) & 3;
@@ -88,8 +106,8 @@ __device__ __forceinline__ void gs_load(const uint16_t* hi, const uint16_t* lo, 
   }
   if (mu) {
     const __half* m = mu + ((size_t)h * (Tcap / mu_block) + t / mu_block) * D + lane * LD;
-    const uint4 r = *reinterpret_cast<const uint4*>(m);
-    const __half* hm = reinterpret_cast<const __half*>(&r);
+    __half hm[LD];
+    load_lane16(m, hm);
 #pragma unroll
     for (int i = 0; i < LD; i++) x[i] += __half2float(hm[i]);
   }
@@ -106,11 +124,11 @@ template <> struct Loader<F_GS> {
 
 __device__ __forceinline__ void unpack_codes(const uint8_t* base, int bits, int lane, int* c) {
   if (bits == 2) {
-    const unsigned a = reinterpret_cast<const uint16_t*>(base)[lane];
+    const unsigned a = lane_codes2(base, lane);
 #pragma unroll
     for (int i = 0; i < LD; i++) c[i] = (a >> (2 * i)) & 3;
   } else {
-    const unsigned a = reinterpret_cast<const uint32_t*>(base)[lane];
+    const unsigned a = (LD == 8) ? reinterpret_cast<const uint32_t*>(base)[lane] : reinterpret_cast<const uint16_t*>(base)[lane];
 #pragma unroll
     for (int i = 0; i < LD; i++) c[i] = (a >> (4 * i)) & 15;
   }
@@ -122,8 +140,8 @@ template <> struct Loader<F_KIVI> {
     const size_t row = (size_t)h * p.Tcap + t;
     unpack_codes(p.kc + row * (D * p.kbits / 8), p.kbits, lane, c);
     const size_t m = ((size_t)h * (p.Tcap / 128) + t / 128) * D + lane * LD;
-    const uint4 rs = *reinterpret_cast<const uint4*>(p.ksc + m), rz = *reinterpret_cast<const uint4*>(p.kzp + m);
-    const __half *s = reinterpret_cast<const __half*>(&rs), *z = reinterpret_cast<const __half*>(&rz);
+    __half s[LD], z[LD];
+    load_lane16(p.ksc + m, s); load_lane16(p.kzp + m, z);
 #pragma unroll
     for (int i = 0; i < LD; i++) x[i] = c[i] * __half2float(s[i]) + __half2float(z[i]);
   }
@@ -154,7 +172,7 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
   const int h = blockIdx.y, lane = threadIdx.x & 31, w = threadIdx.x >> 5;
   // shared memory carve-up (bytes). qs: block-shared query (GS/BF16) or per-warp scaled query (KIVI).
   constexpr int QS_WARPS = (FMT == F_KIVI) ? WARPS : 1;
-  constexpr int VROW = (FMT == F_BF16) ? 0 : 128;            // staged V bytes per token (hi+lo planes / KIVI codes)
+  constexpr int VROW = (FMT == F_BF16) ? 0 : D / 2;          // staged V bytes per token (hi+lo planes / KIVI codes)
   constexpr int SMEM_NEED = QS_WARPS * D * 16 + WARPS * TILE * VROW + 2 * 16 * 32 * 4 + 2 * 256 * 4 + 2 * WARPS * TILE * 16;
   constexpr int SMEM_BYTES = SMEM_NEED > WARPS * G * D * 4 ? SMEM_NEED : WARPS * G * D * 4;
   __shared__ __align__(16) unsigned char smem[SMEM_BYTES];
@@ -222,8 +240,8 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
         float part[G] = {0.f, 0.f, 0.f, 0.f};
         if (FMT == F_GS) {
           const size_t mo = ((size_t)h * (p.Tcap / p.mu_block) + bb) * D + lane * LD;
-          const uint4 rk = *reinterpret_cast<const uint4*>(p.kmu + mo), rv = *reinterpret_cast<const uint4*>(p.vmu + mo);
-          const __half *hk = reinterpret_cast<const __half*>(&rk), *hv = reinterpret_cast<const __half*>(&rv);
+          __half hk[LD], hv[LD];
+          load_lane16(p.kmu + mo, hk); load_lane16(p.vmu + mo, hv);
 #pragma unroll
           for (int i = 0; i < LD; i++) {
             const float km = __half2float(hk[i]); vmu[i] = __half2float(hv[i]);
@@ -232,8 +250,8 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
           }
         } else {
           const size_t mo = ((size_t)h * (p.Tcap / 128) + bb) * D + lane * LD;
-          const uint4 rs = *reinterpret_cast<const uint4*>(p.ksc + mo), rz = *reinterpret_cast<const uint4*>(p.kzp + mo);
-          const __half *hs = reinterpret_cast<const __half*>(&rs), *hz = reinterpret_cast<const __half*>(&rz);
+          __half hs[LD], hz[LD];
+          load_lane16(p.ksc + mo, hs); load_lane16(p.kzp + mo, hz);
           __syncwarp();
 #pragma unroll
           for (int i = 0; i < LD; i++) {
@@ -253,39 +271,39 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
     int t = -1;
     if (it < b1) t = p.idx ? p.idx[h * p.idx_stride + it] : p.t0 + it;
     const size_t row = (size_t)h * p.Tcap + (t < 0 ? 0 : t);
-    uint4 ka[4], kl[4];
+    uint4 ka[D / 32];                                          // KIVI key codes (2-bit: RU4 used, 4-bit: 2*RU4)
     float kgain = 0.f;
     if (FMT == F_GS && t >= 0) {
-      kgain = p.kg8 ? kglut_s[p.kg8[row]] : __half2float(p.kg16[row]) * (1.0f / 16.0f);
+      kgain = p.kg8 ? kglut_s[p.kg8[row]] : __half2float(p.kg16[row]) * INV_SQRT_D;
       uint4* dst = reinterpret_cast<uint4*>(vb_w + lane * VROW);
-      const uint4* vh = reinterpret_cast<const uint4*>(p.vhi + row * (D / 8));
+      const uint4* vh = reinterpret_cast<const uint4*>(p.vhi + row * RB);
 #pragma unroll
-      for (int c = 0; c < 4; c++) dst[c] = vh[c];
-      if (p.vfine) { const uint4* vl = reinterpret_cast<const uint4*>(p.vlo + row * (D / 8));
+      for (int c = 0; c < RU4; c++) dst[c] = vh[c];
+      if (p.vfine) { const uint4* vl = reinterpret_cast<const uint4*>(p.vlo + row * RB);
 #pragma unroll
-        for (int c = 0; c < 4; c++) dst[4 + c] = vl[c]; }
-      vaux[w][lane] = make_float4(p.vg8 ? vglut_s[p.vg8[row]] : __half2float(p.vg16[row]) * (1.0f / 16.0f), 0.f, 0.f, 0.f);
+        for (int c = 0; c < RU4; c++) dst[RU4 + c] = vl[c]; }
+      vaux[w][lane] = make_float4(p.vg8 ? vglut_s[p.vg8[row]] : __half2float(p.vg16[row]) * INV_SQRT_D, 0.f, 0.f, 0.f);
     } else if (FMT == F_KIVI && t >= 0) {
-      const int nb = D * p.kbits / 8 / 16;                     // 4 or 8 uint4 per row
       const uint4* kp = reinterpret_cast<const uint4*>(p.kc + row * (D * p.kbits / 8));
       const uint4* vp = reinterpret_cast<const uint4*>(p.vc + row * (D * p.kbits / 8));
       uint4* dst = reinterpret_cast<uint4*>(vb_w + lane * VROW);
 #pragma unroll
-      for (int c = 0; c < 4; c++) { ka[c] = kp[c]; dst[c] = vp[c]; }
-      if (nb == 8)
+      for (int c = 0; c < RU4; c++) { ka[c] = kp[c]; dst[c] = vp[c]; }
+      if (p.kbits == 4)
 #pragma unroll
-        for (int c = 0; c < 4; c++) { kl[c] = kp[4 + c]; dst[4 + c] = vp[4 + c]; }
-      const __half* vs = p.vsc + row * 2; const __half* vz = p.vzp + row * 2;
-      vaux[w][lane] = make_float4(__half2float(vs[0]), __half2float(vs[1]), __half2float(vz[0]), __half2float(vz[1]));
+        for (int c = RU4; c < 2 * RU4; c++) { ka[c] = kp[c]; dst[c] = vp[c]; }
+      constexpr int NG = D / 128;                              // value channel groups per token (1 or 2)
+      const __half* vs = p.vsc + row * NG; const __half* vz = p.vzp + row * NG;
+      vaux[w][lane] = make_float4(__half2float(vs[0]), __half2float(vs[NG - 1]), __half2float(vz[0]), __half2float(vz[NG - 1]));
     }
     // ---------------- K: logits
     float s[G] = {0.f, 0.f, 0.f, 0.f};
     if (t >= 0) {
       if (FMT == F_GS) {
-        const uint4* hp = reinterpret_cast<const uint4*>(p.khi + row * (D / 8));
-        const uint4* lp = reinterpret_cast<const uint4*>(p.klo + row * (D / 8));
+        const uint4* hp = reinterpret_cast<const uint4*>(p.khi + row * RB);
+        const uint4* lp = reinterpret_cast<const uint4*>(p.klo + row * RB);
 #pragma unroll 1
-        for (int c = 0; c < 4; c++) {
+        for (int c = 0; c < RU4; c++) {
           const uint4 a = hp[c];
           const uint4 b = p.kfine ? lp[c] : make_uint4(0, 0, 0, 0);
           const unsigned aw[4] = {a.x, a.y, a.z, a.w}, bw[4] = {b.x, b.y, b.z, b.w};
@@ -309,7 +327,7 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
       } else if (FMT == F_KIVI) {
         if (p.kbits == 2) {
 #pragma unroll
-          for (int c = 0; c < 4; c++) {
+          for (int c = 0; c < RU4; c++) {
             const unsigned aw[4] = {ka[c].x, ka[c].y, ka[c].z, ka[c].w};
 #pragma unroll
             for (int wd = 0; wd < 4; wd++)
@@ -322,8 +340,8 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
           }
         } else {
 #pragma unroll
-          for (int c = 0; c < 8; c++) {
-            const uint4 a = (c < 4) ? ka[c] : kl[c - 4];
+          for (int c = 0; c < 2 * RU4; c++) {
+            const uint4 a = ka[c];
             const unsigned aw[4] = {a.x, a.y, a.z, a.w};
 #pragma unroll
             for (int wd = 0; wd < 4; wd++)
@@ -384,8 +402,8 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
       for (int j = 0; j < nt; j++) {
         const float4 pj = ps[w][j];
         const float g = vaux[w][j].x;
-        const unsigned a = reinterpret_cast<const uint16_t*>(vb_w + j * VROW)[lane];
-        const unsigned b = p.vfine ? reinterpret_cast<const uint16_t*>(vb_w + j * VROW + 64)[lane] : 0u;
+        const unsigned a = lane_codes2(vb_w + j * VROW, lane);
+        const unsigned b = p.vfine ? lane_codes2(vb_w + j * VROW + RB, lane) : 0u;
 #pragma unroll
         for (int i = 0; i < LD; i++) {
           const int code = (a >> (2 * i)) & 3;
@@ -559,7 +577,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
   p.idx = (const int*)ptr(idx); p.idx_stride = idx.has_value() ? idx->size(1) : 0;
   p.tokens_per_block = tokens_per_block; p.q = q.data_ptr<float>();
   p.kb = (const __nv_bfloat16*)ptr(kb); p.vb = (const __nv_bfloat16*)ptr(vb);
-  p.khi = (const uint16_t*)ptr(khi); p.klo = (const uint16_t*)ptr(klo); p.vhi = (const uint16_t*)ptr(vhi); p.vlo = (const uint16_t*)ptr(vlo);
+  p.khi = (const uint8_t*)ptr(khi); p.klo = (const uint8_t*)ptr(klo); p.vhi = (const uint8_t*)ptr(vhi); p.vlo = (const uint8_t*)ptr(vlo);
   p.kg8 = (const uint8_t*)ptr(kg8); p.vg8 = (const uint8_t*)ptr(vg8); p.kglut = (const float*)ptr(kglut); p.vglut = (const float*)ptr(vglut);
   p.kg16 = (const __half*)ptr(kg16); p.vg16 = (const __half*)ptr(vg16);
   p.kmu = (const __half*)ptr(kmu); p.vmu = (const __half*)ptr(vmu); p.mu_block = mu_block;
@@ -586,8 +604,8 @@ void delta(torch::Tensor q, int64_t Hkv, int64_t Tcap, torch::Tensor idx, int64_
   Params p{};
   p.Hkv = Hkv; p.Tcap = Tcap; p.n = idx.size(1); p.idx = idx.data_ptr<int>(); p.idx_stride = idx.size(1);
   p.tokens_per_block = tokens_per_block; p.q = q.data_ptr<float>(); p.mref = mref.data_ptr<float>();
-  p.khi = (const uint16_t*)khi.data_ptr(); p.klo = (const uint16_t*)klo.data_ptr();
-  p.vhi = (const uint16_t*)vhi.data_ptr(); p.vlo = (const uint16_t*)vlo.data_ptr();
+  p.khi = (const uint8_t*)khi.data_ptr(); p.klo = (const uint8_t*)klo.data_ptr();
+  p.vhi = (const uint8_t*)vhi.data_ptr(); p.vlo = (const uint8_t*)vlo.data_ptr();
   p.kg8 = kg8.data_ptr<uint8_t>(); p.vg8 = vg8.data_ptr<uint8_t>(); p.kglut = kglut.data_ptr<float>(); p.vglut = vglut.data_ptr<float>();
   p.kmu = (const __half*)ptr(kmu); p.vmu = (const __half*)ptr(vmu); p.mu_block = mu_block;
   p.klev = klev4.data_ptr<float>(); p.klev_f = klev16.data_ptr<float>();

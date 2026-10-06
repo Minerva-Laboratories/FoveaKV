@@ -25,7 +25,7 @@ for C in CORPORA:
         o_ref = attend(p_true, L["v"])
         t = np.arange(T)[None, :]
         A = (t < S_SINK) | ((t > qpos[:, None] - W_REC) & (t <= qpos[:, None]))
-        gs = gain_shape_cache_v2(L, P, block=128)
+        gs = gain_shape_cache_v2(L, P, block=128, smooth=SMOOTH)
         sc, sf = scores(q, gs["Kc"], qpos), scores(q, gs["Kf"], qpos)
         # coarse estimates (exact for A tokens)
         se = np.where(A[None, None], sr, sc)
@@ -66,7 +66,7 @@ rows = []
 for kf in (0.02, 0.05):
     for name in dict.fromkeys(Aa[:, 3]):
         a = Aa[(Aa[:, 2] == kf) & (Aa[:, 3] == name)]
-        rows.append((f"{kf*100:.0f}%", name, float(a[:, 4].astype(float).mean()), float(a[a[:, 1] == 3][:, 4].astype(float).mean())))
+        rows.append((f"{kf*100:.0f}%", name, float(a[:, 4].astype(float).mean()), float(a[a[:, 1] == LAYERS[0]][:, 4].astype(float).mean())))
 g = {(r[0], r[1]): r[2] for r in rows}
 write("13_selection_criteria.md", f"""# E13 Selection criteria from the first-order error model (window A + block means, int8 reference)
 
@@ -78,6 +78,6 @@ At k=2%: {g[('2%','max-logp')]:.4f} / {g[('2%','sum-p2')]:.4f} / {g[('2%','expec
 Same caches as E11 (DYN +A +blk128). Criteria rank non-window tokens per KV head; p, o, v are coarse estimates (exact for A).
 expected-error: w_i = Σ_h p_hi² ( ||q_h||² g_ki² ||v_i − o_h||² / d² + g_vi² ), from the first-order error model.
 
-""" + md_table(["k", "criterion", "attn err", "layer-3 attn err"], rows) + f"""
+""" + md_table(["k", "criterion", "attn err", f"layer-{LAYERS[0]} attn err"], rows) + f"""
 runtime {time.time()-t0:.0f}s
 """)

@@ -1,6 +1,7 @@
 """GPU KV-cache schemes for batch-1 decode with custom CUDA kernels (gpu/kernels.cu).
 
-Every cache stores one attention layer: Hkv KV heads, D=256, GQA group G=4. Keys are post-RoPE.
+Every cache stores one attention layer: Hkv KV heads, head_dim D (256, or 128 with FOVEAKV_HEAD_DIM=128), GQA group G=4
+(a model with another group size must pad (G<4) or split (G>4) its query heads). Keys are post-RoPE.
 Common interface:  prefill(k, v) ; append(k, v) ; attend(q) -> (Hq, D) fp32 ; read_bits() ; reference(q)
 Compressed schemes keep an exact bf16 recent window: tokens are encoded in 128-token blocks once the whole block is
 older than W=128 tokens (so the window holds 128..255 tokens). Raw bf16 K/V are kept for re-encoding/window only;
@@ -17,7 +18,8 @@ sys.path.insert(0, ROOT)
 from foveakv.quant import NestedCodebook, lloyd_max          # analytic codebooks (NumPy)
 from foveakv.rotate import rht_matrix
 
-D, G, BLK, W = 256, 4, 128, 128
+D = int(os.environ.get("FOVEAKV_HEAD_DIM", 256))       # one head size per process; kernels are compiled for it
+G, BLK, W = 4, 128, 128
 _EXT = None
 
 
@@ -30,8 +32,11 @@ def ext():
             os.environ["TORCH_CUDA_ARCH_LIST"] = f"{major}.{minor}"
         bd = os.path.join(ROOT, "gpu", "build")
         os.makedirs(bd, exist_ok=True)
-        _EXT = load("foveakv_kernels", [os.path.join(ROOT, "gpu", "kernels.cu")], build_directory=bd,
-                    extra_cuda_cflags=["-O3", "--use_fast_math", "-allow-unsupported-compiler"], verbose=False)
+        name = "foveakv_kernels" if D == 256 else f"foveakv_kernels_d{D}"
+        bd = os.path.join(bd, name)
+        os.makedirs(bd, exist_ok=True)
+        _EXT = load(name, [os.path.join(ROOT, "gpu", "kernels.cu")], build_directory=bd,
+                    extra_cuda_cflags=["-O3", "--use_fast_math", "-allow-unsupported-compiler", f"-DFKV_D={D}"], verbose=False)
     return _EXT
 
 
@@ -308,7 +313,7 @@ class GainShape(Base):
             self.glo[n], self.ghi[n] = lg.min(0).values, lg.max(0).values  # (Hkv,)
         nlev = 1 << self.gain_bits
         self.glut = {n: (torch.exp(self.glo[n][:, None] + (torch.arange(nlev, device=self.dev)[None] + 0.5) / nlev
-                                   * (self.ghi[n] - self.glo[n])[:, None]) / 16.0).float().contiguous() for n in x}
+                                   * (self.ghi[n] - self.glo[n])[:, None]) / math.sqrt(D)).float().contiguous() for n in x}
         if not self.block_mean:
             self.kmu[:, 0] = (self.mu_glob["k"] @ self.Rt).half()
             self.vmu[:, 0] = (self.mu_glob["v"] @ self.Rt).half()
@@ -337,7 +342,7 @@ class GainShape(Base):
                 else:
                     y = (x - self.mu_glob[name]) @ self.Rt
             g = torch.linalg.norm(y, dim=-1)                                       # (n, Hkv)
-            z = y / g.clamp_min(1e-30)[..., None] * 16.0
+            z = y / g.clamp_min(1e-30)[..., None] * math.sqrt(D)
             if self.mode == "tq":
                 gg = g.half()
                 (self.kg16 if name == "k" else self.vg16)[:, a:b] = gg.t()
@@ -414,7 +419,7 @@ class GainShape(Base):
             if self.mode == "tq":
                 lev = {2: LUT_TQ2.to(self.dev)[ch], 3: LUT_TQ3_16.to(self.dev)[(ch << 2) | cl],
                        4: self.lut16[(ch << 2) | cl]}[self.bits]
-                g = getattr(self, name + "g16")[:, :n].float()[..., None] / 16.0
+                g = getattr(self, name + "g16")[:, :n].float()[..., None] / math.sqrt(D)
                 y = g * lev
             else:
                 fine = (self.k16 if name == "k" else self.v16)[(ch << 2) | cl]

@@ -28,7 +28,7 @@ for C in CORPORA:
         fin = np.isfinite(sr)
         rule = lambda s: np.where(A[None], -np.inf, logprob(np.where(A[None, None], np.where(fin, sr, -np.inf), s)).max(1))
         # FoveaKV (shrinkage-corrected)
-        gs = gain_shape_cache_v2(L, P, block=128)
+        gs = gain_shape_cache_v2(L, P, block=128, smooth=SMOOTH)
         Mk, Mv = block_means(L["k"], 128), block_means(L["v"], 128)
         Kc = Mk + (gs["Kc"] - Mk) / np.sqrt(1 - Dc); Kf = Mk + (gs["Kf"] - Mk) / np.sqrt(1 - Df)
         Vc = Mv + (gs["Vc"] - Mv) / (1 - Dc); Vf = Mv + (gs["Vf"] - Mv) / (1 - Df)
@@ -54,7 +54,7 @@ rows = []
 for name in dict.fromkeys(R[:, 2]):
     for kf in sorted(set(R[R[:, 2] == name][:, 3].astype(float))):
         a = R[(R[:, 2] == name) & (R[:, 3].astype(float) == kf)]
-        rows.append((name, f"{kf*100:g}%", float(a[0, 4]), float(a[0, 5]), float(a[:, 6].astype(float).mean()), float(a[a[:, 1] == 3][:, 6].astype(float).mean())))
+        rows.append((name, f"{kf*100:g}%", float(a[0, 4]), float(a[0, 5]), float(a[:, 6].astype(float).mean()), float(a[a[:, 1] == LAYERS[0]][:, 6].astype(float).mean())))
 g = {(r[0], r[1]): r[4] for r in rows}
 write("17_specache.md", f"""# E17 FoveaKV vs SpeCache-style refinement (offline, int8 reference, shared exact window)
 
@@ -67,6 +67,6 @@ SpeCache-style = KIVI-2b (group 128, fp16 scale/zero) resident for all tokens; t
 KIVI keys; selected tokens use the exact reference K/V (16-bit copy in CPU memory). FoveaKV = shrinkage-corrected nested code.
 'refinement bits' = bits per value moved per step for hot tokens (FoveaKV: 2·k; SpeCache: 16·k').
 
-""" + md_table(["method", "k", "resident bits", "refinement bits/step", "attn err", "layer-3 attn err"], rows) + f"""
+""" + md_table(["method", "k", "resident bits", "refinement bits/step", "attn err", f"layer-{LAYERS[0]} attn err"], rows) + f"""
 runtime {time.time()-t0:.0f}s
 """)

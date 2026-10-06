@@ -21,12 +21,13 @@ for C in CORPORA:
         L = kvdata.load_layer(C, Li)
         P = prefill_len(L)
         sl = slice(0, None, 2)
-        q, qpos, gate = L["q"][sl], L["qpos"][sl], L["gate"][sl]
+        q, qpos = L["q"][sl], L["qpos"][sl]
+        gs_ = sigmoid(L["gate"][sl]) if "gate" in L else 1.0        # Qwen3.5 output gate; dense models have none
         E, T = len(qpos), L["T"]
-        Wo = ST.get(f"model.language_model.layers.{Li}.self_attn.o_proj.weight")
+        Wo = ST.get(kvdata.weight_name(Li))
         sr = scores(q, L["k"], qpos)
         o_ref = attend(softmax(sr), L["v"])
-        r_ref = (o_ref.reshape(E, -1) * sigmoid(gate)) @ Wo.T
+        r_ref = (o_ref.reshape(E, -1) * gs_) @ Wo.T
         t = np.arange(T)[None, :]
         A = (t < S_SINK) | ((t > qpos[:, None] - W_REC) & (t <= qpos[:, None]))          # (E,T)
         nA = A.sum(-1).mean()
@@ -34,7 +35,7 @@ for C in CORPORA:
 
         def rec(name, o, b8k, binf):
             ea = np.linalg.norm(o - o_ref, axis=-1) / np.linalg.norm(o_ref, axis=-1)
-            r = (o.reshape(E, -1) * sigmoid(gate)) @ Wo.T
+            r = (o.reshape(E, -1) * gs_) @ Wo.T
             er = np.linalg.norm(r - r_ref, axis=-1) / np.linalg.norm(r_ref, axis=-1)
             res.append((C, Li, name, b8k, binf, float(ea.mean()), float(er.mean())))
 
@@ -97,7 +98,7 @@ rows = []
 for nm in names:
     a = Aarr[Aarr[:, 2] == nm]
     f = lambda j: float(a[:, j].astype(float).mean())
-    rows.append((nm, f(3), f(4), f(5), float(a[:, 5].astype(float).max()), f(6), float(a[(a[:, 1] == 3)][:, 5].astype(float).mean())))
+    rows.append((nm, f(3), f(4), f(5), float(a[:, 5].astype(float).max()), f(6), float(a[(a[:, 1] == LAYERS[0])][:, 5].astype(float).mean())))
 rows.sort(key=lambda r: r[2])
 g = {r[0]: r for r in rows}
 pl = []
@@ -119,7 +120,7 @@ ax.set_yscale("log"); ax.grid(alpha=.3); ax.legend(fontsize=8)
 plt.tight_layout(); plt.savefig(os.path.join(PLOTS, "e11_frontier.png"), dpi=100)
 
 best = g["DYN k=5% +A +blk128"]
-write("11_improvements.md", f"""# E11 Low-hanging improvements + TurboQuant-MSE baseline (offline, int8 reference, 5 corpora × 6 layers)
+write("11_improvements.md", f"""# E11 Low-hanging improvements + TurboQuant-MSE baseline (offline, int8 reference, {len(CORPORA)} corpora × {len(LAYERS)} layers)
 
 **TL;DR:** E8 config DYN k=5%: attn err {g['DYN k=5% (E8 config)'][3]:.4f}. Adding (A) an exact sink+recent set outside the budget → {g['DYN k=5% +A'][3]:.4f};
 plus (C) block-local centering (128-token fp16 means) → {best[3]:.4f} at {best[2]:.2f} bits (long-context limit); (B) key smoothing alone: {g['DYN k=5% +A +smooth'][3]:.4f}. References: GS-4b +A {g['GS-4b +A'][3]:.4f} ({g['GS-4b +A'][2]:.2f} b),
@@ -132,9 +133,9 @@ Adaptive k (τ=0.9, +A, +blk128): {g['DYN adaptive τ=0.9 +A +blk128'][3]:.4f} a
 - Smoothing: s_c = (E[(k_c−μ_c)²]/E[q_c²])^(1/4) per KV head from prefill keys and prefill queries (group-averaged); keys stored as (k−μ)/s, queries scaled by s.
 - TurboQuant-MSE: RHT + Lloyd-Max N(0,1/d) codebook + fp16 norm, no mean removal, no QJL; b + 16/256 bits.
 - Block centering: per-channel mean of each complete 128-token block (fp16), subtracted from K and V before RHT; +0.125 bits/elem.
-- Adaptive: per query head smallest k s.t. estimated mass (coarse logits; exact for A) ≥ τ, capped at 20%; union over the 4 heads of a group.
+- Adaptive: per query head smallest k s.t. estimated mass (coarse logits; exact for A) ≥ τ, capped at 20%; union over the query heads of a group.
 
-""" + md_table(["scheme", "bits @8K", "bits (long ctx)", "attn err", "attn err worst", "resid err", "layer-3 attn err"], rows) + """
+""" + md_table(["scheme", "bits @8K", "bits (long ctx)", "attn err", "attn err worst", "resid err", f"layer-{LAYERS[0]} attn err"], rows) + """
 ## Per layer
 """ + md_table(["layer", "scheme", "attn err", "resid err"], pl) + f"""
 ![frontier](plots/e11_frontier.png)

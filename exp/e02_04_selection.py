@@ -11,8 +11,7 @@ TAUS = [0.8, 0.9, 0.95]
 e2, e3, e4, adapt = [], [], [], []
 bound_viol = bound_total = 0
 for C in CORPORA:
-    for Li in LAYERS:
-        L = kvdata.load_layer(C, Li)
+    for Li, L in ((Li, Lc) for Li in LAYERS for Lc in head_chunks(kvdata.load_layer(C, Li))):   # chunks of <= 2 KV heads
         P, q, qpos = prefill_len(L), L["q"], L["qpos"]
         s_true = scores(q, L["k"], qpos)
         p = softmax(s_true)                                   # (Hkv,G,E,T)
@@ -25,7 +24,7 @@ for C in CORPORA:
             mopt = np.take_along_axis(csum, np.broadcast_to((k - 1)[:, None], (Hkv, G, E, 1)), -1)[..., 0]
             for kh in range(Hkv):
                 for g in range(G):
-                    e2.append((C, Li, kh * G + g, kf, float(mopt[kh, g].mean())))
+                    e2.append((C, Li, (L["h0"] + kh) * G + g, kf, float(mopt[kh, g].mean())))
         k_opt = {kf: k_for(qpos, kf) for kf in KS}
         mopt_k = {kf: np.take_along_axis(csum, np.broadcast_to((k_opt[kf] - 1)[:, None], (Hkv, G, E, 1)), -1)[..., 0] for kf in KS}
         srt_true = sort_desc(s_true)
@@ -138,7 +137,7 @@ Bound m_H ≥ e^(−2η) m_opt (η = max |logit error|): {bound_viol} violations
 Estimated logits from the 2-bit coarse plane or the 1-bit sign plane (× exact 8-bit log gain, level sqrt(2/π)), post-RoPE keys,
 mean removed using prefill stats. Top-k per query head (k = frac·(p+1)); captured mass m_H vs oracle m_opt. Reference = int8 cache.
 
-## Aggregate (mean over 5 corpora × 6 layers × 8 heads × 512 queries)
+## Aggregate (mean over {len(CORPORA)} corpora × {len(LAYERS)} layers × all query heads × 512 queries)
 """ + md_table(["estimator", "rotation", "k", "overlap", "m_H/m_opt mean", "worst layer-mean", "worst p5", "median η", "median e^-2η"], rows3) + """
 ## Per layer at k=5% (+RHT)
 """ + md_table(["layer", "estimator", "overlap", "m_H/m_opt", "worst p5"], perlayer3) + f"""
@@ -158,10 +157,11 @@ for Li in LAYERS:
     perlayer4.append((Li, fl(a, 4).mean(), fl(a, 5).max(), fl(b, 4).mean(), fl(b, 7).mean()))
 u5 = [r for r in rows4 if r[0] == "true" and r[1] == "5%"][0]
 u5c = [r for r in rows4 if r[0] == "coarse" and r[1] == "5%"][0]
-write("04_gqa_union.md", f"""# E4 GQA union (group size G = 4 query heads per KV head) — key go/no-go metric
+_m = kvdata.meta(CORPORA[0]); GQ = _m.get("Hq", 8) // _m.get("Hkv", 2)
+write("04_gqa_union.md", f"""# E4 GQA union (group size G = {GQ} query heads per KV head) — key go/no-go metric
 
-**TL;DR:** at k=5%, the union of the 4 per-head true top-k sets is {u5[2]:.2f}× k on average (max {u5[3]:.2f}×); with the coarse estimate {u5c[2]:.2f}× k.
-Criterion "union ≤ ~3× per-head k": {'PASS' if u5c[2] <= 3 else 'FAIL'} (G=4 bounds the union at 4×).
+**TL;DR:** at k=5%, the union of the {GQ} per-head true top-k sets is {u5[2]:.2f}× k on average (max {u5[3]:.2f}×); with the coarse estimate {u5c[2]:.2f}× k.
+Criterion "union ≤ ~3× per-head k": {'PASS' if u5c[2] <= 3 else 'FAIL'} (G={GQ} bounds the union at {GQ}×).
 A budgeted alternative (rank by max over the group of estimated log-prob, keep exactly k) captures {u5c[5]:.3f} of each head's m_opt on average.
 
 ## Config
@@ -171,6 +171,6 @@ union size in units of k; m_H/m_opt per query head when the shared hot set is th
 ## Per layer at k=5%
 """ + md_table(["layer", "true union/k", "true max", "coarse union/k", "coarse budget m_H/m_opt"], perlayer4) + f"""
 ## Caveats
-- With only 2 KV heads (G=4) the union can never exceed 4×; this model is a mild GQA case. Larger groups (G=8–16) are not tested here.
+- With G={GQ} the union can never exceed {GQ}×. Larger groups (G=8–16) are not tested here.
 runtime {time.time()-t0:.0f}s
 """)

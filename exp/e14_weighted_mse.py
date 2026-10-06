@@ -105,7 +105,7 @@ Spearman ρ over (query, head) {g[(d5,'wmse')][5]:.2f}; the purely statistical m
 {g[(d5,'model')][2]:.2f}, ρ {g[(d5,'model')][5]:.2f}. SDPA identity Σp²x = exp(lse(2s)−2lse(s))·softmax(2s)x holds to {max(ident_err):.1e} (fp64).
 
 ## Config
-5 corpora × 6 layers, 128 decode queries per layer (stride 4), int8 reference. 'lin' = norm² of the linearized error vector
+{len(CORPORA)} corpora × {len(LAYERS)} layers, 128 decode queries per layer (stride 4), int8 reference. 'lin' = norm² of the linearized error vector
 (tests linearization incl. cross terms); 'wmse' = diagonal (independent-errors) weighted MSE with the actual per-token errors;
 'model' = statistical model Eq. (errmodel) with D_c/D_f and per-token gains. Ratio: median over (query, head) of predicted/actual.
 

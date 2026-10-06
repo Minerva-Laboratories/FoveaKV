@@ -18,7 +18,7 @@ for C in CORPORA:
         L = kvdata.load_layer(C, Li)
         P = prefill_len(L)
         T = L["T"]
-        gs = gain_shape_cache_v2(L, P, block=128)
+        gs = gain_shape_cache_v2(L, P, block=128, smooth=SMOOTH)
         Mk, Mv = block_means(L["k"], 128), block_means(L["v"], 128)
         Kc = Mk + (gs["Kc"] - Mk) / np.sqrt(1 - Dc); Kf = Mk + (gs["Kf"] - Mk) / np.sqrt(1 - Df)
         Vc = Mv + (gs["Vc"] - Mv) / (1 - Dc); Vf = Mv + (gs["Vf"] - Mv) / (1 - Df)
@@ -61,7 +61,7 @@ write("18_static_vs_dynamic.md", f"""# E18 Static vs per-step mixed precision at
 
 ## Config
 Probe = first {NPROBE} decode positions (excluded from evaluation); evaluation = remaining positions (stride 2). Shrinkage-corrected
-nested code, block means, exact 128-token window, int8 reference, 5 corpora x 6 layers.
+nested code, block means, exact 128-token window, int8 reference, {len(CORPORA)} corpora x {len(LAYERS)} layers.
 
 """ + md_table(["4-bit tokens", "selection", "attn err"], rows) + f"""
 runtime {time.time()-t0:.0f}s
