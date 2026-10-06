@@ -1,0 +1,53 @@
+/home/alex/Desktop/Dynamic Requant/exp/e19_smoothing.py:82: RuntimeWarning: invalid value encountered in subtract
+  err[sm] = ((sc - st)[valid] ** 2).reshape(-1)
+qwen3.5-4b prose L3 4s
+qwen3.5-4b prose L11 8s
+qwen3.5-4b prose L23 13s
+qwen3.5-4b prose L31 18s
+qwen3.5-4b code L3 22s
+qwen3.5-4b code L11 27s
+qwen3.5-4b code L23 31s
+qwen3.5-4b code L31 35s
+# E19 Why key smoothing matters on some models (pipeline check + characterization)
+
+**TL;DR:** pipeline check (offline exact attention vs the model's own o_proj input), max rel. error: qwen3.5-4b 0.012.
+Median predicted smoothing gain (Σq²·Σk²/(Σ√(q²k²))², from prefill stats): qwen3.5-4b 1.35x;
+measured 2-bit logit-MSE gain: qwen3.5-4b 1.25x (Spearman predicted vs measured over heads 0.88).
+
+## Config
+Reference per model: {'qwen3.5-4b': 'int8'}. Corpora ['prose', 'code']; up to 4 attention layers per model; all KV heads; 2-bit (coarse) gain-shape keys with 128-token block means.
+Logit error is measured on every 4th decode query over all causal positions. k² = per-channel variance of post-RoPE prefill keys,
+q² = per-channel mean square of post-RoPE prefill queries (averaged over the GQA group). runtime 35s.
+
+## (A) Pipeline check
+| model | corpus | layer | rel err vs model |
+|---|---|---|---|
+| qwen3.5-4b | prose | 3 | 0.0058 |
+| qwen3.5-4b | prose | 11 | 0.0109 |
+| qwen3.5-4b | prose | 23 | 0.0084 |
+| qwen3.5-4b | prose | 31 | 0.0124 |
+| qwen3.5-4b | code | 3 | 0.0066 |
+| qwen3.5-4b | code | 11 | 0.0099 |
+| qwen3.5-4b | code | 23 | 0.0095 |
+| qwen3.5-4b | code | 31 | 0.0121 |
+
+## (B) Summary per model (medians over layer × head × corpus)
+| model | n heads | Gpred median | Gpred max | measured gain median | measured max | logit err/spread (no smooth) | logit err/spread (smooth) | k² max/median | q² max/median | Spearman(q², k²) | outlier: max/median mean|k| (median) | (max) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3.5-4b | 32 | 1.351 | 1.472 | 1.247 | 1.336 | 0.182 | 0.167 | 6.059 | 28.810 | 0.397 | 5.376 | 10.479 |
+
+## (B) Per head
+| model | corpus | layer | head | Gpred | measured gain | err/spread no smooth | err/spread smooth | k² max/med | q² max/med | ρ(q²,k²) | max/med mean|k| |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3.5-4b | prose | 3 | 0 | 1.385 | 1.267 | 0.179 | 0.159 | 17.447 | 47.080 | 0.590 | 9.392 |
+| qwen3.5-4b | prose | 3 | 1 | 1.297 | 1.192 | 0.178 | 0.163 | 11.672 | 19.096 | 0.338 | 8.521 |
+| qwen3.5-4b | prose | 3 | 2 | 1.398 | 1.261 | 0.200 | 0.178 | 11.535 | 65.623 | 0.359 | 7.406 |
+| qwen3.5-4b | prose | 3 | 3 | 1.407 | 1.336 | 0.155 | 0.134 | 3.412 | 20.594 | -0.049 | 4.129 |
+| qwen3.5-4b | prose | 11 | 0 | 1.387 | 1.299 | 0.177 | 0.155 | 14.000 | 37.713 | 0.448 | 6.257 |
+| qwen3.5-4b | prose | 11 | 1 | 1.374 | 1.229 | 0.172 | 0.155 | 14.252 | 42.677 | 0.488 | 5.914 |
+| qwen3.5-4b | prose | 11 | 2 | 1.320 | 1.267 | 0.204 | 0.182 | 6.291 | 18.895 | 0.456 | 2.909 |
+| qwen3.5-4b | prose | 11 | 3 | 1.402 | 1.282 | 0.191 | 0.168 | 12.657 | 50.290 | 0.579 | 5.876 |
+| qwen3.5-4b | prose | 23 | 0 | 1.362 | 1.258 | 0.191 | 0.170 | 5.251 | 25.836 | 0.372 | 6.467 |
+| qwen3.5-4b | prose | 23 | 1 | 1.287 | 1.168 | 0.184 | 0.171 | 3.528 | 27.983 | 0.323 | 5.212 |
+| qwen3.5-4b | prose | 23 | 2 | 1.234 | 1.157 | 0.177 | 0.165 | 4.042 | 27.228 | 0.435 | 5.072 |
+| qwen3.5-4b | prose | 23 | 3 | 1.294 | 1.2

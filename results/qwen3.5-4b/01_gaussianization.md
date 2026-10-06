@@ -1,0 +1,71 @@
+# E1 Gaussianization (Qwen3.5-0.8B, int8 reference cache, corpora prose+code, 6 attn layers × 2 KV heads)
+
+**TL;DR:** mean removal + RHT brings key-shape kurtosis from median 5.8 (raw, max 10.3) to 2.97 (max 3.01; Gaussian = 3).
+Empirical shape-MSE gap vs the Gaussian table after mean+RHT: keys post-RoPE median -0.03 dB (2b) / -0.05 dB (4b), worst +0.01 / +0.02 dB; values -0.04 / -0.07 dB.
+0 (corpus, layer, tensor, head) cases exceed the 0.5 dB gap after mean+RHT.
+
+## Config
+- z = u·sqrt(d), u = y/||y||; y = x − mu (mu from prefill tokens [0, T−512)) then optionally RHT (seed 0). d = head_dim.
+- Table: 2b nested-coarse MSE 0.1203, 4b Lloyd-Max 0.0095. gap dB = 10·log10(empirical/table) (positive = worse than Gaussian).
+- Data: all 8192 tokens per corpus.
+
+## Aggregate (median / max over corpus × layer × head)
+| tensor | variant | kurt med | kurt max | gap2b med dB | gap2b max dB | gap4b med dB | gap4b max dB |
+|---|---|---|---|---|---|---|---|
+| K-post | raw | 5.82 | 10.31 | 1.78 | 2.81 | 5.32 | 8.49 |
+| K-post | mean | 4.27 | 6.69 | 1.02 | 2.15 | 2.54 | 6.00 |
+| K-post | mean+RHT | 2.97 | 3.01 | -0.03 | 0.01 | -0.05 | 0.02 |
+| K-pre | raw | 5.90 | 10.35 | 1.83 | 2.86 | 5.40 | 8.47 |
+| K-pre | mean | 4.52 | 7.56 | 1.14 | 2.47 | 3.34 | 6.76 |
+| K-pre | mean+RHT | 2.97 | 3.00 | -0.03 | -0.00 | -0.06 | -0.01 |
+| V | raw | 4.71 | 101.24 | 1.19 | 6.90 | 3.49 | 16.14 |
+| V | mean | 4.52 | 11.64 | 1.09 | 2.88 | 3.22 | 8.76 |
+| V | mean+RHT | 2.96 | 2.99 | -0.04 | -0.01 | -0.07 | 0.00 |
+
+## Heads exceeding 0.5 dB after mean+RHT
+None.
+
+## Per layer (mean+RHT, keys post-RoPE / values, prose)
+| corpus | layer | tensor | head | variant | kurt | mse2 | gap2 dB | mse4 | gap4 dB |
+|---|---|---|---|---|---|---|---|---|---|
+| prose | 3 | K-post | 0 | mean+RHT | 2.9411 | 0.1185 | -0.0669 | 0.0093 | -0.1027 |
+| prose | 3 | K-post | 1 | mean+RHT | 2.9740 | 0.1195 | -0.0273 | 0.0094 | -0.0486 |
+| prose | 3 | K-post | 2 | mean+RHT | 2.9654 | 0.1193 | -0.0349 | 0.0093 | -0.0735 |
+| prose | 3 | K-post | 3 | mean+RHT | 2.9799 | 0.1198 | -0.0165 | 0.0094 | -0.0291 |
+| prose | 3 | V | 0 | mean+RHT | 2.9415 | 0.1187 | -0.0588 | 0.0093 | -0.0951 |
+| prose | 3 | V | 1 | mean+RHT | 2.9748 | 0.1196 | -0.0264 | 0.0094 | -0.0569 |
+| prose | 3 | V | 2 | mean+RHT | 2.9546 | 0.1189 | -0.0494 | 0.0093 | -0.0746 |
+| prose | 3 | V | 3 | mean+RHT | 2.9732 | 0.1194 | -0.0322 | 0.0094 | -0.0437 |
+| prose | 11 | K-post | 0 | mean+RHT | 2.9434 | 0.1187 | -0.0592 | 0.0093 | -0.0790 |
+| prose | 11 | K-post | 1 | mean+RHT | 2.9395 | 0.1186 | -0.0633 | 0.0093 | -0.0856 |
+| prose | 11 | K-post | 2 | mean+RHT | 2.9813 | 0.1198 | -0.0183 | 0.0094 | -0.0393 |
+| prose | 11 | K-post | 3 | mean+RHT | 2.9580 | 0.1189 | -0.0494 | 0.0094 | -0.0688 |
+| prose | 11 | V | 0 | mean+RHT | 2.9752 | 0.1197 | -0.0229 | 0.0094 | -0.0426 |
+| prose | 11 | V | 1 | mean+RHT | 2.9585 | 0.1191 | -0.0441 | 0.0094 | -0.0619 |
+| prose | 11 | V | 2 | mean+RHT | 2.9620 | 0.1192 | -0.0393 | 0.0094 | -0.0566 |
+| prose | 11 | V | 3 | mean+RHT | 2.9627 | 0.1192 | -0.0401 | 0.0094 | -0.0573 |
+| prose | 19 | K-post | 0 | mean+RHT | 2.9746 | 0.1195 | -0.0284 | 0.0094 | -0.0505 |
+| prose | 19 | K-post | 1 | mean+RHT | 2.9626 | 0.1192 | -0.0402 | 0.0094 | -0.0657 |
+| prose | 19 | K-post | 2 | mean+RHT | 2.9514 | 0.1189 | -0.0505 | 0.0093 | -0.0733 |
+| prose | 19 | K-post | 3 | mean+RHT | 2.9651 | 0.1193 | -0.0359 | 0.0094 | -0.0565 |
+| prose | 19 | V | 0 | mean+RHT | 2.9633 | 0.1192 | -0.0399 | 0.0094 | -0.0570 |
+| prose | 19 | V | 1 | mean+RHT | 2.9200 | 0.1179 | -0.0860 | 0.0092 | -0.1224 |
+| prose | 19 | V | 2 | mean+RHT | 2.9597 | 0.1191 | -0.0422 | 0.0093 | -0.0718 |
+| prose | 19 | V | 3 | mean+RHT | 2.9253 | 0.1183 | -0.0741 | 0.0093 | -0.1134 |
+| prose | 27 | K-post | 0 | mean+RHT | 2.9872 | 0.1200 | -0.0097 | 0.0095 | -0.0196 |
+| prose | 27 | K-post | 1 | mean+RHT | 2.9671 | 0.1195 | -0.0285 | 0.0094 | -0.0515 |
+| prose | 27 | K-post | 2 | mean+RHT | 2.9662 | 0.1194 | -0.0315 | 0.0094 | -0.0666 |
+| prose | 27 | K-post | 3 | mean+RHT | 2.9717 | 0.1196 | -0.0263 | 0.0094 | -0.0362 |
+| prose | 27 | V | 0 | mean+RHT | 2.9198 | 0.1180 | -0.0849 | 0.0092 | -0.1444 |
+| prose | 27 | V | 1 | mean+RHT | 2.9030 | 0.1177 | -0.0964 | 0.0093 | -0.1123 |
+| prose | 27 | V | 2 | mean+RHT | 2.9103 | 0.1179 | -0.0884 | 0.0092 | -0.1388 |
+| prose | 27 | V | 3 | mean+RHT | 2.9278 | 0.1182 | -0.0770 | 0.0092 | -0.1180 |
+
+## Plots
+![hist](plots/e01_hist.png) — log-density of z (prose, head 0, layers 3/19) with N(0,1) dashed.
+
+## Caveats
+- The reference is the int8 cache (user decision); int8 noise (~1% rel) is far below 4-bit shape error, so it does not affect these gaps.
+- Note that a negative gap means *better* than the Gaussian table (lighter tails / sub-Gaussian shape).
+
+runtime 44s
