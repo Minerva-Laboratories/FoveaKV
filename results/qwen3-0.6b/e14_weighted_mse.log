@@ -1,0 +1,110 @@
+/home/alex/Desktop/Dynamic Requant/exp/e14_weighted_mse.py:71: RuntimeWarning: invalid value encountered in subtract
+  eps = s_hat - sr
+/home/alex/Desktop/Dynamic Requant/exp/e14_weighted_mse.py:60: RuntimeWarning: invalid value encountered in subtract
+  eps = s_hat - sr
+code 0 5s
+code 0 9s
+code 0 13s
+code 0 17s
+code 9 21s
+code 9 25s
+code 9 29s
+code 9 33s
+code 18 37s
+code 18 41s
+code 18 45s
+code 18 49s
+code 27 54s
+code 27 58s
+code 27 61s
+code 27 66s
+needle10 0 70s
+needle10 0 73s
+needle10 0 78s
+needle10 0 82s
+needle10 9 86s
+needle10 9 89s
+needle10 9 94s
+needle10 9 98s
+needle10 18 102s
+needle10 18 106s
+needle10 18 110s
+needle10 18 114s
+needle10 27 118s
+needle10 27 122s
+needle10 27 126s
+needle10 27 130s
+needle50 0 134s
+needle50 0 138s
+needle50 0 141s
+needle50 0 145s
+needle50 9 150s
+needle50 9 153s
+needle50 9 157s
+needle50 9 161s
+needle50 18 165s
+needle50 18 169s
+needle50 18 173s
+needle50 18 177s
+needle50 27 181s
+needle50 27 185s
+needle50 27 189s
+needle50 27 193s
+needle90 0 197s
+needle90 0 201s
+needle90 0 205s
+needle90 0 209s
+needle90 9 214s
+needle90 9 218s
+needle90 9 221s
+needle90 9 225s
+needle90 18 230s
+needle90 18 234s
+needle90 18 237s
+needle90 18 242s
+needle90 27 245s
+needle90 27 249s
+needle90 27 253s
+needle90 27 257s
+prose 0 262s
+prose 0 265s
+prose 0 270s
+prose 0 274s
+prose 9 278s
+prose 9 282s
+prose 9 286s
+prose 9 290s
+prose 18 294s
+prose 18 297s
+prose 18 301s
+prose 18 305s
+prose 27 309s
+prose 27 313s
+prose 27 317s
+prose 27 321s
+# E14 Attention-output error = importance-weighted MSE (verification)
+
+**TL;DR:** the first-order weighted-MSE prediction Σ_i p_i²(ε_i²||v_i−o||² + ||δ_i||²) tracks the actual squared attention-output error:
+for DynReq k=5% +A, median predicted/actual ratio 0.99 (per corpus×layer range 0.01–1.30),
+Spearman ρ over (query, head) 0.80; the purely statistical model (gains, D, no error knowledge) gives ratio
+1.15, ρ 0.53. SDPA identity Σp²x = exp(lse(2s)−2lse(s))·softmax(2s)x holds to 4.4e-07 (fp64).
+
+## Config
+5 corpora × 4 layers, 128 decode queries per layer (stride 4), int8 reference. 'lin' = norm² of the linearized error vector
+(tests linearization incl. cross terms); 'wmse' = diagonal (independent-errors) weighted MSE with the actual per-token errors;
+'model' = statistical model Eq. (errmodel) with D_c/D_f and per-token gains. Ratio: median over (query, head) of predicted/actual.
+
+| scheme | prediction | median ratio | min (corpus,layer) | max | Spearman ρ mean | ρ min |
+|---|---|---|---|---|---|---|
+| GS-2b (all coarse) | lin | 1.0696 | 0.0569 | 1.3990 | 0.7076 | -0.1801 |
+| GS-2b (all coarse) | wmse | 1.0935 | 0.0415 | 2.8184 | 0.6467 | -0.2727 |
+| GS-2b (all coarse) | model | 1.3077 | 0.0495 | 3.4555 | 0.4940 | -0.2903 |
+| GS-4b (all fine) | lin | 1.0017 | 0.4185 | 1.0735 | 0.9167 | 0.3913 |
+| GS-4b (all fine) | wmse | 0.9990 | 0.4161 | 1.3759 | 0.8559 | 0.3893 |
+| GS-4b (all fine) | model | 1.1724 | 0.6129 | 2.4005 | 0.6581 | 0.0923 |
+| DynReq k=5% +A | lin | 1.0101 | 0.0866 | 1.5318 | 0.7915 | -0.1796 |
+| DynReq k=5% +A | wmse | 0.9873 | 0.0108 | 1.2952 | 0.7985 | -0.2462 |
+| DynReq k=5% +A | model | 1.1521 | 0.0224 | 2.8921 | 0.5312 | -0.2442 |
+
+runtime 321s
+

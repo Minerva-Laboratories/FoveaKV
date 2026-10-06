@@ -14,9 +14,13 @@ def meta(corpus):
     return json.load(open(os.path.join(KV_DIR, corpus, "meta.json")))
 
 
-def load_layer(corpus, layer, ref="int8"):
+REF = os.environ.get("FOVEAKV_REF", "int8")   # fp16 for models whose outlier channels make per-token int8 lossy (Qwen3)
+
+
+def load_layer(corpus, layer, ref=None):
     """Returns dict with fp32 arrays: k_pre, k (post-RoPE), v (T,Hkv,d); q (E,Hq,d) post-RoPE,
     q_pre, positions of the queries, plus raw extras. ref: 'int8' or 'fp16' (only where captured)."""
+    ref = ref or REF
     z = np.load(os.path.join(KV_DIR, corpus, f"L{layer}.npz"))
     if ref == "fp16":
         k_pre, v = z["k16"].astype(np.float32), z["v16"].astype(np.float32)

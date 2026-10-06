@@ -1,0 +1,77 @@
+/home/alex/Desktop/Dynamic Requant/exp/e19_smoothing.py:82: RuntimeWarning: invalid value encountered in subtract
+  err[sm] = ((sc - st)[valid] ** 2).reshape(-1)
+qwen3.5-0.8b prose L3 4s
+qwen3.5-0.8b prose L11 8s
+qwen3.5-0.8b prose L15 12s
+qwen3.5-0.8b prose L23 15s
+qwen3.5-0.8b code L3 20s
+qwen3.5-0.8b code L11 24s
+qwen3.5-0.8b code L15 28s
+qwen3.5-0.8b code L23 32s
+qwen3.5-2b prose L3 36s
+qwen3.5-2b prose L11 40s
+qwen3.5-2b prose L15 45s
+qwen3.5-2b prose L23 49s
+qwen3.5-2b code L3 53s
+qwen3.5-2b code L11 59s
+qwen3.5-2b code L15 63s
+qwen3.5-2b code L23 67s
+qwen3-0.6b prose L0 74s
+qwen3-0.6b prose L9 83s
+qwen3-0.6b prose L18 91s
+qwen3-0.6b prose L27 98s
+qwen3-0.6b code L0 106s
+qwen3-0.6b code L9 114s
+qwen3-0.6b code L18 123s
+qwen3-0.6b code L27 130s
+# E19 Why key smoothing matters on some models (pipeline check + characterization)
+
+**TL;DR:** pipeline check (offline exact attention vs the model's own o_proj input), max rel. error: qwen3.5-0.8b 0.014, qwen3.5-2b 0.012, qwen3-0.6b 0.006.
+Median predicted smoothing gain (Σq²·Σk²/(Σ√(q²k²))², from prefill stats): qwen3.5-0.8b 1.34x, qwen3.5-2b 1.29x, qwen3-0.6b 4.09x;
+measured 2-bit logit-MSE gain: qwen3.5-0.8b 1.21x, qwen3.5-2b 1.20x, qwen3-0.6b 3.41x (Spearman predicted vs measured over heads 0.97).
+
+## Config
+Reference per model: {'qwen3.5-0.8b': 'int8', 'qwen3.5-2b': 'int8', 'qwen3-0.6b': 'fp16'}. Corpora ['prose', 'code']; up to 4 attention layers per model; all KV heads; 2-bit (coarse) gain-shape keys with 128-token block means.
+Logit error is measured on every 4th decode query over all causal positions. k² = per-channel variance of post-RoPE prefill keys,
+q² = per-channel mean square of post-RoPE prefill queries (averaged over the GQA group). runtime 131s.
+
+## (A) Pipeline check
+| model | corpus | layer | rel err vs model |
+|---|---|---|---|
+| qwen3.5-0.8b | prose | 3 | 0.0060 |
+| qwen3.5-0.8b | prose | 11 | 0.0138 |
+| qwen3.5-0.8b | prose | 15 | 0.0098 |
+| qwen3.5-0.8b | prose | 23 | 0.0124 |
+| qwen3.5-0.8b | code | 3 | 0.0063 |
+| qwen3.5-0.8b | code | 11 | 0.0102 |
+| qwen3.5-0.8b | code | 15 | 0.0105 |
+| qwen3.5-0.8b | code | 23 | 0.0131 |
+| qwen3.5-2b | prose | 3 | 0.0063 |
+| qwen3.5-2b | prose | 11 | 0.0113 |
+| qwen3.5-2b | prose | 15 | 0.0123 |
+| qwen3.5-2b | prose | 23 | 0.0103 |
+| qwen3.5-2b | code | 3 | 0.0074 |
+| qwen3.5-2b | code | 11 | 0.0096 |
+| qwen3.5-2b | code | 15 | 0.0114 |
+| qwen3.5-2b | code | 23 | 0.0107 |
+| qwen3-0.6b | prose | 0 | 0.0038 |
+| qwen3-0.6b | prose | 9 | 0.0052 |
+| qwen3-0.6b | prose | 18 | 0.0056 |
+| qwen3-0.6b | prose | 27 | 0.0063 |
+| qwen3-0.6b | code | 0 | 0.0034 |
+| qwen3-0.6b | code | 9 | 0.0044 |
+| qwen3-0.6b | code | 18 | 0.0054 |
+| qwen3-0.6b | code | 27 | 0.0064 |
+
+## (B) Summary per model (medians over layer × head × corpus)
+| model | n heads | Gpred median | Gpred max | measured gain median | measured max | logit err/spread (no smooth) | logit err/spread (smooth) | k² max/median | q² max/median | Spearman(q², k²) | outlier: max/median mean|k| (median) | (max) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3.5-0.8b | 16 | 1.339 | 1.552 | 1.208 | 1.373 | 0.172 | 0.154 | 7.254 | 22.029 | 0.265 | 4.572 | 11.281 |
+| qwen3.5-2b | 16 | 1.294 | 1.483 | 1.198 | 1.345 | 0.179 | 0.163 | 7.485 | 21.044 | 0.400 | 5.236 | 9.871 |
+| qwen3-0.6b | 64 | 4.088 | 55.499 | 3.414 | 39.859 | 0.269 | 0.157 | 41.714 | 103.281 | -0.045 | 26.786 | 332.214 |
+
+## (B) Per head
+| model | corpus | layer | head | Gpred | measured gain | err/spread no smooth | err/spread smooth | k² max/med | q² max/med | ρ(q²,k²) | max/med mean|k| |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3.5-0.8b | prose | 3 | 0 | 1.552 | 1.373 | 0.196 | 0.168 | 14.726 | 42.006 | 0.247 | 11.281 |
+| qwen3.5-0.8b | prose | 3 | 1

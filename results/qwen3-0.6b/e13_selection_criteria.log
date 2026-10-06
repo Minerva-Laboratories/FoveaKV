@@ -1,0 +1,105 @@
+code 0 3s
+code 0 6s
+code 0 9s
+code 0 12s
+code 9 15s
+code 9 18s
+code 9 21s
+code 9 24s
+code 18 27s
+code 18 30s
+code 18 33s
+code 18 36s
+code 27 40s
+code 27 43s
+code 27 46s
+code 27 49s
+needle10 0 52s
+needle10 0 55s
+needle10 0 58s
+needle10 0 61s
+needle10 9 65s
+needle10 9 67s
+needle10 9 71s
+needle10 9 74s
+needle10 18 77s
+needle10 18 80s
+needle10 18 83s
+needle10 18 86s
+needle10 27 89s
+needle10 27 92s
+needle10 27 95s
+needle10 27 98s
+needle50 0 101s
+needle50 0 103s
+needle50 0 106s
+needle50 0 109s
+needle50 9 112s
+needle50 9 115s
+needle50 9 118s
+needle50 9 121s
+needle50 18 124s
+needle50 18 127s
+needle50 18 130s
+needle50 18 133s
+needle50 27 136s
+needle50 27 139s
+needle50 27 142s
+needle50 27 145s
+needle90 0 148s
+needle90 0 151s
+needle90 0 154s
+needle90 0 157s
+needle90 9 160s
+needle90 9 163s
+needle90 9 166s
+needle90 9 169s
+needle90 18 172s
+needle90 18 175s
+needle90 18 178s
+needle90 18 182s
+needle90 27 184s
+needle90 27 187s
+needle90 27 190s
+needle90 27 193s
+prose 0 197s
+prose 0 200s
+prose 0 203s
+prose 0 206s
+prose 9 209s
+prose 9 212s
+prose 9 215s
+prose 9 218s
+prose 18 221s
+prose 18 224s
+prose 18 227s
+prose 18 230s
+prose 27 233s
+prose 27 236s
+prose 27 239s
+prose 27 242s
+# E13 Selection criteria from the first-order error model (window A + block means, int8 reference)
+
+**TL;DR:** at k=5%: max-logp 0.1154, GQA sum of squared probabilities 0.1151,
+expected-error weight 0.1087, oracle (true p, sum-p2) 0.4697.
+At k=2%: 0.1490 / 0.1489 / 0.1457 / oracle 0.4765.
+
+## Config
+Same caches as E11 (DYN +A +blk128). Criteria rank non-window tokens per KV head; p, o, v are coarse estimates (exact for A).
+expected-error: w_i = Σ_h p_hi² ( ||q_h||² g_ki² ||v_i − o_h||² / d² + g_vi² ), from the first-order error model.
+
+| k | criterion | attn err | layer-0 attn err |
+|---|---|---|---|
+| 2% | max-logp | 0.1490 | 0.5206 |
+| 2% | sum-p2 | 0.1489 | 0.5203 |
+| 2% | sum-p | 0.1488 | 0.5201 |
+| 2% | expected-error | 0.1457 | 0.5086 |
+| 2% | oracle sum-p2 | 0.4765 | 1.8264 |
+| 5% | max-logp | 0.1154 | 0.4027 |
+| 5% | sum-p2 | 0.1151 | 0.4016 |
+| 5% | sum-p | 0.1149 | 0.4007 |
+| 5% | expected-error | 0.1087 | 0.3767 |
+| 5% | oracle sum-p2 | 0.4697 | 1.8154 |
+
+runtime 242s
+

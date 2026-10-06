@@ -1,0 +1,64 @@
+# E1 Gaussianization (Qwen3.5-0.8B, int8 reference cache, corpora prose+code, 6 attn layers × 2 KV heads)
+
+**TL;DR:** mean removal + RHT brings key-shape kurtosis from median 5.3 (raw, max 8.4) to 2.96 (max 2.98; Gaussian = 3).
+Empirical shape-MSE gap vs the Gaussian table after mean+RHT: keys post-RoPE median -0.04 dB (2b) / -0.07 dB (4b), worst -0.02 / -0.03 dB; values -0.06 / -0.09 dB.
+0 (corpus, layer, tensor, head) cases exceed the 0.5 dB gap after mean+RHT.
+
+## Config
+- z = u·sqrt(d), u = y/||y||; y = x − mu (mu from prefill tokens [0, T−512)) then optionally RHT (seed 0). d = head_dim.
+- Table: 2b nested-coarse MSE 0.1203, 4b Lloyd-Max 0.0095. gap dB = 10·log10(empirical/table) (positive = worse than Gaussian).
+- Data: all 8192 tokens per corpus.
+
+## Aggregate (median / max over corpus × layer × head)
+| tensor | variant | kurt med | kurt max | gap2b med dB | gap2b max dB | gap4b med dB | gap4b max dB |
+|---|---|---|---|---|---|---|---|
+| K-post | raw | 5.35 | 8.44 | 1.56 | 2.74 | 4.36 | 7.23 |
+| K-post | mean | 4.03 | 6.33 | 0.86 | 2.13 | 2.40 | 5.48 |
+| K-post | mean+RHT | 2.96 | 2.98 | -0.04 | -0.02 | -0.07 | -0.03 |
+| K-pre | raw | 5.36 | 8.61 | 1.62 | 2.86 | 4.36 | 7.28 |
+| K-pre | mean | 4.66 | 6.99 | 1.17 | 2.39 | 3.23 | 6.17 |
+| K-pre | mean+RHT | 2.96 | 2.98 | -0.04 | -0.01 | -0.08 | -0.04 |
+| V | raw | 4.73 | 19.87 | 1.37 | 4.44 | 3.13 | 11.37 |
+| V | mean | 5.71 | 13.41 | 1.72 | 3.15 | 4.80 | 9.20 |
+| V | mean+RHT | 2.94 | 3.01 | -0.06 | 0.00 | -0.09 | 0.05 |
+
+## Heads exceeding 0.5 dB after mean+RHT
+None.
+
+## Per layer (mean+RHT, keys post-RoPE / values, prose)
+| corpus | layer | tensor | head | variant | kurt | mse2 | gap2 dB | mse4 | gap4 dB |
+|---|---|---|---|---|---|---|---|---|---|
+| prose | 3 | K-post | 0 | mean+RHT | 2.9300 | 0.1183 | -0.0729 | 0.0093 | -0.1123 |
+| prose | 3 | K-post | 1 | mean+RHT | 2.9637 | 0.1193 | -0.0379 | 0.0094 | -0.0485 |
+| prose | 3 | V | 0 | mean+RHT | 2.9651 | 0.1192 | -0.0397 | 0.0094 | -0.0555 |
+| prose | 3 | V | 1 | mean+RHT | 2.9590 | 0.1191 | -0.0447 | 0.0093 | -0.0734 |
+| prose | 7 | K-post | 0 | mean+RHT | 2.9642 | 0.1191 | -0.0428 | 0.0093 | -0.0706 |
+| prose | 7 | K-post | 1 | mean+RHT | 2.9604 | 0.1192 | -0.0415 | 0.0093 | -0.0728 |
+| prose | 7 | V | 0 | mean+RHT | 2.9673 | 0.1194 | -0.0307 | 0.0094 | -0.0603 |
+| prose | 7 | V | 1 | mean+RHT | 2.9741 | 0.1196 | -0.0259 | 0.0094 | -0.0348 |
+| prose | 11 | K-post | 0 | mean+RHT | 2.9605 | 0.1191 | -0.0428 | 0.0093 | -0.0721 |
+| prose | 11 | K-post | 1 | mean+RHT | 2.9474 | 0.1188 | -0.0549 | 0.0093 | -0.0951 |
+| prose | 11 | V | 0 | mean+RHT | 2.9535 | 0.1189 | -0.0495 | 0.0093 | -0.0832 |
+| prose | 11 | V | 1 | mean+RHT | 2.9447 | 0.1186 | -0.0598 | 0.0093 | -0.0946 |
+| prose | 15 | K-post | 0 | mean+RHT | 2.9685 | 0.1194 | -0.0316 | 0.0094 | -0.0610 |
+| prose | 15 | K-post | 1 | mean+RHT | 2.9752 | 0.1197 | -0.0216 | 0.0094 | -0.0467 |
+| prose | 15 | V | 0 | mean+RHT | 2.9385 | 0.1186 | -0.0625 | 0.0093 | -0.1067 |
+| prose | 15 | V | 1 | mean+RHT | 2.8869 | 0.1172 | -0.1128 | 0.0091 | -0.1786 |
+| prose | 19 | K-post | 0 | mean+RHT | 2.9618 | 0.1193 | -0.0350 | 0.0094 | -0.0648 |
+| prose | 19 | K-post | 1 | mean+RHT | 2.9539 | 0.1191 | -0.0428 | 0.0094 | -0.0644 |
+| prose | 19 | V | 0 | mean+RHT | 2.9083 | 0.1178 | -0.0920 | 0.0092 | -0.1242 |
+| prose | 19 | V | 1 | mean+RHT | 2.8932 | 0.1175 | -0.1032 | 0.0091 | -0.1731 |
+| prose | 23 | K-post | 0 | mean+RHT | 2.9812 | 0.1197 | -0.0217 | 0.0094 | -0.0373 |
+| prose | 23 | K-post | 1 | mean+RHT | 2.9595 | 0.1191 | -0.0449 | 0.0094 | -0.0629 |
+| prose | 23 | V | 0 | mean+RHT | 2.9085 | 0.1179 | -0.0867 | 0.0092 | -0.1189 |
+| prose | 23 | V | 1 | mean+RHT | 2.9485 | 0.1189 | -0.0494 | 0.0093 | -0.0802 |
+
+## Plots
+![hist](plots/e01_hist.png) — log-density of z (prose, head 0, layers 3/15) with N(0,1) dashed.
+
+## Caveats
+- The reference is the int8 cache (user decision); int8 noise (~1% rel) is far below 4-bit shape error, so it does not affect these gaps.
+- Note that a negative gap means *better* than the Gaussian table (lighter tails / sub-Gaussian shape).
+
+runtime 56s
+

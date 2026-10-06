@@ -1,0 +1,8 @@
+== e13_selection_criteria 01:22:58
+   exit 0 runtime 234s
+== e16_selection_gap 01:26:52
+   exit 0 runtime 767s
+== e17_specache 01:39:40
+   exit 0 runtime 325s
+== e18_static_mixed 01:45:07
+   exit 0 runtime 163s

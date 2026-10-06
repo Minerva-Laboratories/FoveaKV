@@ -1,0 +1,24 @@
+build/load 75s
+layer 15, head_dim 256, model group 4 -> kernel group 4
+bf16 dense (sdpa)            n=7300 n_comp=0 read_bits=16.000  max rel err vs reference 1.75e-03 OK
+bf16 dense (kernel)          n=7300 n_comp=0 read_bits=16.000  max rel err vs reference 6.75e-07 OK
+TurboQuant-MSE 2b            n=7300 n_comp=7168 read_bits=2.315  max rel err vs reference 1.21e-06 OK
+TurboQuant-MSE 3b            n=7300 n_comp=7168 read_bits=3.296  max rel err vs reference 1.02e-06 OK
+TurboQuant-MSE 4b            n=7300 n_comp=7168 read_bits=4.278  max rel err vs reference 1.27e-06 OK
+GS 2b blkmean                n=7300 n_comp=7168 read_bits=2.407  max rel err vs reference 9.02e-07 OK
+GS 4b blkmean                n=7300 n_comp=7168 read_bits=4.370  max rel err vs reference 1.10e-06 OK
+FoveaKV k=5%                 n=7300 n_comp=7168 read_bits=2.507  max rel err vs reference 9.64e-07 OK
+FoveaKV k=5%                 n=7300 n_comp=7168 read_bits=2.384  max rel err vs reference 1.28e-06 OK
+FoveaKV k=5% noshrink        n=7300 n_comp=7168 read_bits=2.507  max rel err vs reference 6.41e-07 OK
+FoveaKV k=5% two-stage       n=7300 n_comp=7168 read_bits=2.557  max rel err vs reference 9.44e-07 OK
+FoveaKV k=5% static set      n=7300 n_comp=7168 read_bits=2.507  max rel err vs reference 1.00e-06 OK
+KIVI 2b                      n=7300 n_comp=7168 read_bits=2.499  max rel err vs reference 7.37e-07 OK
+KIVI 4b                      n=7300 n_comp=7168 read_bits=4.462  max rel err vs reference 7.66e-07 OK
+Quest k=5%                   n=7300 n_comp=7168 read_bits=2.078  max rel err vs reference 6.74e-07 OK
+SpeCache-style k=5%          n=7300 n_comp=7168 read_bits=3.299  max rel err vs reference 7.46e-07 OK
+SpeCache-style k=0.625%      n=7300 n_comp=7168 read_bits=2.599  max rel err vs reference 7.42e-07 OK
+FoveaKV k=5% offload         n=7300 n_comp=7168 read_bits=2.507  max rel err vs reference 9.64e-07 OK
+FoveaKV k=5% two-stage offload n=7300 n_comp=7168 read_bits=2.557  max rel err vs reference 9.44e-07 OK
+SpeCache-style k=5% offload  n=7300 n_comp=7168 read_bits=3.299  max rel err vs reference 7.46e-07 OK
+SpeCache-style k=0.625% offload n=7300 n_comp=7168 read_bits=2.599  max rel err vs reference 7.42e-07 OK
+ALL OK 79s

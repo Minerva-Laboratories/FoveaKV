@@ -1,0 +1,131 @@
+/home/alex/Desktop/Dynamic Requant/exp/e16_selection_gap.py:46: RuntimeWarning: invalid value encountered in subtract
+  actual_noise = np.where(fin & ~A[None, None], sc - sr, np.nan)
+code 0 11s noise ratio 0.84
+code 0 21s noise ratio 0.84
+code 0 31s noise ratio 0.75
+code 0 40s noise ratio 0.81
+code 9 50s noise ratio 0.81
+code 9 59s noise ratio 0.72
+code 9 69s noise ratio 0.71
+code 9 78s noise ratio 0.70
+code 18 89s noise ratio 1.03
+code 18 98s noise ratio 0.96
+code 18 108s noise ratio 0.94
+code 18 117s noise ratio 0.88
+code 27 127s noise ratio 0.64
+code 27 137s noise ratio 0.62
+code 27 147s noise ratio 0.63
+code 27 156s noise ratio 0.54
+needle10 0 165s noise ratio 0.82
+needle10 0 176s noise ratio 0.81
+needle10 0 185s noise ratio 0.75
+needle10 0 194s noise ratio 0.80
+needle10 9 205s noise ratio 0.81
+needle10 9 214s noise ratio 0.73
+needle10 9 224s noise ratio 0.69
+needle10 9 233s noise ratio 0.69
+needle10 18 243s noise ratio 0.98
+needle10 18 253s noise ratio 0.91
+needle10 18 262s noise ratio 0.92
+needle10 18 271s noise ratio 0.88
+needle10 27 280s noise ratio 0.63
+needle10 27 291s noise ratio 0.61
+needle10 27 300s noise ratio 0.63
+needle10 27 310s noise ratio 0.55
+needle50 0 319s noise ratio 0.82
+needle50 0 329s noise ratio 0.81
+needle50 0 338s noise ratio 0.75
+needle50 0 348s noise ratio 0.80
+needle50 9 358s noise ratio 0.81
+needle50 9 367s noise ratio 0.73
+needle50 9 376s noise ratio 0.69
+needle50 9 386s noise ratio 0.69
+needle50 18 396s noise ratio 0.98
+needle50 18 405s noise ratio 0.91
+needle50 18 415s noise ratio 0.92
+needle50 18 424s noise ratio 0.88
+needle50 27 434s noise ratio 0.63
+needle50 27 443s noise ratio 0.61
+needle50 27 453s noise ratio 0.63
+needle50 27 463s noise ratio 0.55
+needle90 0 472s noise ratio 0.82
+needle90 0 482s noise ratio 0.81
+needle90 0 491s noise ratio 0.75
+needle90 0 500s noise ratio 0.80
+needle90 9 510s noise ratio 0.82
+needle90 9 519s noise ratio 0.73
+needle90 9 529s noise ratio 0.69
+needle90 9 539s noise ratio 0.69
+needle90 18 549s noise ratio 0.99
+needle90 18 557s noise ratio 0.92
+needle90 18 566s noise ratio 0.92
+needle90 18 576s noise ratio 0.88
+needle90 27 586s noise ratio 0.63
+needle90 27 595s noise ratio 0.60
+needle90 27 604s noise ratio 0.63
+needle90 27 614s noise ratio 0.55
+prose 0 624s noise ratio 0.81
+prose 0 634s noise ratio 0.81
+prose 0 643s noise ratio 0.75
+prose 0 653s noise ratio 0.80
+prose 9 662s noise ratio 0.79
+prose 9 671s noise ratio 0.71
+prose 9 681s noise ratio 0.69
+prose 9 690s noise ratio 0.68
+prose 18 700s noise ratio 0.98
+prose 18 710s noise ratio 0.93
+prose 18 720s noise ratio 0.92
+prose 18 729s noise ratio 0.87
+prose 27 739s noise ratio 0.63
+prose 27 748s noise ratio 0.61
+prose 27 758s noise ratio 0.62
+prose 27 767s noise ratio 0.55
+# E16 The selection gap (shrinkage-corrected caches, window A, block means)
+
+**TL;DR:** at k=5%: oracle 0.0111, coarse estimate 0.0121, simulated true-logits + predicted Gaussian noise
+0.0118 (independent per head and step) and 0.0118 (one perturbation per key, shared by heads and steps)
+— persistent key noise explains the gap
+(measured/predicted noise std 0.77). The estimate misses 17.8% of the oracle tokens but only 6.6% of their mass;
+53% of the missed tokens rank in the last 20% of the oracle set. Uncertainty bonus (rank by s_hat + c·sigma²): c=0.5 0.0120,
+c=1 0.0120, c=2 0.0121. Matching the oracle at 5% needs k≈6.5%: 0.0113, 8%: 0.0108, 10%: 0.0103.
+
+## Config
+sigma_i = ||q|| g_k,i sqrt(D_c)/d (per head and token). 'sim' replaces the coarse logits by true logits + N(0, sigma_i²).
+Rule: max over the GQA group of log-prob; window tokens excluded; error = attention-output rel err vs int8 reference.
+
+| k | selector | attn err | layer-0 attn err |
+|---|---|---|---|
+| 2% | oracle | 0.0136 | 0.0161 |
+| 2% | est | 0.0150 | 0.0163 |
+| 2% | sim (true + predicted noise) | 0.0147 | 0.0178 |
+| 2% | sim (persistent key noise) | 0.0148 | 0.0180 |
+| 2% | est, MMSE logits (no scaling) | 0.0151 | 0.0163 |
+| 2% | est, unbiased logits x1/(1-Dc) | 0.0150 | 0.0163 |
+| 2% | est from fine (4-bit) keys | 0.0136 | 0.0160 |
+| 2% | est + 0.5·sigma² | 0.0149 | 0.0161 |
+| 2% | est + 1.0·sigma² | 0.0149 | 0.0162 |
+| 2% | est + 2.0·sigma² | 0.0151 | 0.0171 |
+| 2% | two-stage (2k fine keys, k fine values) | 0.0134 | 0.0147 |
+| 5% | oracle | 0.0111 | 0.0119 |
+| 5% | est | 0.0121 | 0.0123 |
+| 5% | sim (true + predicted noise) | 0.0118 | 0.0132 |
+| 5% | sim (persistent key noise) | 0.0118 | 0.0133 |
+| 5% | est, MMSE logits (no scaling) | 0.0121 | 0.0123 |
+| 5% | est, unbiased logits x1/(1-Dc) | 0.0120 | 0.0123 |
+| 5% | est from fine (4-bit) keys | 0.0110 | 0.0118 |
+| 5% | est + 0.5·sigma² | 0.0120 | 0.0122 |
+| 5% | est + 1.0·sigma² | 0.0120 | 0.0121 |
+| 5% | est + 2.0·sigma² | 0.0121 | 0.0125 |
+| 5% | est at k=6.5% | 0.0113 | 0.0112 |
+| 5% | est at k=7.5% | 0.0109 | 0.0107 |
+| 5% | est at k=8% | 0.0108 | 0.0104 |
+| 5% | est at k=10% | 0.0103 | 0.0096 |
+| 5% | two-stage (2k fine keys, k fine values) | 0.0107 | 0.0108 |
+
+## Misses at k=5% (mean over corpora/layers)
+| missed tokens / k | missed mass / oracle mass | missed with rank > 0.8k | missed with rank > 0.5k |
+|---|---|---|---|
+| 0.178 | 0.0664 | 0.53 | 0.92 |
+
+runtime 767s
+

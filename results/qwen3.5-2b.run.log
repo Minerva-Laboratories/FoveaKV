@@ -1,0 +1,16 @@
+== e01_gaussianization 23:48:10
+   exit 0 runtime 56s
+== e02_04_selection 23:49:07
+   exit 0 runtime 396s
+== e11_improvements 23:55:45
+   exit 0 runtime 731s
+== e13_selection_criteria 00:07:57
+   exit 0 runtime 193s
+== e14_weighted_mse 00:11:11
+   exit 0 runtime 363s
+== e16_selection_gap 00:17:16
+   exit 0 runtime 610s
+== e17_specache 00:27:27
+   exit 0 runtime 224s
+== e18_static_mixed 00:31:13
+   exit 0 runtime 129s

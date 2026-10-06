@@ -23,7 +23,7 @@ from foveakv.text import CORPUS
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--eval", type=int, default=512, help="decode-window length E (queries kept)")
-ap.add_argument("--fp16_ref", default="prose")
+ap.add_argument("--fp16_ref", default="prose", help="corpora that also get an fp16 K/V copy (comma list, or 'all')")
 ap.add_argument("--corpora", default="")
 ap.add_argument("--layers", default="", help="comma list of attention layers to keep (default: all)")
 ap.add_argument("--device", default="cpu")
@@ -160,7 +160,7 @@ for li in range(cfg.num_hidden_layers):
             out["gate"] = cap["gate"].half().cpu().numpy()
         if "q_spec" in cap:
             out["q_spec"] = cap["q_spec"].half().cpu().numpy()
-        if n == args.fp16_ref:
+        if args.fp16_ref == "all" or n in args.fp16_ref.split(","):
             out["k16"], out["v16"] = k.half().cpu().numpy(), v.half().cpu().numpy()
             assert np.isfinite(out["k16"]).all() and np.isfinite(out["v16"]).all()
         np.savez(os.path.join(od, f"L{li}.npz"), **out)

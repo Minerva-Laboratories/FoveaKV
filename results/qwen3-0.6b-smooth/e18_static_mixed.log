@@ -1,0 +1,101 @@
+code 0 3s
+code 0 4s
+code 0 6s
+code 0 8s
+code 9 10s
+code 9 12s
+code 9 14s
+code 9 16s
+code 18 19s
+code 18 21s
+code 18 23s
+code 18 24s
+code 27 26s
+code 27 28s
+code 27 30s
+code 27 32s
+needle10 0 34s
+needle10 0 36s
+needle10 0 38s
+needle10 0 40s
+needle10 9 42s
+needle10 9 44s
+needle10 9 46s
+needle10 9 48s
+needle10 18 50s
+needle10 18 52s
+needle10 18 54s
+needle10 18 56s
+needle10 27 58s
+needle10 27 60s
+needle10 27 62s
+needle10 27 64s
+needle50 0 66s
+needle50 0 68s
+needle50 0 70s
+needle50 0 72s
+needle50 9 74s
+needle50 9 76s
+needle50 9 78s
+needle50 9 80s
+needle50 18 83s
+needle50 18 85s
+needle50 18 87s
+needle50 18 88s
+needle50 27 91s
+needle50 27 92s
+needle50 27 94s
+needle50 27 96s
+needle90 0 99s
+needle90 0 100s
+needle90 0 103s
+needle90 0 105s
+needle90 9 107s
+needle90 9 109s
+needle90 9 111s
+needle90 9 114s
+needle90 18 116s
+needle90 18 118s
+needle90 18 120s
+needle90 18 122s
+needle90 27 124s
+needle90 27 126s
+needle90 27 128s
+needle90 27 130s
+prose 0 132s
+prose 0 134s
+prose 0 136s
+prose 0 138s
+prose 9 140s
+prose 9 142s
+prose 9 144s
+prose 9 146s
+prose 18 148s
+prose 18 150s
+prose 18 152s
+prose 18 154s
+prose 27 156s
+prose 27 158s
+prose 27 160s
+prose 27 163s
+# E18 Static vs per-step mixed precision at equal bits
+
+**TL;DR:** with the same nested code and the same number of 4-bit tokens, a static set chosen from 64 probe queries
+(ZipCache/MiKV-style) gives attn err 0.0248 at 5%, the per-step query-dependent set 0.0121
+(2%: 0.0291 vs 0.0151; 10%: 0.0218 vs 0.0103).
+
+## Config
+Probe = first 64 decode positions (excluded from evaluation); evaluation = remaining positions (stride 2). Shrinkage-corrected
+nested code, block means, exact 128-token window, int8 reference, 5 corpora x 4 layers.
+
+| 4-bit tokens | selection | attn err |
+|---|---|---|
+| 2% | static (probe-chosen) 4-bit set | 0.0291 |
+| 2% | per-step (FoveaKV) | 0.0151 |
+| 5% | static (probe-chosen) 4-bit set | 0.0248 |
+| 5% | per-step (FoveaKV) | 0.0121 |
+| 10% | static (probe-chosen) 4-bit set | 0.0218 |
+| 10% | per-step (FoveaKV) | 0.0103 |
+
+runtime 163s
+
