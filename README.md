@@ -36,7 +36,7 @@ Qwen3.5-0.8B on an RTX 4050 Laptop GPU, with the compressed cache used at every 
 | bf16 (reference) | 16 | 0 | 93.8% | 100% | 1536 MiB | 14.9 ms | 20.4 ms | 3774 µs |
 | **FoveaKV, 5% hot, residuals in CPU memory** | **2.42** | **+0.03%** | **94.4%** | **93%** | 213 MiB + 192 host | 16.2 ms | 16.9 ms | 1164 µs |
 | FoveaKV, 5% hot, all in GPU memory | 2.42 | +0.03% | 94.4% | 93% | 405 MiB | 16.3 ms | 16.2 ms | 1024 µs |
-| FoveaKV, 5% hot, two-stage, residuals in CPU memory | 2.47 | +0.01% | 94.4% | 94% | 213 MiB + 192 host | 18.9 ms | 21.1 ms | 2310 µs |
+| FoveaKV, 5% hot, two-stage, residuals in CPU memory | 2.47 | 0.00% | 94.4% | 94% | 213 MiB + 192 host | 18.9 ms | 21.1 ms | 2310 µs |
 | FoveaKV, 2% hot | 2.36 | +0.12% | 93.8% | 94% | 405 MiB | 16.2 ms | 16.2 ms | 934 µs |
 | FoveaKV, 10% hot | 2.52 | +0.09% | 94.4% | 93% | 405 MiB | 16.2 ms | 16.3 ms | 1178 µs |
 | TurboQuant-MSE, 4-bit | 4.20 | +0.46% | 94.8% | 88% | 396 MiB | 15.6 ms | 15.3 ms | 745 µs |
