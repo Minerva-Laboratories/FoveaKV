@@ -4,6 +4,9 @@
 gain-shape 4-bit; selection, GQA union and the advantage over static and SpeCache-style refinement at equal traffic all hold.
 On dense Qwen3-0.6B (head_dim 128) the same holds only with per-channel key smoothing: its keys and queries put their
 outlier energy in different RoPE pairs. A prefill-statistics predictor tells in advance when smoothing is needed.
+Five more models (Qwen3.5-9B, post-trained Qwen3.5-2B and 4B, and the Qwen3.5/3.6-35B-A3B MoE models with 8 query heads
+per KV head) give the same picture; on the MoE models FoveaKV also beats SpeCache-style refinement with 8x the traffic
+(see "Added models").
 
 All numbers are offline (captured caches, walk-forward over the last 512 positions of 8K-token texts) and measured,
 not estimated. Metric: relative error of the attention output vs the reference cache, mean over texts, layers and heads.
@@ -73,10 +76,66 @@ On Qwen3-0.6B the key outliers and the query outliers sit in different RoPE pair
 `e19/plots/e19_channel_profiles.png`. Smoothing costs nothing at run time (the query is scaled once per step; keys
 are stored divided by the scale).
 
+## Added models (2026-10-15)
+
+| model | type | attention layers used | KV heads | query heads per KV head | head_dim | weights captured | reference | E19 max error, int8 / fp16 |
+|---|---|---|---|---|---|---|---|---|
+| Qwen3.5-9B | hybrid | 4 of 8 (3, 11, 19, 27) | 4 | 4 | 256 | bf16 | int8 | 2.2% / 0.3% |
+| Qwen3.5-4B (post-trained) | hybrid | 4 of 8 (3, 11, 19, 27) | 4 | 4 | 256 | bf16 | int8 | 1.3% / 0.3% |
+| Qwen3.5-2B (post-trained) | hybrid | 6 (all) | 2 | 4 | 256 | bf16 | int8 | 1.1% / 0.3% |
+| Qwen3.5-35B-A3B | hybrid MoE | 4 of 10 (3, 15, 27, 39) | 2 | 8 | 256 | GGUF Q4_K_M | int8 | 1.6% / 0.3% |
+| Qwen3.6-35B-A3B | hybrid MoE | 4 of 10 (3, 15, 27, 39) | 2 | 8 | 256 | GGUF UD-Q4_K_M | int8 | 1.5% / 0.3% |
+
+All use the int8 reference, as a deployment would (fp16 is shown only as a check). The MoE models were captured on
+the GPU from their llama.cpp Q4_K_M files (`foveakv/load_gguf.py` maps them back to HF tensors, dequantized; attention
+weights are Q8_0, experts 4–6 bit), so their rows describe the cache of the quantized model. Capture sanity check,
+WikiText-2 prose perplexity at 8K: 9B 7.66, 4B 9.30, 2B 11.80, 35B-A3B 6.22, 3.6-35B-A3B 5.97.
+
+Main comparison (E11, same configuration as above):
+
+| scheme | bits | 9B | 4B-it | 2B-it | 3.5-35B-A3B | 3.6-35B-A3B |
+|---|---|---|---|---|---|---|
+| FoveaKV k=5% | 2.26 | 0.0261 | 0.0251 | 0.0222 | 0.0207 | 0.0216 |
+| GS-4b | 4.16–4.19 | 0.0223 | 0.0205 | 0.0184 | 0.0162 | 0.0173 |
+| TurboQuant-4b (no QJL) | 4.06–4.13 | 0.0305 | 0.0277 | 0.0263 | 0.0265 | 0.0281 |
+| KIVI-4b | 4.25 | 0.0491 | 0.0502 | 0.0481 | 0.0389 | 0.0409 |
+
+Selection and refinement (k = 5%):
+
+| | 9B | 4B-it | 2B-it | 3.5-35B-A3B | 3.6-35B-A3B |
+|---|---|---|---|---|---|
+| top-10% attention mass (mean) | 0.948 | 0.945 | 0.958 | 0.943 | 0.945 |
+| coarse selection captures (m_H / m_opt) | 0.989 | 0.988 | 0.990 | 0.989 | 0.989 |
+| GQA union / k (mean, max) | 1.92, 3.27 | 1.92, 3.18 | 1.93, 3.07 | 2.69, 4.93 | 2.73, 5.07 |
+| one budgeted set per KV head, share of each head's m_opt | 0.962 | 0.958 | 0.967 | 0.947 | 0.948 |
+| oracle selection | 0.0229 | 0.0212 | 0.0188 | 0.0175 | 0.0185 |
+| FoveaKV (coarse estimate) | 0.0234 | 0.0219 | 0.0194 | 0.0178 | 0.0188 |
+| two-stage (2k candidates, fine keys) | 0.0227 | 0.0210 | 0.0187 | 0.0172 | 0.0181 |
+| SpeCache-style, same traffic | 0.0523 | 0.0436 | 0.0476 | 0.0666 | 0.0658 |
+| SpeCache-style, same token count (8x traffic) | 0.0138 | 0.0136 | 0.0144 | 0.0225 | 0.0225 |
+| static 4-bit set, same count | 0.0410 | 0.0401 | 0.0375 | 0.0347 | 0.0355 |
+| smoothing gain, predicted / measured (median) | 1.33x / 1.25x | 1.33x / 1.22x | 1.31x / 1.20x | 1.36x / 1.24x | 1.36x / 1.24x |
+
+- FoveaKV at 2.26 bits beats TurboQuant-4b and KIVI-4b on all five models and is 17–27% behind GS-4b, as on the
+  first three Qwen3.5 models.
+- The selection gap over the oracle is 2.4–3.2% on the dense models and 1.9–2.0% on the MoE models; the estimate misses ~17% of the oracle tokens
+  but ~4% of their mass, and two-stage selection closes the gap on every model.
+- At equal traffic FoveaKV beats SpeCache-style refinement by 2–3.7x; per-step selection beats a static set by 1.8–2x.
+- 8x-traffic SpeCache-style refinement beats FoveaKV on every Qwen3.5 model with 4 query heads per KV head except 0.8B
+  and Base-2B (ties), but loses to it on both MoE models (0.0225 vs 0.0178 / 0.0188). Relative to FoveaKV it gets worse with the group
+  size: SpeCache/FoveaKV error ratio 0.59–1.03 on the 4-head models, 1.19–1.26 on the MoE models. It keeps one set per KV head, and with 8 query
+  heads their top-k sets overlap less (union 2.7x k against 1.9x). That one shared set covers less of each head's mass
+  (0.947 against 0.956–0.967), but the gap is small, so this explains the trend only in part. Qwen3-0.6B
+  (2 query heads per KV head, FoveaKV wins) does not show a clean dependence on group size: its outlier key channels
+  also hurt the KIVI-based ranking.
+- The MoE union (2.7x mean, 5x max) is the first one near the "≤ ~3x" criterion.
+
 ## Not done yet
 - End-to-end perplexity, retrieval and latency on 2B, 4B and Qwen3-0.6B (GPU is shared; 2B/4B weights do not fit next to
   the other job). Kernels support head_dim 128 (all 21 variants pass), but GQA groups other than 4 and key smoothing
   are not in the GPU path yet.
 - Qwen3-0.6B: why the FoveaKV vs GS-4b gap is wider than on Qwen3.5 (attention there is more concentrated, so it is
   not flat attention).
-- 4B: why 8x-traffic SpeCache-style refinement beats FoveaKV there.
+- 4B, 9B and the post-trained 2B/4B: why 8x-traffic SpeCache-style refinement beats FoveaKV there, while it loses on
+  the MoE models (group-size ablation: SpeCache-style with per-head sets on the MoE caches).
+- End-to-end runs on the five added models (the MoE models need GQA group 8 in the GPU kernels).

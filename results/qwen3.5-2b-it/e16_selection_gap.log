@@ -1,0 +1,81 @@
+/mnt/ext/foveakv/exp/e16_selection_gap.py:46: RuntimeWarning: invalid value encountered in subtract
+  actual_noise = np.where(fin & ~A[None, None], sc - sr, np.nan)
+code 3 39s noise ratio 1.02
+code 7 78s noise ratio 1.02
+code 11 116s noise ratio 1.03
+code 15 155s noise ratio 1.03
+code 19 193s noise ratio 1.04
+code 23 230s noise ratio 1.03
+needle10 3 270s noise ratio 1.02
+needle10 7 308s noise ratio 1.02
+needle10 11 347s noise ratio 1.02
+needle10 15 385s noise ratio 1.02
+needle10 19 423s noise ratio 1.03
+needle10 23 461s noise ratio 1.02
+needle50 3 499s noise ratio 1.02
+needle50 7 537s noise ratio 1.02
+needle50 11 576s noise ratio 1.02
+needle50 15 613s noise ratio 1.02
+needle50 19 650s noise ratio 1.04
+needle50 23 689s noise ratio 1.03
+needle90 3 727s noise ratio 1.02
+needle90 7 765s noise ratio 1.01
+needle90 11 803s noise ratio 1.02
+needle90 15 841s noise ratio 1.02
+needle90 19 879s noise ratio 1.04
+needle90 23 917s noise ratio 1.03
+prose 3 956s noise ratio 1.02
+prose 7 994s noise ratio 1.02
+prose 11 1034s noise ratio 1.02
+prose 15 1072s noise ratio 1.02
+prose 19 1110s noise ratio 1.03
+prose 23 1149s noise ratio 1.03
+# E16 The selection gap (shrinkage-corrected caches, window A, block means)
+
+**TL;DR:** at k=5%: oracle 0.0188, coarse estimate 0.0194, simulated true-logits + predicted Gaussian noise
+0.0189 (independent per head and step) and 0.0190 (one perturbation per key, shared by heads and steps)
+— persistent key noise does NOT explain the gap
+(measured/predicted noise std 1.02). The estimate misses 16.4% of the oracle tokens but only 3.8% of their mass;
+56% of the missed tokens rank in the last 20% of the oracle set. Uncertainty bonus (rank by s_hat + c·sigma²): c=0.5 0.0193,
+c=1 0.0193, c=2 0.0193. Matching the oracle at 5% needs k≈6.5%: 0.0190, 8%: 0.0188, 10%: 0.0186.
+
+## Config
+sigma_i = ||q|| g_k,i sqrt(D_c)/d (per head and token). 'sim' replaces the coarse logits by true logits + N(0, sigma_i²).
+Rule: max over the GQA group of log-prob; window tokens excluded; error = attention-output rel err vs int8 reference.
+
+| k | selector | attn err | layer-3 attn err |
+|---|---|---|---|
+| 2% | oracle | 0.0201 | 0.0158 |
+| 2% | est | 0.0211 | 0.0168 |
+| 2% | sim (true + predicted noise) | 0.0204 | 0.0164 |
+| 2% | sim (persistent key noise) | 0.0205 | 0.0165 |
+| 2% | est, MMSE logits (no scaling) | 0.0212 | 0.0169 |
+| 2% | est, unbiased logits x1/(1-Dc) | 0.0211 | 0.0168 |
+| 2% | est from fine (4-bit) keys | 0.0201 | 0.0158 |
+| 2% | est + 0.5·sigma² | 0.0211 | 0.0168 |
+| 2% | est + 1.0·sigma² | 0.0211 | 0.0168 |
+| 2% | est + 2.0·sigma² | 0.0211 | 0.0168 |
+| 2% | two-stage (2k fine keys, k fine values) | 0.0200 | 0.0154 |
+| 5% | oracle | 0.0188 | 0.0136 |
+| 5% | est | 0.0194 | 0.0141 |
+| 5% | sim (true + predicted noise) | 0.0189 | 0.0139 |
+| 5% | sim (persistent key noise) | 0.0190 | 0.0139 |
+| 5% | est, MMSE logits (no scaling) | 0.0194 | 0.0142 |
+| 5% | est, unbiased logits x1/(1-Dc) | 0.0193 | 0.0141 |
+| 5% | est from fine (4-bit) keys | 0.0188 | 0.0136 |
+| 5% | est + 0.5·sigma² | 0.0193 | 0.0141 |
+| 5% | est + 1.0·sigma² | 0.0193 | 0.0141 |
+| 5% | est + 2.0·sigma² | 0.0193 | 0.0141 |
+| 5% | est at k=6.5% | 0.0190 | 0.0135 |
+| 5% | est at k=7.5% | 0.0188 | 0.0132 |
+| 5% | est at k=8% | 0.0188 | 0.0130 |
+| 5% | est at k=10% | 0.0186 | 0.0126 |
+| 5% | two-stage (2k fine keys, k fine values) | 0.0187 | 0.0130 |
+
+## Misses at k=5% (mean over corpora/layers)
+| missed tokens / k | missed mass / oracle mass | missed with rank > 0.8k | missed with rank > 0.5k |
+|---|---|---|---|
+| 0.164 | 0.0384 | 0.56 | 0.94 |
+
+runtime 1149s
+

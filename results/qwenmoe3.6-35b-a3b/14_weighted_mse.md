@@ -1,0 +1,25 @@
+# E14 Attention-output error = importance-weighted MSE (verification)
+
+**TL;DR:** the first-order weighted-MSE prediction Σ_i p_i²(ε_i²||v_i−o||² + ||δ_i||²) tracks the actual squared attention-output error:
+for DynReq k=5% +A, median predicted/actual ratio 0.89 (per corpus×layer range 0.42–1.06),
+Spearman ρ over (query, head) 0.95; the purely statistical model (gains, D, no error knowledge) gives ratio
+0.81, ρ 0.91. SDPA identity Σp²x = exp(lse(2s)−2lse(s))·softmax(2s)x holds to 5.5e-07 (fp64).
+
+## Config
+5 corpora × 4 layers, 128 decode queries per layer (stride 4), int8 reference. 'lin' = norm² of the linearized error vector
+(tests linearization incl. cross terms); 'wmse' = diagonal (independent-errors) weighted MSE with the actual per-token errors;
+'model' = statistical model Eq. (errmodel) with D_c/D_f and per-token gains. Ratio: median over (query, head) of predicted/actual.
+
+| scheme | prediction | median ratio | min (corpus,layer) | max | Spearman ρ mean | ρ min |
+|---|---|---|---|---|---|---|
+| GS-2b (all coarse) | lin | 1.1219 | 1.0952 | 1.1973 | 0.9761 | 0.9551 |
+| GS-2b (all coarse) | wmse | 1.4478 | 0.9725 | 1.6443 | 0.8906 | 0.8329 |
+| GS-2b (all coarse) | model | 0.7950 | 0.5834 | 1.0462 | 0.8727 | 0.8184 |
+| GS-4b (all fine) | lin | 1.0141 | 0.9938 | 1.0230 | 0.9972 | 0.9950 |
+| GS-4b (all fine) | wmse | 1.0076 | 0.9407 | 1.0623 | 0.9705 | 0.9487 |
+| GS-4b (all fine) | model | 1.0714 | 0.9560 | 1.2139 | 0.9063 | 0.8284 |
+| DynReq k=5% +A | lin | 1.3824 | 1.1233 | 1.9008 | 0.9731 | 0.9454 |
+| DynReq k=5% +A | wmse | 0.8879 | 0.4165 | 1.0556 | 0.9524 | 0.8929 |
+| DynReq k=5% +A | model | 0.8139 | 0.3065 | 1.4100 | 0.9095 | 0.8300 |
+
+runtime 1104s

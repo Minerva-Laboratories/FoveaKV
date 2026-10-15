@@ -33,6 +33,12 @@ What to watch for:
 - whether SpeCache-style refinement with 8× the traffic beats FoveaKV (it did on 4B only);
 - the GQA union size for groups larger than 4.
 
+Done (2026-10-15) for Qwen3.5-9B, the post-trained Qwen3.5-4B and 2B, and Qwen3.5/3.6-35B-A3B (from Q4_K_M GGUF weights,
+`FOVEAKV_GGUF`); see `results/MODELS.md`. Findings: the gap to GS-4b is 17–27%; the int8 pipeline check reaches 2.2% on 9B
+(fp16 0.3%), above the 1.5% guide, and we kept int8 as the deployment reference; 8x-traffic SpeCache-style refinement beats
+FoveaKV on every Qwen3.5 model with 4 query heads per KV head except 0.8B and 2B-Base (ties), and loses on both group-8 MoE models;
+the group-8 union is 2.7x k on average (max 5.1x). E2-E4 and E16 on the MoE models need about 8 GB (`CAP=12G`).
+
 ## Step 2: end to end on Qwen3.5 (GPU)
 
 This step needs no code changes. Set `FOVEAKV_MODEL`, then in order:

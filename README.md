@@ -7,8 +7,8 @@ attention, it is the signal that picks the important tokens, and it is the first
 correction merges both precisions inside one softmax. On Qwen3.5-0.8B at 16K–32K context, FoveaKV stays within 0.03% of
 bf16 perplexity (4-bit TurboQuant: 0.46%). With the residuals kept in CPU memory and read over PCIe, the cache uses 213 MiB of
 GPU memory at 128K context instead of 1536 MiB for bf16, and a full decoding step at 64K is faster than with a bf16 cache
-(16.9 ms vs 20.4 ms). Offline tests on Qwen3.5-2B, Qwen3.5-4B and the dense Qwen3-0.6B give the same picture; Qwen3 needs
-one extra, free step (key smoothing).
+(16.9 ms vs 20.4 ms). Offline tests on eight more models (Qwen3.5 2B to 9B, the Qwen3.5/3.6-35B-A3B mixture-of-experts models and the dense
+Qwen3-0.6B) give the same picture; Qwen3 needs one extra, free step (key smoothing).
 
 The name comes from the fovea: the eye sees everything at low resolution and only the point it looks at in detail.
 
@@ -96,6 +96,23 @@ next to 4-bit baselines. Full tables: [`results/MODELS.md`](results/MODELS.md).
   Smoothing moves it. A ratio computed from prefill statistics predicts when this is needed (about 4x on Qwen3, 1.3x on
   Qwen3.5; `exp/e19_smoothing.py`).
 - End-to-end runs (perplexity, retrieval, latency) on these models are not done yet.
+
+Five more models, captured on the GPU (int8 reference; the mixture-of-experts caches come from their 4-bit Q4_K_M
+weights, read from the llama.cpp GGUF with `FOVEAKV_GGUF`):
+
+| | Qwen3.5-9B | Qwen3.5-4B | Qwen3.5-2B | Qwen3.5-35B-A3B | Qwen3.6-35B-A3B |
+|---|---:|---:|---:|---:|---:|
+| query heads per KV head | 4 | 4 | 4 | 8 | 8 |
+| FoveaKV, 5% hot | 0.0261 | 0.0251 | 0.0222 | 0.0207 | 0.0216 |
+| Gain-shape 4-bit | 0.0223 | 0.0205 | 0.0184 | 0.0162 | 0.0173 |
+| TurboQuant-MSE 4-bit | 0.0305 | 0.0277 | 0.0263 | 0.0265 | 0.0281 |
+| KIVI 4-bit | 0.0491 | 0.0502 | 0.0481 | 0.0389 | 0.0409 |
+| SpeCache-style at equal traffic vs FoveaKV | 2.2x worse | 2.0x worse | 2.5x worse | 3.7x worse | 3.5x worse |
+| SpeCache-style at 8x traffic vs FoveaKV | 1.7x better | 1.6x better | 1.3x better | 1.3x worse | 1.2x worse |
+
+- 4B and 2B here are the post-trained models (the table above uses the Base models).
+- With 8 query heads per KV head, SpeCache-style refinement loses to FoveaKV even with 8 times the traffic. The per-head
+  top-k sets overlap less (union 2.7x k against 1.9x), but that explains the difference only in part.
 
 ## How it works
 
@@ -200,6 +217,10 @@ FOVEAKV_RESULTS=results/qwen3.5-4b FOVEAKV_KV_DIRS="4b=$FOVEAKV_KV_DIR" python e
 FOVEAKV_LAYERS=3,11,19,27 tools/run_offline.sh qwen3.5-4b       # E1-E18 into results/qwen3.5-4b/
 ```
 
+For a model only available as a llama.cpp GGUF (Qwen3.5 / Qwen3.5-MoE), set `FOVEAKV_GGUF=<file.gguf>` and run the capture
+on the GPU (`--device cuda`); `foveakv/load_gguf.py` maps the dequantized tensors back to the HF layout. The snapshot folder
+still needs `config.json` and the tokenizer files.
+
 Run the check in `exp/e19_smoothing.py` before anything else. It compares our offline attention with the model's own
 output. On Qwen3 the default int8 reference failed this check (outlier channels), so that model uses fp16
 (`FOVEAKV_REF=fp16`). Kernels support head_dim 256 and 128 (`FOVEAKV_HEAD_DIM=128`). More in
@@ -238,7 +259,7 @@ The full list (90 references), with what each one supports and where the paper c
 ## Limitations
 
 - End-to-end results (perplexity, retrieval, latency, memory) come from one small model (Qwen3.5-0.8B) at contexts up to
-  32K tokens. Qwen3.5-2B, Qwen3.5-4B and Qwen3-0.6B are tested offline only. The GPU path does not yet support key
+  32K tokens. The other eight models are tested offline only, on a subset of layers for the larger ones. The GPU path does not yet support key
   smoothing or GQA groups other than 4, which a dense model like Qwen3 needs.
 - The SpeCache and static mixed-precision comparisons are offline emulations, not the original systems.
 - Perplexity windows are short (256 tokens per document); differences below about 0.2% are within noise.
