@@ -46,8 +46,8 @@ def load_layer(corpus, layer, ref=None):
 
 def weight_name(layer, what="self_attn.o_proj.weight"):
     """Checkpoint key of a layer weight (Qwen3.5 nests the language model under model.language_model)."""
-    from .load import SafeTensors, snapshot_dir
-    keys = SafeTensors(snapshot_dir()).keys()
+    from .load import model_weights
+    keys = model_weights().keys()
     for pre in ("model.language_model.layers", "model.layers"):
         if f"{pre}.{layer}.{what}" in keys:
             return f"{pre}.{layer}.{what}"

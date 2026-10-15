@@ -17,6 +17,16 @@ def snapshot_dir(repo=None):
     return d[0]
 
 
+def model_weights():
+    """Weights of FOVEAKV_MODEL: its safetensors, or the llama.cpp GGUF named by FOVEAKV_GGUF (load_gguf.py)."""
+    if os.environ.get("FOVEAKV_GGUF"):
+        from types import SimpleNamespace
+        from .load_gguf import GGUFTensors
+        c = json.load(open(os.path.join(snapshot_dir(), "config.json")))
+        return GGUFTensors(os.environ["FOVEAKV_GGUF"], SimpleNamespace(**c.get("text_config", c)))
+    return SafeTensors(snapshot_dir())
+
+
 def bf16_to_f32(u16):
     """Raw bf16 bits (uint16 array) -> float32."""
     return (np.asarray(u16, dtype=np.uint16).astype(np.uint32) << 16).view(np.float32)

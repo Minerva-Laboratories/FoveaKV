@@ -41,15 +41,30 @@ if hybrid and dev == "cpu":     # flash-linear-attention / causal-conv1d kernels
     mq.FusedRMSNormGated = mq.chunk_gated_delta_rule = mq.fused_recurrent_gated_delta_rule = None
     mq.causal_conv1d_fn = mq.causal_conv1d_update = None
 with torch.device("meta"):
-    if hybrid:
+    if hybrid and full.model_type.startswith("qwen3_5_moe"):
+        from transformers import Qwen3_5MoeForCausalLM
+        model = Qwen3_5MoeForCausalLM(cfg)
+    elif hybrid:
         from transformers import Qwen3_5ForCausalLM
         model = Qwen3_5ForCausalLM(cfg)
     else:
         model = AutoModelForCausalLM.from_config(cfg)
 model.eval()
 layers = model.model.layers
-rotary = type(model.model.rotary_emb)(config=cfg, device=dev)
-ST = SafeTensors(mdir)
+_rotary = type(model.model.rotary_emb)(config=cfg, device=dev)
+
+
+def rotary(x, pos):
+    """Text positions; newer transformers' Qwen3.5 rotary takes (3, B, T) multimodal ids (the same ids on every axis)."""
+    try:
+        return _rotary(x, pos)
+    except IndexError:
+        return _rotary(x, pos[None].expand(3, *pos.shape))
+if os.environ.get("FOVEAKV_GGUF"):          # model only available as a llama.cpp GGUF (quantized weights)
+    from foveakv.load_gguf import GGUFTensors
+    ST = GGUFTensors(os.environ["FOVEAKV_GGUF"], cfg)
+else:
+    ST = SafeTensors(mdir)
 keys = set(ST.keys())
 PRE = next(p for p in ("model.language_model.layers", "model.layers") if f"{p}.0.input_layernorm.weight" in keys)
 ROOTKEY = PRE[: -len(".layers")]

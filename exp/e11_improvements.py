@@ -8,11 +8,11 @@ from foveakv.attention import scores, softmax, attend
 from foveakv.select import select, topk_rows, sort_desc, k_for
 from foveakv.scheme import gain_shape_cache, gain_shape_cache_v2, turboquant_mse, tiered_attention, kivi_cache
 from foveakv.model_hybrid import sigmoid
-from foveakv.load import SafeTensors, snapshot_dir
+from foveakv.load import model_weights
 from foveakv.quant import INT8_BITS
 
 t0 = time.time()
-ST = SafeTensors(snapshot_dir())
+ST = model_weights()
 S_SINK, W_REC = 4, 128
 res = []
 
