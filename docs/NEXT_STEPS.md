@@ -61,6 +61,8 @@ What the code supports today:
 
 ## Remaining experiments, in priority order
 
+The step-by-step plan for bigger models is in [`ROADMAP.md`](ROADMAP.md).
+
 1. **End to end on bigger models.** 2B, 4B (offline done) and 9B: perplexity, retrieval, latency and memory with `gpu/eval_e2e.py`.
 2. **A dense model end to end.** Add key smoothing to the GPU path (scale q, divide keys at encode), GQA groups other than 4,
    and an adapter for the model's attention module in `gpu/eval_e2e.py`. Offline results on Qwen3-0.6B are in `results/MODELS.md`.

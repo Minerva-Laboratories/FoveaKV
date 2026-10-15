@@ -203,7 +203,7 @@ FOVEAKV_LAYERS=3,11,19,27 tools/run_offline.sh qwen3.5-4b       # E1-E18 into re
 Run the check in `exp/e19_smoothing.py` before anything else. It compares our offline attention with the model's own
 output. On Qwen3 the default int8 reference failed this check (outlier channels), so that model uses fp16
 (`FOVEAKV_REF=fp16`). Kernels support head_dim 256 and 128 (`FOVEAKV_HEAD_DIM=128`). More in
-[`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md).
+[`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md); the plan for bigger models is in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Repository layout
 
@@ -214,7 +214,7 @@ exp/            offline experiments E1-E19 (one script each)
 tools/          KV capture (GPU, or one layer at a time on CPU), memory-guarded runners, HF reference dump
 tests/          unit tests
 results/        experiment reports (*.md), raw results, plots; other models in results/<model>/, summary in MODELS.md
-docs/           handoff notes and remaining work
+docs/           handoff notes, remaining work, roadmap for bigger models
 paper/          LaTeX source, generated tables and figures, citation ledger, main.pdf
 reference/      the original synthetic tests that motivated the project
 ```
