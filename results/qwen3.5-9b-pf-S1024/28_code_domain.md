@@ -1,0 +1,24 @@
+# E28 Prefill attention in the code domain of the nested gain-shape codes (16-query tiles, as E26/E27)
+
+compute = relative tensor-core time vs bf16 (s8 GEMM 1/2, s4 1/4; QK and PV half each) + 0.5 per pair refined to the fine
+code + 1 per exact pair. Uniform-code fine MSE 0.0115 vs Lloyd-Max 0.0095 (per N(0,1) coordinate).
+E27 reference (same tiles): int8/int8 + exact 5% by error model 0.58 -> 0.0092; int8 QK / bf16 PV 0.75 -> 0.0137.
+
+| arm | compute | attn err | resid err |
+|---|---|---|---|
+| fine 4b code, bf16 arithmetic (code error only) | 1.0000 | 0.0485 | 0.0761 |
+| coarse 2b code, bf16 arithmetic | 1.0000 | 0.1755 | 0.2649 |
+| fine 4b code, s8 QK / s8 PV | 0.5000 | 0.0486 | 0.0763 |
+| coarse 2b code, s8 / s8 | 0.5000 | 0.1756 | 0.2650 |
+| fine s8/s8 + exact 0.05 | 0.5771 | 0.0044 | 0.0076 |
+| fine s8/s8 + exact 0.1 | 0.6271 | 0.0024 | 0.0042 |
+| coarse s8/s8 + fine 0.1 + exact 0.05 | 0.6271 | 0.0115 | 0.0189 |
+| coarse s8/s8 + fine 0.2 + exact 0.05 | 0.6773 | 0.0077 | 0.0128 |
+| coarse s8/s8 + fine 0.3 + exact 0.05 | 0.7273 | 0.0062 | 0.0105 |
+| coarse s8/s8 + fine 0.2 + exact 0.1 | 0.7273 | 0.0051 | 0.0086 |
+| uniform fine, s4 QK / s8 PV | 0.3750 | 0.0844 | 0.1355 |
+| uniform fine s4/s8 + exact 0.05 | 0.4521 | 0.0107 | 0.0201 |
+| uniform fine s4/s8 + exact 0.1 | 0.5021 | 0.0063 | 0.0121 |
+| uniform fine, s8 QK / s8 PV | 0.5000 | 0.0530 | 0.0823 |
+
+runtime 2393s
