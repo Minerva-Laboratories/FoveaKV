@@ -31,6 +31,8 @@ if os.environ.get("FOVEAKV_E21_SMOKE"):
 rng = np.random.default_rng(0)
 NODES = os.environ.get("FOVEAKV_E24_NODES", "pos,kmeans,gain-shape").split(",")
 TAG = os.environ.get("FOVEAKV_E24_TAG", "")
+if os.environ.get("FOVEAKV_E24_CORPORA"):
+    CORPORA = os.environ["FOVEAKV_E24_CORPORA"].split(",")
 
 
 def kmeans(X, k, iters=12, sphere=False):
@@ -163,6 +165,7 @@ for C in CORPORA:
             est = np.exp(lm - top)[..., None] * val
             gap = np.linalg.norm(num_t - np.nan_to_num(est), axis=-1)
             sizes = np.stack([np.bincount(labs[h][labs[h] >= 0], minlength=nb) for h in range(H)])  # (H,nb)
+            del num_t, est
             scorers = {"mass": lm, "err": lm + np.log(np.expm1(np.minimum(delta, 50)) + 1e-300), "oracle": np.log(gap + 1e-300)}
             ntail = inreg.sum()
             for sel, scr in scorers.items():
