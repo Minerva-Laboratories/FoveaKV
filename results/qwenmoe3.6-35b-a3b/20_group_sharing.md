@@ -1,0 +1,31 @@
+# E20 Sharing the hot set across query heads (k = 5%, group size G = 8)
+
+**TL;DR:** one set per KV head (s = 8): FoveaKV 0.0188, SpeCache-style 0.0225; one set per query head
+(s = 1): FoveaKV 0.0181, SpeCache-style 0.0146. Attention mass left on the low-bit tail (shared set):
+FoveaKV selector 0.115, KIVI selector 0.121. SpeCache-style with FoveaKV's 2-bit tail:
+0.0053; FoveaKV with exact hot tokens: 0.0052.
+
+## Config
+Same exact window (4 sink + 128 recent tokens) and k for every row; each sub-group of s query heads gets its own top-k set
+(max over the sub-group of estimated log-probs). 'distinct hot / k' = tokens fetched per KV head per step, in units of k.
+
+| scheme | heads per set (s) | distinct hot / k | tail mass | attn err |
+|---|---|---|---|---|
+| FoveaKV | 1 | 2.8974 | 0.0870 | 0.0181 |
+| FoveaKV | 2 | 2.0052 | 0.0984 | 0.0183 |
+| FoveaKV | 4 | 1.3989 | 0.1083 | 0.0186 |
+| FoveaKV | 8 | 1.0000 | 0.1154 | 0.0188 |
+| SpeCache | 1 | 2.9598 | 0.0915 | 0.0146 |
+| SpeCache | 2 | 2.0350 | 0.1033 | 0.0175 |
+| SpeCache | 4 | 1.4100 | 0.1134 | 0.0202 |
+| SpeCache | 8 | 1.0000 | 0.1205 | 0.0225 |
+| Spe+GS tail | 1 | 2.9598 | 0.0915 | 0.0037 |
+| Spe+GS tail | 2 | 2.0350 | 0.1033 | 0.0042 |
+| Spe+GS tail | 4 | 1.4100 | 0.1134 | 0.0048 |
+| Spe+GS tail | 8 | 1.0000 | 0.1205 | 0.0053 |
+| Fov+exact | 1 | 2.8974 | 0.0870 | 0.0038 |
+| Fov+exact | 2 | 2.0052 | 0.0984 | 0.0043 |
+| Fov+exact | 4 | 1.3989 | 0.1083 | 0.0048 |
+| Fov+exact | 8 | 1.0000 | 0.1154 | 0.0052 |
+
+runtime 1037s

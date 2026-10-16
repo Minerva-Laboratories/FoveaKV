@@ -29,13 +29,23 @@ class LinCache:
     """Minimal cache for the Gated DeltaNet layers (the API their forward uses)."""
 
     def __init__(self, layer_ids):
-        self.layers = {i: SimpleNamespace(conv_states=[None], recurrent_states=[None]) for i in layer_ids}
+        self.layers = {i: SimpleNamespace(conv_states=[None], recurrent_states=[None], record_past=False) for i in layer_ids}
 
     def has_previous_state(self, layer_idx=None, state_idx=None):
         return self.layers[layer_idx].recurrent_states[0] is not None
 
-    def update_conv_state(self, s, layer_idx, **kw):
-        self.layers[layer_idx].conv_states[0] = s
+    def update_conv_state(self, s, layer_idx, conv_kernel_size=None, **kw):
+        """Newer transformers: called with the new conv inputs (B, C, T); returns them with the cached left context
+        prepended and keeps the last conv_kernel_size columns (older versions passed the state itself)."""
+        l = self.layers[layer_idx]
+        if conv_kernel_size is None:                               # older API
+            l.conv_states[0] = s
+            return s
+        full = s if l.conv_states[0] is None else torch.cat([l.conv_states[0], s], -1)
+        if full.shape[-1] < conv_kernel_size:
+            full = F.pad(full, (conv_kernel_size - full.shape[-1], 0))
+        l.conv_states[0] = full[..., -conv_kernel_size:].contiguous()
+        return full
 
     def update_recurrent_state(self, s, layer_idx, **kw):
         self.layers[layer_idx].recurrent_states[0] = s
@@ -106,7 +116,10 @@ class Runner:
         with torch.autocast("cuda", dtype=torch.bfloat16):
             x = mm.embed_tokens(ids[None])
             pos = torch.arange(pos0, pos0 + len(ids), device=DEV)[None]
-            cos, sin = mm.rotary_emb(x, pos)
+            try:
+                cos, sin = mm.rotary_emb(x, pos)
+            except IndexError:                          # newer transformers: (3, B, T) multimodal position ids
+                cos, sin = mm.rotary_emb(x, pos[None].expand(3, *pos.shape))
             h = x
             for i, layer in enumerate(mm.layers):
                 r = h
