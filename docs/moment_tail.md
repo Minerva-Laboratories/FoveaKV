@@ -135,3 +135,11 @@ does give 2x; the GEMMs do not reach it. Triton with B stored N x K (as keys are
 tensor cores; SageAttention's int8 QK kernels report ~2x over FA2 on Ampere-class GPUs with Q kept in registers, so the E27
 cost model is a kernel-engineering target, not something available off the shelf on this stack.
 tools/bench_int8_mm.py, tools/bench_int8_triton.py, tools/cuda/mma_peak.cu.
+
+**E28 code-domain prefill (tiles as E26/E27).** Q.K and P.V computed directly on FoveaKV's nested codes (block means +
+rotated Lloyd-Max levels x gain; levels on an int8 grid, so QK is an integer GEMM with the gain as a column scale), then
+the E23 error model picks pairs to recompute exactly. Fine 4-bit code with s8/s8 arithmetic: 0.50 -> 0.049 (the code
+error; s8 adds nothing on top); + exact 5%: 0.58 -> 0.0044 (E27 int8 on raw keys: 0.0092, 2x worse at equal compute);
++ exact 10%: 0.63 -> 0.0024. Coarse 2-bit first + fine refinement is worse than fine s8 directly (0.68 -> 0.0077).
+A uniform 4-bit code (MSE 0.0115 vs 0.0095) allows s4 QK: 0.375 -> 0.084, + exact 5% 0.45 -> 0.011, + 10% 0.50 -> 0.0063.
+Same caveat as E27: the compute column assumes int8 at 2x / int4 at 4x tensor-core time, which needs a hand-written kernel.
