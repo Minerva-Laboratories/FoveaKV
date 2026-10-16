@@ -1,0 +1,1 @@
+fp16 reference (offline exact attention vs model output: fp16 0.003)

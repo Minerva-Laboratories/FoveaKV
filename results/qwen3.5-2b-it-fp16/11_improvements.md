@@ -1,0 +1,105 @@
+# E11 Low-hanging improvements + TurboQuant-MSE baseline (offline, int8 reference, 5 corpora × 6 layers)
+
+**TL;DR:** E8 config DYN k=5%: attn err 0.0665. Adding (A) an exact sink+recent set outside the budget → 0.0288;
+plus (C) block-local centering (128-token fp16 means) → 0.0222 at 2.26 bits (long-context limit); (B) key smoothing alone: 0.0277. References: GS-4b +A 0.0229 (4.03 b),
+TurboQuant-MSE 2/3/4b (+A): 0.1513 / 0.0614 / 0.0264, KIVI-4b 0.0490 (4.25 b).
+Adaptive k (τ=0.9, +A, +blk128): 0.0220 at 2.34 bits. GS-4b +A +blk128: 0.0184.
+
+## Config
+- A = first 4 tokens + last 128 tokens at reference (int8) precision, not counted in k. bits@8K include A (8.06 b for ~132 of ~8K tokens);
+  the long-context limit drops A (→ coarse + 2·hot fraction).
+- Smoothing: s_c = (E[(k_c−μ_c)²]/E[q_c²])^(1/4) per KV head from prefill keys and prefill queries (group-averaged); keys stored as (k−μ)/s, queries scaled by s.
+- TurboQuant-MSE: RHT + Lloyd-Max N(0,1/d) codebook + fp16 norm, no mean removal, no QJL; b + 16/256 bits.
+- Block centering: per-channel mean of each complete 128-token block (fp16), subtracted from K and V before RHT; +0.125 bits/elem.
+- Adaptive: per query head smallest k s.t. estimated mass (coarse logits; exact for A) ≥ τ, capped at 20%; union over the query heads of a group.
+
+| scheme | bits @8K | bits (long ctx) | attn err | attn err worst | resid err | layer-3 attn err |
+|---|---|---|---|---|---|---|
+| GS-2b +A | 2.1316 | 2.0312 | 0.1223 | 0.2150 | 0.1819 | 0.0722 |
+| GS-2b +A +smooth | 2.1316 | 2.0312 | 0.1257 | 0.2167 | 0.1838 | 0.0731 |
+| TQ-2b | 2.0625 | 2.0625 | 0.2788 | 0.3475 | 0.4220 | 0.2493 |
+| TQ-2b +A | 2.1623 | 2.0625 | 0.1513 | 0.2438 | 0.2324 | 0.0926 |
+| DYN k=2% +A | 2.1717 | 2.0714 | 0.0364 | 0.0683 | 0.0552 | 0.0306 |
+| DYN k=2% +A +smooth | 2.1717 | 2.0714 | 0.0354 | 0.0639 | 0.0534 | 0.0302 |
+| DYN adaptive τ=0.8 +A | 2.2082 | 2.1079 | 0.0490 | 0.0847 | 0.0708 | 0.0243 |
+| DYN adaptive τ=0.8 +A +smooth | 2.2085 | 2.1082 | 0.0490 | 0.0848 | 0.0703 | 0.0241 |
+| DYN k=5% (E8 config) | 2.1314 | 2.1314 | 0.0665 | 0.1136 | 0.0981 | 0.0531 |
+| DYN k=5% +A | 2.2317 | 2.1314 | 0.0288 | 0.0524 | 0.0458 | 0.0230 |
+| DYN k=5% +A +smooth | 2.2317 | 2.1314 | 0.0277 | 0.0477 | 0.0438 | 0.0224 |
+| GS-2b +A +blk128 | 2.2545 | 2.1562 | 0.0857 | 0.1542 | 0.1406 | 0.0601 |
+| GS-2b +A +smooth +blk128 | 2.2545 | 2.1562 | 0.0869 | 0.1578 | 0.1404 | 0.0612 |
+| DYN k=2% +A +blk128 | 2.2946 | 2.1964 | 0.0264 | 0.0452 | 0.0425 | 0.0253 |
+| DYN k=2% +A +smooth +blk128 | 2.2946 | 2.1964 | 0.0258 | 0.0456 | 0.0412 | 0.0253 |
+| DYN adaptive τ=0.9 +A | 2.3188 | 2.2184 | 0.0326 | 0.0565 | 0.0502 | 0.0168 |
+| DYN adaptive τ=0.9 +A +smooth | 2.3192 | 2.2189 | 0.0317 | 0.0549 | 0.0486 | 0.0161 |
+| DYN k=10% +A | 2.3317 | 2.2314 | 0.0255 | 0.0472 | 0.0417 | 0.0182 |
+| DYN k=10% +A +smooth | 2.3317 | 2.2314 | 0.0243 | 0.0425 | 0.0396 | 0.0174 |
+| DYN adaptive τ=0.8 +A +blk128 | 2.3306 | 2.2324 | 0.0292 | 0.0530 | 0.0459 | 0.0189 |
+| DYN adaptive τ=0.8 +A +smooth +blk128 | 2.3310 | 2.2327 | 0.0291 | 0.0500 | 0.0451 | 0.0188 |
+| DYN k=5% +A +blk128 | 2.3546 | 2.2564 | 0.0222 | 0.0382 | 0.0371 | 0.0196 |
+| DYN k=5% +A +smooth +blk128 | 2.3546 | 2.2564 | 0.0215 | 0.0387 | 0.0356 | 0.0193 |
+| DYN adaptive τ=0.9 +A +blk128 | 2.4370 | 2.3388 | 0.0220 | 0.0402 | 0.0363 | 0.0140 |
+| DYN adaptive τ=0.9 +A +smooth +blk128 | 2.4374 | 2.3391 | 0.0213 | 0.0387 | 0.0351 | 0.0136 |
+| DYN adaptive τ=0.95 +A | 2.4465 | 2.3462 | 0.0260 | 0.0482 | 0.0422 | 0.0143 |
+| DYN adaptive τ=0.95 +A +smooth | 2.4468 | 2.3465 | 0.0249 | 0.0435 | 0.0402 | 0.0136 |
+| DYN k=10% +A +blk128 | 2.4546 | 2.3564 | 0.0202 | 0.0359 | 0.0345 | 0.0158 |
+| DYN k=10% +A +smooth +blk128 | 2.4546 | 2.3564 | 0.0194 | 0.0366 | 0.0331 | 0.0153 |
+| DYN adaptive τ=0.95 +A +smooth +blk128 | 2.5613 | 2.4630 | 0.0188 | 0.0365 | 0.0322 | 0.0120 |
+| DYN adaptive τ=0.95 +A +blk128 | 2.5613 | 2.4631 | 0.0196 | 0.0361 | 0.0335 | 0.0124 |
+| TQ-3b | 3.0625 | 3.0625 | 0.1413 | 0.1850 | 0.2302 | 0.1193 |
+| TQ-3b +A | 3.1457 | 3.0625 | 0.0614 | 0.1041 | 0.1032 | 0.0380 |
+| GS-4b | 4.0312 | 4.0312 | 0.0645 | 0.1135 | 0.0955 | 0.0498 |
+| GS-4b +A | 4.0983 | 4.0312 | 0.0229 | 0.0452 | 0.0390 | 0.0131 |
+| GS-4b +smooth | 4.0312 | 4.0312 | 0.0625 | 0.1016 | 0.0902 | 0.0469 |
+| GS-4b +A +smooth | 4.0983 | 4.0312 | 0.0218 | 0.0407 | 0.0368 | 0.0124 |
+| TQ-4b | 4.0625 | 4.0625 | 0.0707 | 0.1032 | 0.1172 | 0.0580 |
+| TQ-4b +A | 4.1290 | 4.0625 | 0.0264 | 0.0485 | 0.0470 | 0.0162 |
+| GS-4b +blk128 | 4.1562 | 4.1562 | 0.0549 | 0.0996 | 0.0800 | 0.0429 |
+| GS-4b +A +blk128 | 4.2212 | 4.1562 | 0.0184 | 0.0349 | 0.0324 | 0.0116 |
+| GS-4b +smooth +blk128 | 4.1562 | 4.1562 | 0.0530 | 0.0853 | 0.0780 | 0.0402 |
+| GS-4b +A +smooth +blk128 | 4.2212 | 4.1562 | 0.0176 | 0.0357 | 0.0311 | 0.0111 |
+| KIVI-4b g128 (+own int8 residual) | 4.2500 | 4.2500 | 0.0490 | 0.0946 | 0.0853 | 0.0169 |
+
+## Per layer
+| layer | scheme | attn err | resid err |
+|---|---|---|---|
+| 3 | GS-4b +A | 0.0131 | 0.0243 |
+| 3 | DYN k=5% +A | 0.0230 | 0.0388 |
+| 3 | DYN k=5% +A +blk128 | 0.0196 | 0.0347 |
+| 3 | DYN adaptive τ=0.9 +A +blk128 | 0.0140 | 0.0246 |
+| 3 | TQ-4b +A | 0.0162 | 0.0306 |
+| 3 | TQ-2b +A | 0.0926 | 0.1604 |
+| 7 | GS-4b +A | 0.0205 | 0.0425 |
+| 7 | DYN k=5% +A | 0.0249 | 0.0483 |
+| 7 | DYN k=5% +A +blk128 | 0.0189 | 0.0379 |
+| 7 | DYN adaptive τ=0.9 +A +blk128 | 0.0208 | 0.0408 |
+| 7 | TQ-4b +A | 0.0226 | 0.0470 |
+| 7 | TQ-2b +A | 0.1330 | 0.2489 |
+| 11 | GS-4b +A | 0.0271 | 0.0506 |
+| 11 | DYN k=5% +A | 0.0333 | 0.0569 |
+| 11 | DYN k=5% +A +blk128 | 0.0245 | 0.0431 |
+| 11 | DYN adaptive τ=0.9 +A +blk128 | 0.0265 | 0.0462 |
+| 11 | TQ-4b +A | 0.0318 | 0.0570 |
+| 11 | TQ-2b +A | 0.1927 | 0.2729 |
+| 15 | GS-4b +A | 0.0334 | 0.0469 |
+| 15 | DYN k=5% +A | 0.0395 | 0.0509 |
+| 15 | DYN k=5% +A +blk128 | 0.0283 | 0.0395 |
+| 15 | DYN adaptive τ=0.9 +A +blk128 | 0.0291 | 0.0408 |
+| 15 | TQ-4b +A | 0.0364 | 0.0514 |
+| 15 | TQ-2b +A | 0.2116 | 0.2435 |
+| 19 | GS-4b +A | 0.0382 | 0.0461 |
+| 19 | DYN k=5% +A | 0.0457 | 0.0530 |
+| 19 | DYN k=5% +A +blk128 | 0.0364 | 0.0438 |
+| 19 | DYN adaptive τ=0.9 +A +blk128 | 0.0364 | 0.0436 |
+| 19 | TQ-4b +A | 0.0400 | 0.0486 |
+| 19 | TQ-2b +A | 0.2001 | 0.2230 |
+| 23 | GS-4b +A | 0.0052 | 0.0237 |
+| 23 | DYN k=5% +A | 0.0066 | 0.0268 |
+| 23 | DYN k=5% +A +blk128 | 0.0057 | 0.0235 |
+| 23 | DYN adaptive τ=0.9 +A +blk128 | 0.0050 | 0.0217 |
+| 23 | TQ-4b +A | 0.0114 | 0.0474 |
+| 23 | TQ-2b +A | 0.0778 | 0.2456 |
+
+![frontier](plots/e11_frontier.png)
+
+runtime 1003s

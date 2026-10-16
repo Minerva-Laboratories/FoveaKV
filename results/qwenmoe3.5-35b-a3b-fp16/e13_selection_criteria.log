@@ -1,0 +1,45 @@
+code 3 22s
+code 15 42s
+code 27 62s
+code 39 83s
+needle10 3 103s
+needle10 15 124s
+needle10 27 145s
+needle10 39 166s
+needle50 3 186s
+needle50 15 207s
+needle50 27 227s
+needle50 39 247s
+needle90 3 268s
+needle90 15 290s
+needle90 27 311s
+needle90 39 332s
+prose 3 352s
+prose 15 374s
+prose 27 394s
+prose 39 414s
+# E13 Selection criteria from the first-order error model (window A + block means, int8 reference)
+
+**TL;DR:** at k=5%: max-logp 0.0205, GQA sum of squared probabilities 0.0204,
+expected-error weight 0.0205, oracle (true p, sum-p2) 0.0190.
+At k=2%: 0.0245 / 0.0244 / 0.0243 / oracle 0.0221.
+
+## Config
+Same caches as E11 (DYN +A +blk128). Criteria rank non-window tokens per KV head; p, o, v are coarse estimates (exact for A).
+expected-error: w_i = Σ_h p_hi² ( ||q_h||² g_ki² ||v_i − o_h||² / d² + g_vi² ), from the first-order error model.
+
+| k | criterion | attn err | layer-3 attn err |
+|---|---|---|---|
+| 2% | max-logp | 0.0245 | 0.0339 |
+| 2% | sum-p2 | 0.0244 | 0.0336 |
+| 2% | sum-p | 0.0244 | 0.0338 |
+| 2% | expected-error | 0.0243 | 0.0338 |
+| 2% | oracle sum-p2 | 0.0221 | 0.0306 |
+| 5% | max-logp | 0.0205 | 0.0277 |
+| 5% | sum-p2 | 0.0204 | 0.0275 |
+| 5% | sum-p | 0.0205 | 0.0275 |
+| 5% | expected-error | 0.0205 | 0.0277 |
+| 5% | oracle sum-p2 | 0.0190 | 0.0249 |
+
+runtime 414s
+
