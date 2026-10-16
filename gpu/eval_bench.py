@@ -11,7 +11,7 @@ Results: one JSON line per (sample, scheme) in results/<FOVEAKV_RESULTS_TAG>/ben
 Usage: <python> gpu/eval_bench.py longbench --tasks hotpotqa,qasper --n 20 --schemes bf16,dyn5,kivi2
        <python> gpu/eval_bench.py ruler --lens 8192,16384 --tasks niah_single_1 --n 20
        <python> gpu/eval_bench.py score longbench|ruler"""
-import argparse, json, os, random, sys, time
+import argparse, json, os, random, re, sys, time
 import numpy as np
 import torch
 
@@ -53,6 +53,11 @@ def split_prompt(tok, full, cut, max_ctx):
 
 
 @torch.no_grad()
+def strip_think(t):
+    """Drop a (possibly unclosed) <think> block the model emits even without the chat template."""
+    return re.sub(r"<think>.*?(</think>|$)", "", t, flags=re.S)
+
+
 def generate(R, scheme, snap, suf_ids, max_new, stop_nl=False):
     """Decode the prompt suffix through the scheme's cache, then greedy generation. Returns (text, bits, n_new)."""
     from gpu.eval_e2e import DEV
@@ -66,8 +71,8 @@ def generate(R, scheme, snap, suf_ids, max_new, stop_nl=False):
     nxt = int(R.logits(h[-1:])[0].argmax())
     while nxt not in stops and len(out) < max_new:
         out.append(nxt)
-        if stop_nl and "\n" in R.tok.decode([nxt]):
-            break
+        if stop_nl and "\n" in R.tok.decode([nxt]) and strip_think(R.tok.decode(out)).strip():
+            break                               # stop at the first newline after real text (not an empty think block)
         h = R.forward(torch.tensor([nxt], device=DEV), pos, caches, lin, prefill=False)
         pos += 1
         nxt = int(R.logits(h[-1:])[0].argmax())
@@ -134,7 +139,7 @@ def score_longbench(path):
          "passage_retrieval_en": Mx.retrieval_score, "lcc": Mx.code_sim_score, "repobench-p": Mx.code_sim_score}
     out = []
     for r in map(json.loads, open(path)):
-        pred = r["pred"]
+        pred = strip_think(r["pred"])
         if r["task"] in ("trec", "triviaqa", "samsum", "lsht"):
             pred = pred.lstrip("\n").split("\n")[0]
         r["score"] = 100 * max(m[r["task"]](pred, g, all_classes=r.get("all_classes")) for g in r["answers"])
