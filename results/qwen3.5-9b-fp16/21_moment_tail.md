@@ -1,0 +1,96 @@
+# E21 Query-dependent moment summaries for the attention tail (block 64)
+
+Exact tier: 4 sinks + first block, 128-token window, tokens outside full blocks. Every other block is either read
+exactly (refined, chosen per query and shared by the GQA group) or served by its summary evaluated for that query.
+'bytes' = K/V values moved per decode step relative to a full fp16 read (summaries included); 'refined' = fraction of
+blocks read exactly; err = relative error of the attention output vs exact attention.
+
+## Mass estimate (mass-weighted mean |log mass error| of the block summaries, nats)
+| summary | |d log mass| | signed (+ = over) |
+|---|---|---|
+| mean | 2.6419 | -2.6419 |
+| mom0 | 1.6247 | -1.5424 |
+| mom2 | 1.2007 | -0.8076 |
+| mom8 | 0.9874 | -0.3886 |
+
+## All runs
+| summary | selector | budget | bytes | refined | attn err |
+|---|---|---|---|---|---|
+| drop | bound | rho=0.03125 | 0.1035 | 0.0342 | 0.1765 |
+| drop | bound | rho=0.0625 | 0.1276 | 0.0598 | 0.1453 |
+| drop | bound | rho=0.125 | 0.1922 | 0.1282 | 0.0980 |
+| drop | bound | rho=0.25 | 0.3051 | 0.2479 | 0.0608 |
+| mean | mass | rho=0.03125 | 0.1035 | 0.0342 | 0.1258 |
+| mean | mass | rho=0.0625 | 0.1276 | 0.0598 | 0.1110 |
+| mean | mass | rho=0.125 | 0.1922 | 0.1282 | 0.0893 |
+| mean | mass | rho=0.25 | 0.3051 | 0.2479 | 0.0657 |
+| mom0 | mass | rho=0.03125 | 0.1182 | 0.0342 | 0.1150 |
+| mom0 | mass | rho=0.0625 | 0.1424 | 0.0598 | 0.1028 |
+| mom0 | mass | rho=0.125 | 0.2069 | 0.1282 | 0.0840 |
+| mom0 | mass | rho=0.25 | 0.3198 | 0.2479 | 0.0630 |
+| mom0 | err | rho=0.03125 | 0.1182 | 0.0342 | 0.1147 |
+| mom0 | err | rho=0.0625 | 0.1424 | 0.0598 | 0.1026 |
+| mom0 | err | rho=0.125 | 0.2069 | 0.1282 | 0.0839 |
+| mom0 | err | rho=0.25 | 0.3198 | 0.2479 | 0.0625 |
+| mom0 | err | tau=0.1 | 0.1986 | 0.1193 | 0.1037 |
+| mom0 | err | tau=0.03 | 0.3237 | 0.2520 | 0.0688 |
+| mom0 | err | tau=0.01 | 0.4567 | 0.3929 | 0.0443 |
+| mom0 | err | tau=0.003 | 0.6002 | 0.5450 | 0.0266 |
+| mom0 no v-tilt | mass | rho=0.03125 | 0.1182 | 0.0342 | 0.1150 |
+| mom0 no v-tilt | mass | rho=0.0625 | 0.1424 | 0.0598 | 0.1028 |
+| mom0 no v-tilt | mass | rho=0.125 | 0.2069 | 0.1282 | 0.0840 |
+| mom0 no v-tilt | mass | rho=0.25 | 0.3198 | 0.2479 | 0.0630 |
+| mom2 | mass | rho=0.03125 | 0.1478 | 0.0342 | 0.1170 |
+| mom2 | mass | rho=0.0625 | 0.1720 | 0.0598 | 0.1008 |
+| mom2 | mass | rho=0.125 | 0.2365 | 0.1282 | 0.0782 |
+| mom2 | mass | rho=0.25 | 0.3494 | 0.2479 | 0.0559 |
+| mom2 | err | rho=0.03125 | 0.1478 | 0.0342 | 0.1175 |
+| mom2 | err | rho=0.0625 | 0.1720 | 0.0598 | 0.1011 |
+| mom2 | err | rho=0.125 | 0.2365 | 0.1282 | 0.0776 |
+| mom2 | err | rho=0.25 | 0.3494 | 0.2479 | 0.0550 |
+| mom2 | err | tau=0.1 | 0.2648 | 0.1582 | 0.0895 |
+| mom2 | err | tau=0.03 | 0.3922 | 0.2933 | 0.0600 |
+| mom2 | err | tau=0.01 | 0.5175 | 0.4261 | 0.0411 |
+| mom2 | err | tau=0.003 | 0.6481 | 0.5645 | 0.0268 |
+| mom2 no v-tilt | mass | rho=0.03125 | 0.1330 | 0.0342 | 0.1216 |
+| mom2 no v-tilt | mass | rho=0.0625 | 0.1572 | 0.0598 | 0.1059 |
+| mom2 no v-tilt | mass | rho=0.125 | 0.2217 | 0.1282 | 0.0823 |
+| mom2 no v-tilt | mass | rho=0.25 | 0.3346 | 0.2479 | 0.0587 |
+| mom8 | mass | rho=0.03125 | 0.2364 | 0.0342 | 0.1164 |
+| mom8 | mass | rho=0.0625 | 0.2606 | 0.0598 | 0.0986 |
+| mom8 | mass | rho=0.125 | 0.3251 | 0.1282 | 0.0734 |
+| mom8 | mass | rho=0.25 | 0.4380 | 0.2479 | 0.0487 |
+| mom8 | err | rho=0.03125 | 0.2364 | 0.0342 | 0.1159 |
+| mom8 | err | rho=0.0625 | 0.2606 | 0.0598 | 0.0976 |
+| mom8 | err | rho=0.125 | 0.3251 | 0.1282 | 0.0713 |
+| mom8 | err | rho=0.25 | 0.4380 | 0.2479 | 0.0463 |
+| mom8 | err | tau=0.1 | 0.3840 | 0.1906 | 0.0784 |
+| mom8 | err | tau=0.03 | 0.5178 | 0.3325 | 0.0499 |
+| mom8 | err | tau=0.01 | 0.6438 | 0.4660 | 0.0327 |
+| mom8 | err | tau=0.003 | 0.7714 | 0.6012 | 0.0200 |
+| mom8 no v-tilt | mass | rho=0.03125 | 0.1774 | 0.0342 | 0.1289 |
+| mom8 no v-tilt | mass | rho=0.0625 | 0.2016 | 0.0598 | 0.1104 |
+| mom8 no v-tilt | mass | rho=0.125 | 0.2661 | 0.1282 | 0.0826 |
+| mom8 no v-tilt | mass | rho=0.25 | 0.3790 | 0.2479 | 0.0548 |
+| mom8 | oracle | rho=0.03125 | 0.2364 | 0.0342 | 0.0863 |
+| mom8 | oracle | rho=0.0625 | 0.2606 | 0.0598 | 0.0601 |
+| mom8 | oracle | rho=0.125 | 0.3251 | 0.1282 | 0.0330 |
+| mom8 | oracle | rho=0.25 | 0.4380 | 0.2479 | 0.0176 |
+| mom8+o1 | mass | rho=0.03125 | 0.2506 | 0.0342 | 0.1154 |
+| mom8+o1 | mass | rho=0.0625 | 0.2745 | 0.0598 | 0.0978 |
+| mom8+o1 | mass | rho=0.125 | 0.3380 | 0.1282 | 0.0729 |
+| mom8+o1 | mass | rho=0.25 | 0.4491 | 0.2479 | 0.0483 |
+| mom8+o1 | err | rho=0.03125 | 0.2506 | 0.0342 | 0.1148 |
+| mom8+o1 | err | rho=0.0625 | 0.2745 | 0.0598 | 0.0967 |
+| mom8+o1 | err | rho=0.125 | 0.3380 | 0.1282 | 0.0708 |
+| mom8+o1 | err | rho=0.25 | 0.4491 | 0.2479 | 0.0460 |
+| mom8+o1 | err | tau=0.1 | 0.3946 | 0.1892 | 0.0780 |
+| mom8+o1 | err | tau=0.03 | 0.5262 | 0.3309 | 0.0496 |
+| mom8+o1 | err | tau=0.01 | 0.6503 | 0.4645 | 0.0322 |
+| mom8+o1 | err | tau=0.003 | 0.7761 | 0.5999 | 0.0198 |
+| mom8+o1 no v-tilt | mass | rho=0.03125 | 0.1917 | 0.0342 | 0.1279 |
+| mom8+o1 no v-tilt | mass | rho=0.0625 | 0.2155 | 0.0598 | 0.1096 |
+| mom8+o1 no v-tilt | mass | rho=0.125 | 0.2790 | 0.1282 | 0.0821 |
+| mom8+o1 no v-tilt | mass | rho=0.25 | 0.3901 | 0.2479 | 0.0543 |
+
+runtime 4392s

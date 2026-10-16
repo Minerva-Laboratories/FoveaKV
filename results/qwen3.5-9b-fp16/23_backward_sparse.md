@@ -1,0 +1,33 @@
+# E23 Sparse attention from the error model, run backwards (gate- and o_proj-weighted pair costs)
+
+FLOPs = kept (query head, token) pairs / all causal pairs. heads off = share of (query, head) skipped entirely.
+resid = relative error of the layer's residual contribution (after gate and o_proj), what the next layer sees.
+
+| arm | setting | FLOPs kept | heads off | attn err | resid err |
+|---|---|---|---|---|---|
+| top-k | k=0.01 | 0.0101 | 0.0000 | 0.1289 | 0.1310 |
+| top-k | k=0.02 | 0.0201 | 0.0000 | 0.0869 | 0.0900 |
+| top-k | k=0.05 | 0.0501 | 0.0000 | 0.0481 | 0.0514 |
+| top-k | k=0.1 | 0.1001 | 0.0000 | 0.0279 | 0.0309 |
+| top-k | k=0.2 | 0.2001 | 0.0000 | 0.0136 | 0.0160 |
+| top-p | tau=0.003 | 0.3676 | 0.0000 | 0.0021 | 0.0022 |
+| top-p | tau=0.01 | 0.2389 | 0.0000 | 0.0068 | 0.0072 |
+| top-p | tau=0.03 | 0.1354 | 0.0000 | 0.0195 | 0.0214 |
+| top-p | tau=0.1 | 0.0522 | 0.0000 | 0.0623 | 0.0689 |
+| top-p | tau=0.3 | 0.0117 | 0.0000 | 0.1861 | 0.2051 |
+| gate heads | skip 0.25 | 0.7500 | 0.2500 | 0.2500 | 0.4041 |
+| gate heads | skip 0.5 | 0.5000 | 0.5000 | 0.5000 | 0.6548 |
+| backward (exact p) | eps=0.01 | 0.4088 | 0.0000 | 0.0019 | 0.0013 |
+| backward (coarse est.) | eps=0.01 | 0.4339 | 0.0000 | 0.0018 | 0.0012 |
+| backward (exact p) | eps=0.03 | 0.2826 | 0.0000 | 0.0051 | 0.0035 |
+| backward (coarse est.) | eps=0.03 | 0.3054 | 0.0000 | 0.0049 | 0.0033 |
+| backward (exact p) | eps=0.1 | 0.1548 | 0.0000 | 0.0156 | 0.0111 |
+| backward (coarse est.) | eps=0.1 | 0.1722 | 0.0000 | 0.0147 | 0.0104 |
+| backward (exact p) | eps=0.3 | 0.0663 | 0.0000 | 0.0440 | 0.0323 |
+| backward (coarse est.) | eps=0.3 | 0.0769 | 0.0000 | 0.0408 | 0.0299 |
+| backward (exact p) | eps=1 | 0.0156 | 0.0115 | 0.1915 | 0.1252 |
+| backward (coarse est.) | eps=1 | 0.0193 | 0.0051 | 0.1701 | 0.1100 |
+| backward (exact p) | eps=3 | 0.0021 | 0.2912 | 0.5232 | 0.5636 |
+| backward (coarse est.) | eps=3 | 0.0028 | 0.2641 | 0.4893 | 0.5167 |
+
+runtime 1129s
