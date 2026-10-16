@@ -122,3 +122,11 @@ int8 pass itself, so no extra pass) instead of the largest int8 logits: 0.55 -> 
 (1.3-1.8x better than logit top-k). At 0.58 of bf16 tensor-core time this has 1.5x lower error than int8 QK + bf16 PV
 at 0.75. This is the most promising compute design so far on Ampere: one int8 pass for everything (logits, P, PV, the
 selection statistics), then an exact bf16 pass over ~5% of the tokens per tile, chosen by the error model.
+
+**INT8 throughput check (2026-10-16, Orin, MODE_50W).** The E27 cost model assumed int8 tensor cores at 2x bf16. Measured
+GEMMs at attention shapes: torch._int_mm (cuBLAS; this PyTorch build has no sm_87 kernels) 0.29-0.37x bf16; one Triton kernel
+for both types, best of 10 tilings x 3 pipeline depths: int8/fp16 0.90x (QK^T, d 256), 0.79x (PV), 0.85x (square). fp16/bf16 reach
+10-23 TFLOPs. So on this software stack int8 gives no compute win, and the E27 ladder (int8 everywhere + exact 5-10%) would cost
+about 1.2-1.3x bf16, not 0.58x. Its error result stands (it is a statement about arithmetic), but the compute case on the Orin
+needs either a tuned int8 kernel (TensorRT / CUTLASS sm_87, still to test) or a different lever (sparsity, which E23-E26 measured).
+tools/bench_int8_mm.py, tools/bench_int8_triton.py.
