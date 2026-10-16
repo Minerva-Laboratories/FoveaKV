@@ -789,7 +789,7 @@ def make(name, Hkv, Tmax, device="cuda"):
         "kivi2": lambda: KIVI(Hkv, Tmax, device, 2),
         "kivi4": lambda: KIVI(Hkv, Tmax, device, 4),
     }
-    for kf in (0.02, 0.05, 0.10):
+    for kf in (0.02, 0.05, 0.10, 0.15, 0.20):
         table[f"dyn{int(kf*100)}"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf))
         table[f"dyn{int(kf*100)}-gmean"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, block_mean=False))
         table[f"dyn{int(kf*100)}-noshrink"] = (lambda kf=kf: FoveaKV(Hkv, Tmax, device, kf, shrink=False))

@@ -70,6 +70,9 @@ class Recorder(Base):
         a = x.transpose(1, 2) @ x
         self.qq = a if self.qq is None else self.qq + a
         self.nq += x.shape[1]
+        if not hasattr(self, "qbuf"):
+            self.qbuf = []
+        self.qbuf = (self.qbuf + [(self.n, q.detach().to(torch.bfloat16))])[-4:]   # last 4 chunks (positions n, n+T)
 
 
 def load_model():
@@ -158,6 +161,7 @@ class Runner:
             h = self.forward(ids[s:s + chunk], s, caches, lin, prefill=True)
         return dict(kv={i: (c.kraw[:T].clone(), c.vraw[:T].clone()) for i, c in caches.items()}, lin=lin, T=T,
                     qm={i: c.qq / max(c.nq, 1) for i, c in caches.items()},
+                    qbuf={i: getattr(c, "qbuf", []) for i, c in caches.items()},
                     last_logits=self.logits(h[-1:])[0])
 
     def build(self, scheme, snap, extra=512):

@@ -10,11 +10,12 @@ from gpu.eval_e2e import Runner, prose_text, code_text, doc_windows, DEV
 from gpu.tree_cache import Tree
 
 QUICK = bool(os.environ.get("FOVEAKV_TREE_QUICK"))
-LENS = [16384] if QUICK else [16384, 32768]
-NDOC, N = (1, 64) if QUICK else (3, 256)
+LENS = [16384] if QUICK else [int(x) for x in os.environ.get("FOVEAKV_TREE_LENS", "16384,32768").split(",")]
+NDOC, N = (1, 64) if QUICK else (int(os.environ.get("FOVEAKV_TREE_NDOC", "3")), 256)
 TREES = {"tree-flat-r10": dict(rho=0.1), "tree-flat-r20": dict(rho=0.2), "tree-pp6-r20": dict(rho=0.2, mode="tree"),
          "drop-flat-r20": dict(rho=0.2, drop=True)}
-SCHEMES = ["bf16", "dyn5"] + list(TREES)
+SCHEMES = os.environ["FOVEAKV_TREE_SCHEMES"].split(",") if os.environ.get("FOVEAKV_TREE_SCHEMES") else ["bf16", "dyn5"] + list(TREES)
+SRCS = os.environ.get("FOVEAKV_TREE_SRCS", "prose,code").split(",")
 out_p = os.path.join(ROOT, "results", os.environ.get("FOVEAKV_RESULTS_TAG", "qwen3.5-9b"), "tree_ppl" + ("_quick" if QUICK else "") + ".jsonl")
 done = {(r["src"], r["L"], r["doc"], r["scheme"]) for r in map(json.loads, open(out_p))} if os.path.exists(out_p) else set()
 
@@ -41,7 +42,7 @@ def decode_tree(R, cfg, snap, targets):
 
 R = Runner()
 t0 = time.time()
-for src, text in (("prose", prose_text()), ("code", code_text())):
+for src, text in [(s_, prose_text() if s_ == "prose" else code_text()) for s_ in SRCS]:
     for L in LENS:
         for d, ids in enumerate(doc_windows(R.tok, text, L, NDOC, seed=L)):
             todo = [sc for sc in SCHEMES if (src, L, d, sc) not in done]
@@ -56,7 +57,7 @@ for src, text in (("prose", prose_text()), ("code", code_text())):
                     bits = 16.0
                 else:
                     nll, bits = R.decode_teacher(sc, snap, x[L - N:])
-                    comp = 1.0
+                    comp = int(sc[5:]) / 100 + 2 / 16 if sc.startswith("quest") else 1.0    # pages + min/max scoring
                 rec = dict(src=src, L=L, doc=d, scheme=sc, nll=float(nll.mean()), nll_tok=[float(v) for v in nll], bits=bits, compute=comp)
                 with open(out_p, "a") as f:
                     f.write(json.dumps(rec) + "\n")

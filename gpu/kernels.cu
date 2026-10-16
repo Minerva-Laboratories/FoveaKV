@@ -63,6 +63,9 @@ struct Params {
   float* logits;                                             // optional (Hkv, G, Tcap)
   // delta pass (DynReq): reference max per head from pass 1 combine
   const float* mref;                                         // (Hkv, G)
+  // GS coarse keys through a per-step query table (set_klut): T[group of 2 dims][nibble] = q . (lev[c0], lev[c1]) for
+  // the 4 query heads as 2 half2, built once per block; one 8-byte shared load + 4 adds per 2 dims.
+  int klut;
 };
 
 __device__ __forceinline__ float warp_sum(float x) {
@@ -173,7 +176,9 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
   // shared memory carve-up (bytes). qs: block-shared query (GS/BF16) or per-warp scaled query (KIVI).
   constexpr int QS_WARPS = (FMT == F_KIVI) ? WARPS : 1;
   constexpr int VROW = (FMT == F_BF16) ? 0 : D / 2;          // staged V bytes per token (hi+lo planes / KIVI codes)
-  constexpr int SMEM_NEED = QS_WARPS * D * 16 + WARPS * TILE * VROW + 2 * 16 * 32 * 4 + 2 * 256 * 4 + 2 * WARPS * TILE * 16;
+  constexpr int TAB_BYTES = (FMT == F_GS) ? (D / 2) * 16 * 8 : 0;
+  constexpr int SMEM_NEED = QS_WARPS * D * 16 + WARPS * TILE * VROW + 2 * 16 * 32 * 4 + 2 * 256 * 4 + 2 * WARPS * TILE * 16
+                            + TAB_BYTES;
   constexpr int SMEM_BYTES = SMEM_NEED > WARPS * G * D * 4 ? SMEM_NEED : WARPS * G * D * 4;
   __shared__ __align__(16) unsigned char smem[SMEM_BYTES];
   float4 (*qs)[D] = reinterpret_cast<float4(*)[D]>(smem);
@@ -185,6 +190,7 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
   float4 (*ps)[TILE] = reinterpret_cast<float4(*)[TILE]>(vglut_s + 256);              // probabilities per token
   float4 (*vaux)[TILE] = ps + WARPS;                                                   // per-token V gain / scale,zero
   float4* qw = qs[(FMT == F_KIVI) ? w : 0];
+  uint2* tab = reinterpret_cast<uint2*>(vaux + WARPS);                                 // [D/2][16] (GS, klut)
 
   if (FMT == F_GS) {
     for (int e = threadIdx.x; e < 16 * 32; e += blockDim.x) {
@@ -204,6 +210,18 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
 #pragma unroll
     for (int i = 0; i < LD; i++) qw[lane * LD + i] = make_float4(qr[0][i], qr[1][i], qr[2][i], qr[3][i]);
   __syncthreads();
+  const bool klut = (FMT == F_GS) && p.klut && !p.kfine;
+  if (klut) {
+    for (int e = threadIdx.x; e < (D / 2) * 16; e += blockDim.x) {
+      const int grp = e >> 4, ent = e & 15;
+      const float l0 = p.klev[ent & 3], l1 = p.klev[ent >> 2];
+      const float4 a = qw[2 * grp], b = qw[2 * grp + 1];
+      const __half2 h01 = __floats2half2_rn(a.x * l0 + b.x * l1, a.y * l0 + b.y * l1);
+      const __half2 h23 = __floats2half2_rn(a.z * l0 + b.z * l1, a.w * l0 + b.w * l1);
+      tab[e] = make_uint2(*reinterpret_cast<const unsigned*>(&h01), *reinterpret_cast<const unsigned*>(&h23));
+    }
+    __syncthreads();
+  }
 
   float m_run[G], l_run[G], acc[G][LD];
 #pragma unroll
@@ -299,7 +317,30 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
     // ---------------- K: logits
     float s[G] = {0.f, 0.f, 0.f, 0.f};
     if (t >= 0) {
-      if (FMT == F_GS) {
+      if (FMT == F_GS && klut) {
+        const uint4* hp = reinterpret_cast<const uint4*>(p.khi + row * RB);
+#pragma unroll 1
+        for (int c = 0; c < RU4; c++) {
+          const uint4 a = hp[c];
+          const unsigned aw[4] = {a.x, a.y, a.z, a.w};
+#pragma unroll
+          for (int wd = 0; wd < 4; wd++)
+#pragma unroll
+            for (int jn = 0; jn < 8; jn++) {
+              const uint2 tv = tab[(c * 32 + wd * 8 + jn) * 16 + ((aw[wd] >> (4 * jn)) & 15)];
+              const float2 f01 = __half22float2(*reinterpret_cast<const __half2*>(&tv.x));
+              const float2 f23 = __half22float2(*reinterpret_cast<const __half2*>(&tv.y));
+              s[0] += f01.x; s[1] += f01.y; s[2] += f23.x; s[3] += f23.y;
+            }
+        }
+#pragma unroll
+        for (int gg = 0; gg < G; gg++) s[gg] *= kgain;
+        if (p.kmu && p.idx) {
+          const __half* mm = p.kmu + ((size_t)h * (p.Tcap / p.mu_block) + t / p.mu_block) * D;
+          for (int d = 0; d < D; d++) { const float km = __half2float(mm[d]); const float4 qq = qw[d];
+            s[0] += qq.x * km; s[1] += qq.y * km; s[2] += qq.z * km; s[3] += qq.w * km; }
+        }
+      } else if (FMT == F_GS) {
         const uint4* hp = reinterpret_cast<const uint4*>(p.khi + row * RB);
         const uint4* lp = reinterpret_cast<const uint4*>(p.klo + row * RB);
 #pragma unroll 1
@@ -557,6 +598,8 @@ __global__ void combine_delta(const float* l1, const float* acc1, const float* p
 }
 
 // ------------------------------------------------------------------------------------------- host side
+static int g_klut = 0;
+void set_klut(int64_t v) { g_klut = (int)v; }
 static const void* ptr(const c10::optional<torch::Tensor>& t) { return (t.has_value() && t->defined()) ? t->data_ptr() : nullptr; }
 
 // Generic pass launcher. fmt: 0 bf16, 1 gs, 2 kivi. Writes partials into pm/pl/pacc starting at block offset `boff`.
@@ -587,6 +630,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
   const int HG = Hkv * G;
   p.pm = pm.data_ptr<float>() + boff * HG; p.pl = pl.data_ptr<float>() + boff * HG; p.pacc = pacc.data_ptr<float>() + boff * HG * D;
   p.logits = (float*)ptr(logits);
+  p.klut = g_klut;
   const int nb = (n + tokens_per_block - 1) / tokens_per_block;
   if (nb == 0) return;
   dim3 grid(nb, Hkv), block(32 * WARPS);
@@ -635,6 +679,6 @@ torch::Tensor combine_with_delta(torch::Tensor l1, torch::Tensor acc1, torch::Te
 }
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-  m.def("pass_", &pass); m.def("delta", &delta);
+  m.def("pass_", &pass); m.def("delta", &delta); m.def("set_klut", &set_klut);
   m.def("combine_partials", &combine_partials); m.def("combine_with_delta", &combine_with_delta);
 }
