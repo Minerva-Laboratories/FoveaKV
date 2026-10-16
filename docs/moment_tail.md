@@ -89,3 +89,10 @@ Comparison at equal total compute: top-k needs a scoring pass (INT4 ~ 1/8 of den
 E23 backward (coarse est.) 17% + pass ~ 30% -> 0.010; tree 30% -> 0.013. At 8K the tree is between the two; its case
 is long context (node evaluations ~ T/64 x 4 vs a T/8 scoring pass, and a two-level tree evaluates fewer nodes).
 Prior art to cite for clustered keys: ClusterKV, PQCache, RetrievalAttention (selection only; unselected clusters dropped).
+
+**E25 two-level tree + precision ladder** (query-metric nodes, Sigma x 0.5; parents = k-means of node centroids, ~11):
+flat (all nodes evaluated) 20.5% -> 0.025, 29.9% -> 0.013; flat + ladder (heaviest half of opened tokens exact, rest
+via the 2-bit code at 1/4 cost) 17.0% -> 0.032, 22.9% -> 0.017 (~1.2x better than flat at equal compute); tree with 6
+of 11 parents opened 18.5% -> 0.027 (66% of nodes evaluated); tree Pp=6 + ladder 14.9% -> 0.033, 20.8% -> 0.019 (~1.3x
+better than flat). Opening only 2-4 parents saturates (mass lost in parent summaries). At 8K this is level with E23
+backward pruning (~30% with its INT4 scoring pass -> 0.010) while selection grows sub-linearly with context.

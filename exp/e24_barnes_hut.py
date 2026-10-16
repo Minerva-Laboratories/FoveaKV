@@ -77,7 +77,7 @@ def build_labels(Kh, nb, how):
 def node_stats(Kh, Vh, lab, nb, d):
     out = dict(mu=np.zeros((nb, d)), muv=np.zeros((nb, d)), U=np.zeros((nb, d, RK)), lam=np.zeros((nb, RK)),
                res=np.zeros(nb), W=np.zeros((nb, d, RK)), logn=np.full(nb, -np.inf), mx=np.zeros((nb, d)),
-               mn=np.zeros((nb, d)), rad=np.zeros(nb))
+               mn=np.zeros((nb, d)), rad=np.zeros(nb), sv=np.zeros(nb))
     for j in range(nb):
         m = lab == j
         if m.sum() == 0:
@@ -96,6 +96,7 @@ def node_stats(Kh, Vh, lab, nb, d):
         out["W"][j, :, :r] = Y.T @ (X @ U) / n
         out["mx"][j], out["mn"][j] = k.max(0), k.min(0)
         out["rad"][j] = np.linalg.norm(X, axis=-1).max()
+        out["sv"][j] = np.sqrt((Y ** 2).sum(-1).mean())
     return out
 
 
@@ -167,6 +168,41 @@ for C in CORPORA:
             sizes = np.stack([np.bincount(labs[h][labs[h] >= 0], minlength=nb) for h in range(H)])  # (H,nb)
             del num_t, est
             scorers = {"mass": lm, "err": lm + np.log(np.expm1(np.minimum(delta, 50)) + 1e-300), "oracle": np.log(gap + 1e-300)}
+            if os.environ.get("FOVEAKV_E24_FIT"):
+                # fitted opening rule: regress the log true summary error on cheap per-node features, cross-fitted over
+                # even / odd queries (each query is scored by a model fitted on the other half)
+                ncol = np.linalg.norm(Wo, axis=0).reshape(Hq, d)
+                wq = (gt * ncol[None]).reshape(E, H, G, d).transpose(1, 2, 0, 3)            # gate x o_proj column norms
+                fin = np.isfinite(lm)
+                lmf = np.where(fin, lm, -50.0)
+                se0 = np.where((base | leaf) & causal[None, None], sr, -np.inf)
+                M0 = np.maximum(se0.max(-1, keepdims=True), lmf.max(-1, keepdims=True))
+                pe0, pm0 = np.exp(se0 - M0), np.exp(lmf - M0) * fin
+                o_hat = (np.matmul(pe0, Vh[:, None]) + np.einsum("hgen,hgend->hged", pm0, val)) / (pe0.sum(-1) + pm0.sum(-1))[..., None]
+                dev = np.linalg.norm(wq[:, :, :, None] * (val - o_hat[:, :, :, None]), axis=-1)
+                feats = np.stack([lmf - top[..., 0][..., None].clip(-1e9), np.log(quad + 1e-12), np.log(dev + 1e-12),
+                                  np.broadcast_to(np.log(st["sv"] + 1e-12)[:, None, None], lm.shape),
+                                  np.broadcast_to(st["logn"][:, None, None], lm.shape).clip(-50), np.ones_like(lm)], -1)
+                y = np.log(gap + 1e-300) - top[..., 0][..., None]
+                pred = np.full(lm.shape, -np.inf)
+                for part in (0, 1):
+                    tr = fin & (np.arange(E) % 2 == part)[None, None, :, None]
+                    te = fin & (np.arange(E) % 2 != part)[None, None, :, None]
+                    coef, *_ = np.linalg.lstsq(feats[tr], y[tr], rcond=None)
+                    pred[te] = feats[te] @ coef
+                scorers["fitted"] = pred
+                scorers["mass x dev"] = lmf + np.log(dev + 1e-12)
+                scorers["mass x (dev + spread)"] = lmf + np.log(dev + np.sqrt(quad) * st["sv"][:, None, None] + 1e-12)
+                # weighted fit: emphasize the nodes that matter (weight ~ sqrt of the true error, row-normalized)
+                pred2 = np.full(lm.shape, -np.inf)
+                wts = np.exp(0.5 * (y - np.where(fin, y, -np.inf).max(-1, keepdims=True)))
+                for part in (0, 1):
+                    tr = fin & (np.arange(E) % 2 == part)[None, None, :, None]
+                    te = fin & (np.arange(E) % 2 != part)[None, None, :, None]
+                    sw = np.sqrt(wts[tr])[:, None]
+                    coef, *_ = np.linalg.lstsq(feats[tr] * sw, y[tr] * sw[:, 0], rcond=None)
+                    pred2[te] = feats[te] @ coef
+                scorers["fitted (weighted)"] = pred2
             ntail = inreg.sum()
             for sel, scr in scorers.items():
                 sc = np.where(np.isfinite(lm), scr, -np.inf).max(1)              # (H,E,nb)
