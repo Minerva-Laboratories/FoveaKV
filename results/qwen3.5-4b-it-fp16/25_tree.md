@@ -1,0 +1,41 @@
+# E25 Two-level query-metric tree over keys + precision ladder (sigma = 0.5, rank-2 nodes)
+
+compute = (exact + opened tokens [coarse at 1/4] + node evaluations) / dense, decode, per query head; 'nodes evaluated'
+= share of leaf-level nodes whose summary was computed (flat = 1). rho = opened-token budget, fraction of the region.
+
+| mode | budget | compute | nodes evaluated | attn err | resid err |
+|---|---|---|---|---|---|
+| flat | rho=0.02 | 0.1297 | 1.0000 | 0.0553 | 0.0866 |
+| flat +ladder | rho=0.02 | 0.1227 | 1.0000 | 0.0644 | 0.1001 |
+| flat | rho=0.05 | 0.1579 | 1.0000 | 0.0332 | 0.0500 |
+| flat +ladder | rho=0.05 | 0.1402 | 1.0000 | 0.0390 | 0.0591 |
+| flat | rho=0.1 | 0.2050 | 1.0000 | 0.0206 | 0.0302 |
+| flat +ladder | rho=0.1 | 0.1697 | 1.0000 | 0.0248 | 0.0367 |
+| flat | rho=0.2 | 0.2993 | 1.0000 | 0.0111 | 0.0164 |
+| flat +ladder | rho=0.2 | 0.2286 | 1.0000 | 0.0140 | 0.0204 |
+| tree Pp=2 | rho=0.02 | 0.0868 | 0.2735 | 0.0645 | 0.0986 |
+| tree Pp=2 +ladder | rho=0.02 | 0.0798 | 0.2735 | 0.0732 | 0.1111 |
+| tree Pp=2 | rho=0.05 | 0.1151 | 0.2735 | 0.0452 | 0.0683 |
+| tree Pp=2 +ladder | rho=0.05 | 0.0973 | 0.2735 | 0.0499 | 0.0752 |
+| tree Pp=2 | rho=0.1 | 0.1595 | 0.2735 | 0.0370 | 0.0570 |
+| tree Pp=2 +ladder | rho=0.1 | 0.1262 | 0.2735 | 0.0394 | 0.0601 |
+| tree Pp=2 | rho=0.2 | 0.2212 | 0.2735 | 0.0334 | 0.0525 |
+| tree Pp=2 +ladder | rho=0.2 | 0.1749 | 0.2735 | 0.0342 | 0.0533 |
+| tree Pp=4 | rho=0.02 | 0.0986 | 0.4730 | 0.0580 | 0.0897 |
+| tree Pp=4 +ladder | rho=0.02 | 0.0916 | 0.4730 | 0.0671 | 0.1029 |
+| tree Pp=4 | rho=0.05 | 0.1268 | 0.4730 | 0.0362 | 0.0538 |
+| tree Pp=4 +ladder | rho=0.05 | 0.1091 | 0.4730 | 0.0419 | 0.0626 |
+| tree Pp=4 | rho=0.1 | 0.1739 | 0.4730 | 0.0244 | 0.0353 |
+| tree Pp=4 +ladder | rho=0.1 | 0.1386 | 0.4730 | 0.0282 | 0.0413 |
+| tree Pp=4 | rho=0.2 | 0.2680 | 0.4730 | 0.0163 | 0.0243 |
+| tree Pp=4 +ladder | rho=0.2 | 0.1974 | 0.4730 | 0.0186 | 0.0272 |
+| tree Pp=6 | rho=0.02 | 0.1102 | 0.6704 | 0.0562 | 0.0877 |
+| tree Pp=6 +ladder | rho=0.02 | 0.1033 | 0.6704 | 0.0653 | 0.1011 |
+| tree Pp=6 | rho=0.05 | 0.1385 | 0.6704 | 0.0342 | 0.0513 |
+| tree Pp=6 +ladder | rho=0.05 | 0.1207 | 0.6704 | 0.0400 | 0.0603 |
+| tree Pp=6 | rho=0.1 | 0.1856 | 0.6704 | 0.0218 | 0.0319 |
+| tree Pp=6 +ladder | rho=0.1 | 0.1503 | 0.6704 | 0.0259 | 0.0382 |
+| tree Pp=6 | rho=0.2 | 0.2799 | 0.6704 | 0.0126 | 0.0189 |
+| tree Pp=6 +ladder | rho=0.2 | 0.2092 | 0.6704 | 0.0153 | 0.0226 |
+
+runtime 1307s

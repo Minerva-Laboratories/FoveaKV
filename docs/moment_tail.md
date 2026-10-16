@@ -96,3 +96,5 @@ via the 2-bit code at 1/4 cost) 17.0% -> 0.032, 22.9% -> 0.017 (~1.2x better tha
 of 11 parents opened 18.5% -> 0.027 (66% of nodes evaluated); tree Pp=6 + ladder 14.9% -> 0.033, 20.8% -> 0.019 (~1.3x
 better than flat). Opening only 2-4 parents saturates (mass lost in parent summaries). At 8K this is level with E23
 backward pruning (~30% with its INT4 scoring pass -> 0.010) while selection grows sub-linearly with context.
+Same on Qwen3.5-35B-A3B (GQA 8) and post-trained 4B: tree Pp=6 + ladder at ~21% compute gives 0.033 / 0.023 against
+0.041 / 0.030 for the flat tree at ~20.5% (1.2-1.3x).

@@ -7,7 +7,7 @@ ROT_DIM, THETA, HD = 64, 1e7, 256   # Qwen3.5 defaults (verified in tests); capt
 
 
 def corpora():
-    return sorted(os.listdir(KV_DIR))
+    return sorted(c for c in os.listdir(KV_DIR) if os.path.isdir(os.path.join(KV_DIR, c)))
 
 
 def meta(corpus):
