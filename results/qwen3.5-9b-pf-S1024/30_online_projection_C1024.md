@@ -1,0 +1,83 @@
+# E30 Online learning of the cache projection (causal, chunks of 1024), keys r = 64 / 192, values r = 128 / 256
+
+Relative attention-output error (pre-gate), mean over ['prose', 'code'] x layers [11, 27] x heads [0, 1, 2, 3]; evaluation as E29.
+"own" = each chunk read with the basis it was written with; "latest" = all codes read through the newest basis.
+Per-chunk bases cost r x d bf16 per chunk and KV head: keys 24 B/token on top of 128 B of codes,
+values 64 B/token on top of 256 B ("local" = exact PCA of each chunk alone, the limit of fast Oja).
+
+|  | arm | attn err |
+|---|---|---|
+| k | batch prompt (E29 qw) | 0.0854 |
+| k | static (other corpus, pca) | 0.1933 |
+| k | ideal gamma=0.97 own | 0.0753 |
+| k | ideal gamma=0.97 latest | 0.2568 |
+| k | power gamma=0.97 own | 0.0802 |
+| k | power gamma=0.97 latest | 0.2338 |
+| k | local gamma=0.97 own | 0.0565 |
+| k | local gamma=0.97 latest | 0.5715 |
+| k | oja eta=0.5 gamma=0.97 own | 0.0893 |
+| k | oja eta=0.5 gamma=0.97 latest | 0.2911 |
+| k | oja eta=2 gamma=0.97 own | 0.0771 |
+| k | oja eta=2 gamma=0.97 latest | 0.4349 |
+| k | oja eta=8 gamma=0.97 own | 0.0686 |
+| k | oja eta=8 gamma=0.97 latest | 0.4620 |
+| k | oja_s eta=0.5 gamma=0.97 own | 0.0924 |
+| k | oja_s eta=0.5 gamma=0.97 latest | 0.2939 |
+| k | oja_s eta=2 gamma=0.97 own | 0.0798 |
+| k | oja_s eta=2 gamma=0.97 latest | 0.4354 |
+| k | oja_s eta=8 gamma=0.97 own | 0.0705 |
+| k | oja_s eta=8 gamma=0.97 latest | 0.4602 |
+| k | ideal gamma=1 own | 0.0763 |
+| k | ideal gamma=1 latest | 0.2848 |
+| k | power gamma=1 own | 0.0811 |
+| k | power gamma=1 latest | 0.2376 |
+| k | oja eta=0.5 gamma=1 own | 0.0895 |
+| k | oja eta=0.5 gamma=1 latest | 0.3031 |
+| k | oja eta=2 gamma=1 own | 0.0773 |
+| k | oja eta=2 gamma=1 latest | 0.3247 |
+| k | oja eta=8 gamma=1 own | 0.0687 |
+| k | oja eta=8 gamma=1 latest | 0.3369 |
+| k | oja_s eta=0.5 gamma=1 own | 0.0927 |
+| k | oja_s eta=0.5 gamma=1 latest | 0.3004 |
+| k | oja_s eta=2 gamma=1 own | 0.0801 |
+| k | oja_s eta=2 gamma=1 latest | 0.3259 |
+| k | oja_s eta=8 gamma=1 own | 0.0708 |
+| k | oja_s eta=8 gamma=1 latest | 0.3343 |
+| v | batch prompt (E29 opca) | 0.0587 |
+| v | static (other corpus, pca) | 0.2109 |
+| v | ideal gamma=0.97 own | 0.0538 |
+| v | ideal gamma=0.97 latest | 0.2915 |
+| v | power gamma=0.97 own | 0.0617 |
+| v | power gamma=0.97 latest | 0.1894 |
+| v | local gamma=0.97 own | 0.0324 |
+| v | local gamma=0.97 latest | 0.2811 |
+| v | oja eta=0.5 gamma=0.97 own | 0.0613 |
+| v | oja eta=0.5 gamma=0.97 latest | 0.2320 |
+| v | oja eta=2 gamma=0.97 own | 0.0498 |
+| v | oja eta=2 gamma=0.97 latest | 0.2389 |
+| v | oja eta=8 gamma=0.97 own | 0.0425 |
+| v | oja eta=8 gamma=0.97 latest | 0.2428 |
+| v | oja_s eta=0.5 gamma=0.97 own | 0.0617 |
+| v | oja_s eta=0.5 gamma=0.97 latest | 0.2250 |
+| v | oja_s eta=2 gamma=0.97 own | 0.0501 |
+| v | oja_s eta=2 gamma=0.97 latest | 0.2398 |
+| v | oja_s eta=8 gamma=0.97 own | 0.0427 |
+| v | oja_s eta=8 gamma=0.97 latest | 0.2426 |
+| v | ideal gamma=1 own | 0.0548 |
+| v | ideal gamma=1 latest | 0.2926 |
+| v | power gamma=1 own | 0.0627 |
+| v | power gamma=1 latest | 0.1893 |
+| v | oja eta=0.5 gamma=1 own | 0.0614 |
+| v | oja eta=0.5 gamma=1 latest | 0.2318 |
+| v | oja eta=2 gamma=1 own | 0.0498 |
+| v | oja eta=2 gamma=1 latest | 0.2407 |
+| v | oja eta=8 gamma=1 own | 0.0425 |
+| v | oja eta=8 gamma=1 latest | 0.2444 |
+| v | oja_s eta=0.5 gamma=1 own | 0.0617 |
+| v | oja_s eta=0.5 gamma=1 latest | 0.2250 |
+| v | oja_s eta=2 gamma=1 own | 0.0502 |
+| v | oja_s eta=2 gamma=1 latest | 0.2407 |
+| v | oja_s eta=8 gamma=1 own | 0.0427 |
+| v | oja_s eta=8 gamma=1 latest | 0.2440 |
+
+runtime 643s
