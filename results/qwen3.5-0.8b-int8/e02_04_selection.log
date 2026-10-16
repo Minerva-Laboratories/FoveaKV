@@ -1,0 +1,162 @@
+/mnt/ext/foveakv/exp/e02_04_selection.py:40: RuntimeWarning: invalid value encountered in subtract
+  eta = np.nanmax(np.where(np.isfinite(s_true), np.abs(sh - s_true), np.nan), -1)   # (Hkv,G,E) max logit err
+code 145s
+needle10 290s
+needle50 435s
+needle90 579s
+prose 723s
+# E2 Attention concentration (Qwen3.5-0.8B, 6 full-attn layers × 8 query heads, 5 corpora, T=8192, 512 decode queries)
+
+**TL;DR:** top-10% tokens hold on average 0.957 of the attention mass (min head-avg 0.749); top-1% holds 0.801.
+4 (corpus, layer, head) cases are "flat" (m_opt(10%) < 0.8).
+Adaptive-k with the coarse estimate: τ=0.9 needs on average 7.0% of tokens and captures 0.930 true mass.
+
+## Config
+m_opt(k) = mass of the true top-k tokens (k = frac·(p+1)) per query head, averaged over decode queries. Reference = int8 cache.
+
+## m_opt(k) by layer (mean/min/max over corpus × head)
+| layer | k | mean | min | max |
+|---|---|---|---|---|
+| 3 | 1% | 0.6898 | 0.4442 | 0.8596 |
+| 3 | 2% | 0.7599 | 0.5236 | 0.9037 |
+| 3 | 5% | 0.8471 | 0.6464 | 0.9458 |
+| 3 | 10% | 0.9051 | 0.7492 | 0.9754 |
+| 3 | 20% | 0.9522 | 0.8526 | 0.9909 |
+| 7 | 1% | 0.8723 | 0.5774 | 0.9719 |
+| 7 | 2% | 0.9172 | 0.6933 | 0.9816 |
+| 7 | 5% | 0.9594 | 0.8318 | 0.9903 |
+| 7 | 10% | 0.9796 | 0.9122 | 0.9949 |
+| 7 | 20% | 0.9918 | 0.9645 | 0.9979 |
+| 11 | 1% | 0.8518 | 0.6596 | 0.9331 |
+| 11 | 2% | 0.9095 | 0.7688 | 0.9601 |
+| 11 | 5% | 0.9597 | 0.8847 | 0.9839 |
+| 11 | 10% | 0.9812 | 0.9431 | 0.9939 |
+| 11 | 20% | 0.9930 | 0.9779 | 0.9981 |
+| 15 | 1% | 0.8389 | 0.6493 | 0.9192 |
+| 15 | 2% | 0.8980 | 0.7334 | 0.9671 |
+| 15 | 5% | 0.9496 | 0.8367 | 0.9917 |
+| 15 | 10% | 0.9735 | 0.9007 | 0.9963 |
+| 15 | 20% | 0.9885 | 0.9497 | 0.9992 |
+| 19 | 1% | 0.7844 | 0.6234 | 0.8764 |
+| 19 | 2% | 0.8538 | 0.7069 | 0.9142 |
+| 19 | 5% | 0.9237 | 0.8177 | 0.9643 |
+| 19 | 10% | 0.9601 | 0.8919 | 0.9853 |
+| 19 | 20% | 0.9834 | 0.9443 | 0.9960 |
+| 23 | 1% | 0.7663 | 0.5702 | 0.9960 |
+| 23 | 2% | 0.8301 | 0.6562 | 0.9971 |
+| 23 | 5% | 0.9026 | 0.7723 | 0.9983 |
+| 23 | 10% | 0.9453 | 0.8553 | 0.9990 |
+| 23 | 20% | 0.9755 | 0.9262 | 0.9995 |
+
+## Flat heads (m_opt(10%) < 0.8)
+| corpus | layer | q-head | m_opt(10%) |
+|---|---|---|---|
+| needle10 | 3 | 4 | 0.771 |
+| needle50 | 3 | 4 | 0.771 |
+| needle90 | 3 | 4 | 0.772 |
+| prose | 3 | 4 | 0.749 |
+
+## Adaptive-k rule: smallest k with estimated (coarse, RHT) mass ≥ τ
+| τ | mean k % | max (p90 per layer) k % | true mass mean | true mass worst p5 |
+|---|---|---|---|---|
+| 0.8000 | 3.0218 | 16.5575 | 0.8475 | 0.7116 |
+| 0.9000 | 6.9852 | 30.6474 | 0.9301 | 0.8632 |
+| 0.9500 | 12.6050 | 45.1519 | 0.9678 | 0.9365 |
+
+## Caveats
+- Contexts are 8K; concentration at 32K–256K is not measured (tails get heavier with length in general).
+runtime 723s
+
+# E3 Selection quality (per query head, no always-hot tokens)
+
+**TL;DR:** at k=5%, coarse(+RHT) selection captures m_H/m_opt = 0.989 (overlap 0.823); sign-plane(+RHT) 0.957 (overlap 0.667).
+Without RHT: coarse 0.978, sign 0.921.
+Bound m_H ≥ e^(−2η) m_opt (η = max |logit error|): 0 violations / 2457600 (query, head, k) cases; but the bound is loose (median e^(−2η) shown).
+
+## Config
+Estimated logits from the 2-bit coarse plane or the 1-bit sign plane (× exact 8-bit log gain, level sqrt(2/π)), post-RoPE keys,
+mean removed using prefill stats. Top-k per query head (k = frac·(p+1)); captured mass m_H vs oracle m_opt. Reference = int8 cache.
+
+## Aggregate (mean over 5 corpora × 6 layers × all query heads × 512 queries)
+| estimator | rotation | k | overlap | m_H/m_opt mean | worst layer-mean | worst p5 | median η | median e^-2η |
+|---|---|---|---|---|---|---|---|---|
+| coarse | RHT | 1% | 0.7779 | 0.9722 | 0.9593 | 0.9007 | 2.8022 | 0.0037 |
+| coarse | RHT | 2% | 0.7961 | 0.9810 | 0.9689 | 0.9238 | 2.8022 | 0.0037 |
+| coarse | RHT | 5% | 0.8233 | 0.9892 | 0.9779 | 0.9453 | 2.8022 | 0.0037 |
+| coarse | RHT | 10% | 0.8453 | 0.9936 | 0.9845 | 0.9605 | 2.8022 | 0.0037 |
+| coarse | RHT | 20% | 0.8717 | 0.9967 | 0.9906 | 0.9737 | 2.8022 | 0.0037 |
+| coarse | no-RHT | 1% | 0.7306 | 0.9416 | 0.9037 | 0.7683 | 4.6658 | 0.0003 |
+| coarse | no-RHT | 2% | 0.7538 | 0.9593 | 0.9364 | 0.8073 | 4.6658 | 0.0003 |
+| coarse | no-RHT | 5% | 0.7862 | 0.9782 | 0.9575 | 0.8527 | 4.6658 | 0.0003 |
+| coarse | no-RHT | 10% | 0.8125 | 0.9884 | 0.9757 | 0.8920 | 4.6658 | 0.0003 |
+| coarse | no-RHT | 20% | 0.8447 | 0.9948 | 0.9872 | 0.9668 | 4.6658 | 0.0003 |
+| sign | RHT | 1% | 0.5938 | 0.8985 | 0.8544 | 0.6889 | 5.6632 | 0.0000 |
+| sign | RHT | 2% | 0.6222 | 0.9275 | 0.8889 | 0.7513 | 5.6632 | 0.0000 |
+| sign | RHT | 5% | 0.6672 | 0.9572 | 0.9186 | 0.8134 | 5.6632 | 0.0000 |
+| sign | RHT | 10% | 0.7061 | 0.9737 | 0.9407 | 0.8594 | 5.6632 | 0.0000 |
+| sign | RHT | 20% | 0.7538 | 0.9861 | 0.9630 | 0.9054 | 5.6632 | 0.0000 |
+| sign | no-RHT | 1% | 0.5219 | 0.8191 | 0.6547 | 0.2767 | 7.3057 | 0.0000 |
+| sign | no-RHT | 2% | 0.5574 | 0.8676 | 0.7448 | 0.4153 | 7.3057 | 0.0000 |
+| sign | no-RHT | 5% | 0.6084 | 0.9208 | 0.8561 | 0.6353 | 7.3057 | 0.0000 |
+| sign | no-RHT | 10% | 0.6530 | 0.9517 | 0.9153 | 0.7823 | 7.3057 | 0.0000 |
+| sign | no-RHT | 20% | 0.7092 | 0.9748 | 0.9481 | 0.8627 | 7.3057 | 0.0000 |
+
+## Per layer at k=5% (+RHT)
+| layer | estimator | overlap | m_H/m_opt | worst p5 |
+|---|---|---|---|---|
+| 3 | coarse | 0.7881 | 0.9800 | 0.9453 |
+| 3 | sign | 0.6064 | 0.9247 | 0.8134 |
+| 7 | coarse | 0.8199 | 0.9929 | 0.9629 |
+| 7 | sign | 0.6617 | 0.9710 | 0.8673 |
+| 11 | coarse | 0.8316 | 0.9923 | 0.9686 |
+| 11 | sign | 0.6808 | 0.9669 | 0.8781 |
+| 15 | coarse | 0.8357 | 0.9914 | 0.9669 |
+| 15 | sign | 0.6895 | 0.9644 | 0.8732 |
+| 19 | coarse | 0.8391 | 0.9901 | 0.9684 |
+| 19 | sign | 0.6952 | 0.9605 | 0.8822 |
+| 23 | coarse | 0.8255 | 0.9887 | 0.9632 |
+| 23 | sign | 0.6696 | 0.9558 | 0.8635 |
+
+runtime 723s
+
+# E4 GQA union (group size G = 4 query heads per KV head) — key go/no-go metric
+
+**TL;DR:** at k=5%, the union of the 4 per-head true top-k sets is 1.95× k on average (max 3.08×); with the coarse estimate 2.00× k.
+Criterion "union ≤ ~3× per-head k": PASS (G=4 bounds the union at 4×).
+A budgeted alternative (rank by max over the group of estimated log-prob, keep exactly k) captures 0.966 of each head's m_opt on average.
+
+## Config
+union size in units of k; m_H/m_opt per query head when the shared hot set is the union (≤ G·k tokens) or budgeted (= k tokens).
+
+| scores | k | union/k mean | union/k max | m_H/m_opt union | m_H/m_opt budget | budget worst p5 |
+|---|---|---|---|---|---|---|
+| true | 1% | 2.1604 | 3.5897 | 1.0534 | 0.9492 | 0.7715 |
+| true | 2% | 2.0782 | 3.4172 | 1.0389 | 0.9636 | 0.8218 |
+| true | 5% | 1.9499 | 3.0765 | 1.0243 | 0.9778 | 0.8780 |
+| true | 10% | 1.8303 | 2.7969 | 1.0157 | 0.9860 | 0.9108 |
+| true | 20% | 1.6753 | 2.4080 | 1.0086 | 0.9925 | 0.9421 |
+| coarse | 1% | 2.2229 | 3.5897 | 1.0362 | 0.9215 | 0.6849 |
+| coarse | 2% | 2.1346 | 3.3742 | 1.0276 | 0.9441 | 0.7522 |
+| coarse | 5% | 1.9952 | 3.0324 | 1.0184 | 0.9664 | 0.8258 |
+| coarse | 10% | 1.8667 | 2.7867 | 1.0126 | 0.9789 | 0.8732 |
+| coarse | 20% | 1.7027 | 2.4010 | 1.0073 | 0.9887 | 0.9171 |
+| sign | 1% | 2.3783 | 3.6049 | 0.9917 | 0.8544 | 0.5255 |
+| sign | 2% | 2.2701 | 3.4534 | 0.9969 | 0.8932 | 0.5980 |
+| sign | 5% | 2.1048 | 3.1517 | 1.0014 | 0.9344 | 0.7006 |
+| sign | 10% | 1.9563 | 2.8381 | 1.0031 | 0.9582 | 0.7743 |
+| sign | 20% | 1.7699 | 2.4029 | 1.0031 | 0.9770 | 0.8476 |
+
+## Per layer at k=5%
+| layer | true union/k | true max | coarse union/k | coarse budget m_H/m_opt |
+|---|---|---|---|---|
+| 3 | 2.1741 | 2.9870 | 2.2297 | 0.9358 |
+| 7 | 1.8446 | 2.8533 | 1.9039 | 0.9823 |
+| 11 | 1.7880 | 2.7751 | 1.8445 | 0.9777 |
+| 15 | 1.7655 | 2.6927 | 1.8133 | 0.9763 |
+| 19 | 1.8063 | 2.6585 | 1.8408 | 0.9682 |
+| 23 | 2.3209 | 3.0765 | 2.3391 | 0.9579 |
+
+## Caveats
+- With G=4 the union can never exceed 4×. Larger groups (G=8–16) are not tested here.
+runtime 723s
+

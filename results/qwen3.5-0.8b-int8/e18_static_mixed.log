@@ -1,0 +1,51 @@
+code 3 9s
+code 7 17s
+code 11 25s
+code 15 33s
+code 19 41s
+code 23 50s
+needle10 3 58s
+needle10 7 66s
+needle10 11 74s
+needle10 15 83s
+needle10 19 91s
+needle10 23 99s
+needle50 3 108s
+needle50 7 116s
+needle50 11 125s
+needle50 15 133s
+needle50 19 141s
+needle50 23 150s
+needle90 3 158s
+needle90 7 166s
+needle90 11 174s
+needle90 15 183s
+needle90 19 191s
+needle90 23 199s
+prose 3 208s
+prose 7 216s
+prose 11 224s
+prose 15 232s
+prose 19 241s
+prose 23 249s
+# E18 Static vs per-step mixed precision at equal bits
+
+**TL;DR:** with the same nested code and the same number of 4-bit tokens, a static set chosen from 64 probe queries
+(ZipCache/MiKV-style) gives attn err 0.0319 at 5%, the per-step query-dependent set 0.0163
+(2%: 0.0415 vs 0.0180; 10%: 0.0276 vs 0.0155).
+
+## Config
+Probe = first 64 decode positions (excluded from evaluation); evaluation = remaining positions (stride 2). Shrinkage-corrected
+nested code, block means, exact 128-token window, int8 reference, 5 corpora x 6 layers.
+
+| 4-bit tokens | selection | attn err |
+|---|---|---|
+| 2% | static (probe-chosen) 4-bit set | 0.0415 |
+| 2% | per-step (FoveaKV) | 0.0180 |
+| 5% | static (probe-chosen) 4-bit set | 0.0319 |
+| 5% | per-step (FoveaKV) | 0.0163 |
+| 10% | static (probe-chosen) 4-bit set | 0.0276 |
+| 10% | per-step (FoveaKV) | 0.0155 |
+
+runtime 249s
+

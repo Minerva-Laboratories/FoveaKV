@@ -1,0 +1,59 @@
+code 3 15s
+code 7 30s
+code 11 44s
+code 15 58s
+code 19 73s
+code 23 87s
+needle10 3 101s
+needle10 7 115s
+needle10 11 129s
+needle10 15 143s
+needle10 19 157s
+needle10 23 171s
+needle50 3 185s
+needle50 7 199s
+needle50 11 212s
+needle50 15 226s
+needle50 19 240s
+needle50 23 254s
+needle90 3 269s
+needle90 7 283s
+needle90 11 297s
+needle90 15 311s
+needle90 19 325s
+needle90 23 339s
+prose 3 353s
+prose 7 367s
+prose 11 381s
+prose 15 395s
+prose 19 409s
+prose 23 424s
+# E17 FoveaKV vs SpeCache-style refinement (offline, int8 reference, shared exact window)
+
+**TL;DR:** at 5% hot tokens FoveaKV gives 0.0207 while moving 0.10 bits/value/step of refinement data; SpeCache-style
+refinement with the same traffic (0.625% of tokens, 16-bit) gives 0.0574, and with the same token count (5%, 8x the
+traffic) 0.0194. KIVI-2b alone: 0.1969.
+
+## Config
+SpeCache-style = KIVI-2b (group 128, fp16 scale/zero) resident for all tokens; top-k by max-over-group estimated log-prob from the
+KIVI keys; selected tokens use the exact reference K/V (16-bit copy in CPU memory). FoveaKV = shrinkage-corrected nested code.
+'refinement bits' = bits per value moved per step for hot tokens (FoveaKV: 2·k; SpeCache: 16·k').
+
+| method | k | resident bits | refinement bits/step | attn err | layer-3 attn err |
+|---|---|---|---|---|---|
+| FoveaKV | 1% | 2.1600 | 0.0200 | 0.0252 | 0.0181 |
+| FoveaKV | 2% | 2.1600 | 0.0400 | 0.0228 | 0.0157 |
+| FoveaKV | 5% | 2.1600 | 0.1000 | 0.0207 | 0.0132 |
+| FoveaKV | 10% | 2.1600 | 0.2000 | 0.0198 | 0.0118 |
+| SpeCache-style, equal traffic (k/8) | 1% | 2.2500 | 0.0200 | 0.0952 | 0.0555 |
+| SpeCache-style, equal traffic (k/8) | 2% | 2.2500 | 0.0400 | 0.0782 | 0.0482 |
+| SpeCache-style, equal traffic (k/8) | 5% | 2.2500 | 0.1000 | 0.0574 | 0.0381 |
+| SpeCache-style, equal traffic (k/8) | 10% | 2.2500 | 0.2000 | 0.0430 | 0.0303 |
+| SpeCache-style, equal tokens (k) | 1% | 2.2500 | 0.1600 | 0.0475 | 0.0329 |
+| SpeCache-style, equal tokens (k) | 2% | 2.2500 | 0.3200 | 0.0342 | 0.0250 |
+| SpeCache-style, equal tokens (k) | 5% | 2.2500 | 0.8000 | 0.0194 | 0.0150 |
+| SpeCache-style, equal tokens (k) | 10% | 2.2500 | 1.6000 | 0.0109 | 0.0086 |
+| KIVI-2b only (no refinement) | 0% | 2.2500 | 0.0000 | 0.1969 | 0.0947 |
+
+runtime 424s
+
