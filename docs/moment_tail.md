@@ -107,3 +107,13 @@ summaries of untouched nodes 0.051 (31%); tree, all chunks opened, 0.078 (35%). 
 equal compute: 16 queries share each decision, and mid-sequence queries (2-6K) attend more diffusely (per-tile errors
 0.03-0.11; a tile at a chunk start 0.29). Summaries add little on top of a tile top-k. Prefill needs a different design
 (finer query tiles / reordering queries by similarity, or the precision ladder instead of dropping).
+
+**E27 the dense low-precision bar (prefill tiles as E26).** Simulated SageAttention-style arithmetic (keys mean-smoothed,
+per-64-key / per-tile symmetric scales; P scaled to the FP8 range; relative tensor-core time int8 2x, int4 4x, fp8 2x):
+int8 QK + bf16 PV 0.75 -> 0.014; int8 QK + fp8 PV 0.50 -> 0.025; int4 QK + fp8 PV 0.375 -> 0.29 (unusable at this
+granularity). The Orin (Ampere) has no FP8 tensor cores: int8 QK + int8 PV 0.50 -> 0.081 (uniform int8 P loses the small
+probabilities, the tail again), but recomputing the top 5% / 10% of tokens (by int8 logits, per tile x group, plus the
+128-token window) in bf16 gives 0.58 -> 0.014 / 0.63 -> 0.0086: the FoveaKV idea as a compute ladder, better than
+int8 QK + bf16 PV at 0.75. For comparison the best sparse prefill arm (tile top-k, scoring not counted) is 0.30 -> 0.055.
+So on this hardware the compute win comes from low precision everywhere + exact refinement, not from skipping tokens;
+sparsity can multiply on top only where its error stays below ~0.01.
