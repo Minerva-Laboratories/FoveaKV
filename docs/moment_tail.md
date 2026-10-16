@@ -98,3 +98,12 @@ better than flat). Opening only 2-4 parents saturates (mass lost in parent summa
 backward pruning (~30% with its INT4 scoring pass -> 0.010) while selection grows sub-linearly with context.
 Same on Qwen3.5-35B-A3B (GQA 8) and post-trained 4B: tree Pp=6 + ladder at ~21% compute gives 0.033 / 0.023 against
 0.041 / 0.030 for the flat tree at ~20.5% (1.2-1.3x).
+
+**E26 prefill (causal, decisions per 16-query tile x GQA group; 9B layers 11/27, prose/code, 24 tiles each).** Capture
+with queries at every position after 512 (data/qwen3.5-9b-pf). Chunks of S as parents, query-metric clusters inside,
+each chunk's last 128 tokens as positional nodes read exactly inside a query's recent window. Result: the tree LOSES in
+prefill. S=1024 at ~30% compute: tile top-k on exact logits (tail dropped, scoring pass not counted) 0.055; top-k +
+summaries of untouched nodes 0.051 (31%); tree, all chunks opened, 0.078 (35%). Errors are 3-4x the decode ones at
+equal compute: 16 queries share each decision, and mid-sequence queries (2-6K) attend more diffusely (per-tile errors
+0.03-0.11; a tile at a chunk start 0.29). Summaries add little on top of a tile top-k. Prefill needs a different design
+(finer query tiles / reordering queries by similarity, or the precision ladder instead of dropping).

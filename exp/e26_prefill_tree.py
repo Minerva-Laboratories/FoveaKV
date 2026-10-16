@@ -18,7 +18,7 @@ from foveakv.load import model_weights
 t0 = time.time()
 ST = model_weights()
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
-B, RK, TQ = 64, 2, 16
+B, RK, TQ, WIN = 64, 2, 16, 128
 S_ = int(os.environ.get("FOVEAKV_E26_S", "1024"))
 SIG = float(os.environ.get("FOVEAKV_E25_SIGMA", "0.5"))
 NT = int(os.environ.get("FOVEAKV_E26_TILES", "24"))
@@ -85,15 +85,17 @@ for C in CORPORA:
             w_, U_ = np.linalg.eigh(qm.T @ qm / len(qm))
             QM.append(U_ @ np.diag(np.sqrt(np.maximum(w_, 0))) @ U_.T)
         # trees of the completed chunks (chunk 0 without its first 64 tokens, which stay exact)
+        # the last WIN tokens of each chunk are two positional nodes (read exactly when inside a query's recent window)
         trees = {}
         for c in range(nch):
-            lo = max(c * S_, B)
+            lo, hi = max(c * S_, B), (c + 1) * S_
             for h in range(H):
-                k, v = K[lo:(c + 1) * S_, h], V[lo:(c + 1) * S_, h]
+                k, v = K[lo:hi - WIN, h], V[lo:hi - WIN, h]
                 nn = max(1, (len(k) + B - 1) // B)
                 lab = kmeans(k @ QM[h], nn)
                 kids = [(np.nonzero(lab == j)[0] + lo, stats(k[lab == j], v[lab == j])) for j in range(nn) if (lab == j).any()]
-                trees[(c, h)] = (stats(k, v), kids)
+                kids += [(np.arange(a, a + B), stats(K[a:a + B, h], V[a:a + B, h])) for a in range(hi - WIN, hi, B)]
+                trees[(c, h)] = (stats(K[lo:hi, h], V[lo:hi, h]), kids)
         # evaluated tiles: spread over the positions that have at least one completed chunk behind them
         starts = QP[0] + np.arange(0, len(QP) - TQ + 1, TQ)
         starts = starts[starts >= S_]
@@ -110,6 +112,34 @@ for C in CORPORA:
             exact_base = np.zeros(T, bool); exact_base[:B] = True; exact_base[c_own * S_:] = True
             past = c_own * S_ - B
             dense = (qpos + 1).sum()
+            # baseline: tile-shared top-k on exact logits (oracle scores; the tail is dropped), same exact tier
+            for HYB, rho in [(hy, r_) for hy in (False, True) for r_ in RHO]:
+                outs, cost = [], 0.0
+                for h in range(H):
+                    ex = exact_base.copy(); ex[max(0, int(qpos[0]) - WIN):] = True
+                    sc_ = np.where(ex[None, None], -np.inf, sr[h]).max((0, 1))
+                    kk = int(rho * past)
+                    if kk:
+                        ex[np.argsort(-sc_)[:kk]] = True
+                    se = np.where(ex[None, None] & (np.arange(T)[None, None] <= qpos[None, :, None]), sr[h], -np.inf)
+                    if HYB:                                                     # + summaries of untouched nodes
+                        kids = [kd for c in range(c_own) for kd in trees[(c, h)][1] if not ex[kd[0]].any()]
+                        if kids:
+                            klm, kval = summarize([kd[1] for kd in kids], qh[h], s)
+                            M = np.maximum(se.max(-1), klm.max(-1))[..., None]
+                            pe, pm = np.exp(se - M), np.exp(klm - M)
+                            outs.append((pe @ V[:, h] + np.einsum("gtn,gtnd->gtd", pm, kval)) / (pe.sum(-1) + pm.sum(-1))[..., None])
+                            cost += G * (ex[None] & (np.arange(T)[None] <= qpos[:, None])).sum() + G * TQ * len(kids) * (4 + 2 * RK) / 2
+                            continue
+                    pe = np.exp(se - se.max(-1, keepdims=True))
+                    outs.append(pe @ V[:, h] / pe.sum(-1)[..., None])
+                    cost += G * (ex[None] & (np.arange(T)[None] <= qpos[:, None])).sum()
+                o = np.stack(outs).transpose(2, 0, 1, 3).reshape(TQ, Hq, d)
+                r = (o * gt).reshape(TQ, -1) @ Wo.T
+                a_ = acc.setdefault(("topk+sum" if HYB else "topk", rho), [0.0, 0.0, [], []])
+                a_[0] += cost; a_[1] += dense * Hq
+                a_[2].append((np.linalg.norm(o - o_ref, axis=-1) / np.linalg.norm(o_ref, axis=-1)).mean())
+                a_[3].append((np.linalg.norm(r - r_ref, axis=-1) / np.linalg.norm(r_ref, axis=-1)).mean())
             for pp in PPS:
                 for rho in RHO:
                     outs, cost = [], 0.0
@@ -117,7 +147,9 @@ for C in CORPORA:
                         par = [summarize([trees[(c, h)][0]], qh[h], s) for c in range(c_own)]
                         plm = np.stack([p[0][..., 0] for p in par], -1)        # (G,TQ,c_own)
                         pval = np.stack([p[1][..., 0, :] for p in par], -2)    # (G,TQ,c_own,d)
-                        popen = np.argsort(-plm.max((0, 1)))[:min(pp, c_own)]
+                        prev = c_own - 1                                       # holds the recent window: always opened
+                        rest = [c for c in np.argsort(-plm.max((0, 1))) if c != prev][:max(0, min(pp, c_own) - 1)]
+                        popen = np.array([prev] + rest)
                         terms_l, terms_v = [], []
                         ex = exact_base.copy()
                         kid_lm, kid_val, kid_idx = [], [], []
@@ -127,10 +159,12 @@ for C in CORPORA:
                         nkid = len(kid_idx)
                         if nkid:
                             klm, kval = np.concatenate(kid_lm, -1), np.concatenate(kid_val, -2)
-                            order = np.argsort(-klm.max((0, 1)))
+                            inwin = np.array([kid_idx[j].max() > qpos[0] - WIN for j in range(nkid)])   # recent window
+                            order = np.argsort(-np.where(inwin, -np.inf, klm.max((0, 1))))
+                            order = order[~inwin[order]]
                             sz = np.array([len(kid_idx[j]) for j in order])
                             nopen = int((np.cumsum(sz) <= rho * past).sum())
-                            opened = order[:nopen]
+                            opened = np.concatenate([np.nonzero(inwin)[0], order[:nopen]]).astype(int)
                             for j in opened:
                                 ex[kid_idx[j]] = True
                             keep = np.ones(nkid, bool); keep[opened] = False
@@ -149,10 +183,12 @@ for C in CORPORA:
                     r = (o * gt).reshape(TQ, -1) @ Wo.T
                     ae = (np.linalg.norm(o - o_ref, axis=-1) / np.linalg.norm(o_ref, axis=-1)).mean()
                     re_ = (np.linalg.norm(r - r_ref, axis=-1) / np.linalg.norm(r_ref, axis=-1)).mean()
+                    if os.environ.get("FOVEAKV_E26_DIAG") and pp == 1000 and rho == 0.2:
+                        print("DIAG", int(t0_), c_own, f"{re_:.4f}", f"{ae:.4f}", flush=True)
                     a_ = acc.setdefault((pp, rho), [0.0, 0.0, [], []])
                     a_[0] += cost; a_[1] += dense * Hq; a_[2].append(ae); a_[3].append(re_)
         for (pp, rho), a_ in acc.items():
-            res.append((C, Li, "flat" if pp == 1000 else f"Pp={pp}", f"rho={rho:g}", a_[0] / a_[1], float(np.mean(a_[2])), float(np.mean(a_[3]))))
+            res.append((C, Li, "tile top-k (exact scores, tail dropped)" if pp == "topk" else "tile top-k + summaries of untouched nodes" if pp == "topk+sum" else ("flat" if pp == 1000 else f"Pp={pp}"), f"rho={rho:g}", a_[0] / a_[1], float(np.mean(a_[2])), float(np.mean(a_[3]))))
         print(C, Li, f"{time.time()-t0:.0f}s", flush=True)
 
 R = np.array(res, dtype=object)
