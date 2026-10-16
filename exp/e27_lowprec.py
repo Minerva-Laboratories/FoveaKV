@@ -69,7 +69,9 @@ for C in CORPORA:
             V8 = fp8(Vc / vs) * vs
             vi = np.abs(Vc).max(0, keepdims=True) / 127 + 1e-30                # per-channel INT8 scale for V
             Vi8 = np.round(Vc / vi) * vi
-            def run(name, qbits, rho, pv8=True, pvint=False):
+            ncol = np.linalg.norm(Wo, axis=0).reshape(Hq, d)
+            wq = (gt * ncol[None]).reshape(TQ, H, G, d).transpose(1, 2, 0, 3)     # gate x o_proj column norms
+            def run(name, qbits, rho, pv8=True, pvint=False, sel="logit"):
                 Kq = qsym(Ks.transpose(1, 0, 2), qbits, 64).transpose(1, 0, 2) if qbits < 16 else Ks
                 qq = qsym(q.transpose(1, 0, 2), qbits, TQ).transpose(1, 0, 2) if qbits < 16 else q
                 mu = Kc.mean(0)                                                     # (H,d): add back s q.mu so the
@@ -79,7 +81,19 @@ for C in CORPORA:
                 if rho:
                     t = np.arange(tmax)[None, :]
                     win = (t > qpos[:, None] - WIN) & (t <= qpos[:, None]) | (t < 4)
-                    sc_ = np.where(win[None, None], np.inf, sl).max((1, 2))                 # (H, T): per tile x group
+                    if sel == "logit":
+                        sc_ = np.where(win[None, None], np.inf, sl).max((1, 2))             # (H, T): per tile x group
+                    else:                                                   # E23 error model from the int8 pass
+                        p0 = softmax(sl)
+                        pr0 = p0 - 0
+                        mx0 = pr0.max(-1, keepdims=True) / 127 + 1e-30
+                        o0 = np.matmul(np.round(pr0 / mx0) * mx0, Vi8.transpose(1, 0, 2)[:, None])   # (H,G,TQ,d)
+                        w2 = wq * wq
+                        Vh_ = Vi8.transpose(1, 0, 2)[:, None]
+                        dev2 = (np.matmul(w2, (Vh_ ** 2).transpose(0, 1, 3, 2)) - 2 * np.matmul(w2 * o0, Vh_.transpose(0, 1, 3, 2))
+                                + (w2 * o0 * o0).sum(-1, keepdims=True))
+                        c = p0 * np.sqrt(np.maximum(dev2, 0))
+                        sc_ = np.where(win[None, None], np.inf, c).sum((1, 2))
                     kk = int(rho * tmax) + WIN + 4
                     thr = -np.sort(-sc_, -1)[:, kk - 1:kk]
                     ex = np.broadcast_to((sc_ >= thr)[:, None, None, :], sl.shape) & np.isfinite(sr)
@@ -105,6 +119,8 @@ for C in CORPORA:
             run("int8 QK / int8 PV (Ampere)", 8, 0, pvint=True)
             for rho in RHO:
                 run(f"int8 QK / int8 PV + exact top {rho:g} (+window)", 8, rho, pvint=True)
+            for rho in RHO:
+                run(f"int8 QK / int8 PV + exact {rho:g} by error model (+window)", 8, rho, pvint=True, sel="err")
             run("int4 QK / fp8 PV", 4, 0)
             for rho in RHO:
                 run(f"int4 QK / fp8 PV + exact top {rho:g} (+window)", 4, rho)

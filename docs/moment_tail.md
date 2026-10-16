@@ -117,3 +117,8 @@ probabilities, the tail again), but recomputing the top 5% / 10% of tokens (by i
 int8 QK + bf16 PV at 0.75. For comparison the best sparse prefill arm (tile top-k, scoring not counted) is 0.30 -> 0.055.
 So on this hardware the compute win comes from low precision everywhere + exact refinement, not from skipping tokens;
 sparsity can multiply on top only where its error stays below ~0.01.
+Choosing the refined tokens with the E23 error model (sum over the tile and group of p ||w (v - o)||, p and o from the
+int8 pass itself, so no extra pass) instead of the largest int8 logits: 0.55 -> 0.018, 0.58 -> 0.0092, 0.63 -> 0.0047
+(1.3-1.8x better than logit top-k). At 0.58 of bf16 tensor-core time this has 1.5x lower error than int8 QK + bf16 PV
+at 0.75. This is the most promising compute design so far on Ampere: one int8 pass for everything (logits, P, PV, the
+selection statistics), then an exact bf16 pass over ~5% of the tokens per tile, chosen by the error model.
