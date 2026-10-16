@@ -59,8 +59,17 @@ class LinCache:
 
 
 class Recorder(Base):
-    """Stores raw K/V only (used during the shared exact prefill)."""
+    """Stores raw K/V only (used during the shared exact prefill); also accumulates E[q q^T] per KV head (the query
+    metric used by the Barnes-Hut tree cache, gpu/tree_cache.py), over every 4th prefill query."""
     full_raw = True
+    qq, nq = None, 0
+
+    def observe_q(self, q):
+        """q (Hq, T, D) post-RoPE."""
+        x = q[:, ::4].float().reshape(self.Hkv, -1, q.shape[-1])                # (Hkv, G*T/4, D)
+        a = x.transpose(1, 2) @ x
+        self.qq = a if self.qq is None else self.qq + a
+        self.nq += x.shape[1]
 
 
 def load_model():
@@ -92,6 +101,8 @@ class Runner:
         q, k = self.rope(q, k, cos, sin)
         kk, vv = k[0].transpose(0, 1), v[0].transpose(0, 1)                    # (T, Hkv, D)
         if prefill:
+            if hasattr(cache, "observe_q"):
+                cache.observe_q(q[0])
             n0 = cache.n
             cache._store(kk, vv)
             K = cache.kraw[:cache.n].transpose(0, 1)[None]                     # (1, Hkv, n, D)
@@ -146,6 +157,7 @@ class Runner:
         for s in range(0, T, chunk):
             h = self.forward(ids[s:s + chunk], s, caches, lin, prefill=True)
         return dict(kv={i: (c.kraw[:T].clone(), c.vraw[:T].clone()) for i, c in caches.items()}, lin=lin, T=T,
+                    qm={i: c.qq / max(c.nq, 1) for i, c in caches.items()},
                     last_logits=self.logits(h[-1:])[0])
 
     def build(self, scheme, snap, extra=512):

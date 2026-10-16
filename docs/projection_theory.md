@@ -147,3 +147,23 @@ At 2 bits per dimension, half the rank at 4 bits beats the full dimension at 2 b
 the full dimension wins 3x. This is eq. (5): at 2 bits the threshold is ~33% of the mean kept eigenvalue, so the lower
 half of the spectrum is not worth its bits; at 4 bits (~5%) it is. Only the 2-bit tier stands to gain from a sequence
 basis; the 4-bit tier should stay full-dimensional.
+
+## 7. Without a basis per chunk (E30, E31)
+
+E30: true online learning (causal chunks): fast block-Oja (eta = 8) beats the batch whitened fit by ~40% (keys 0.052 vs
+0.085, values 0.033 vs 0.059 at 256-token chunks), but only if every chunk keeps the basis it was written with; its
+limit is plain per-chunk PCA (0.034 / 0.021). The gain is locality. Read through the newest basis only: 0.19-0.26.
+
+Bound: if all codes are read through one current rank-r decoder, every reconstruction lies in one r-dim subspace, so
+no update rule beats the best fixed rank-r subspace. And the intermediate bases cannot be rebuilt from (initial basis,
+current basis, latents): what moves the basis is the chunk's residual (I - U U^T) y, which the latents discard.
+They can be rebuilt from a log of the innovations: E31 "swap" = each chunk replaces its m weakest slots by its top-m
+residual directions; the log (m directions + m slot indices per chunk) replays every chunk's basis from the initial
+one, and its end is the current basis.
+
+E31 (r = 64 keys / 128 values): keys at 256-token chunks: initial basis 0.085, swap4 / 8 / 16 0.078 / 0.072 / 0.064
+(+6 / 12 / 24 B per token on 128 B of codes), growing dictionary (one current dictionary, greedy atom choice) 0.075,
+coordinate selection in a fixed full basis 0.084 (no gain), per-chunk bases 0.033 (+96 B). At 1024-token chunks:
+swap16 0.075 (+6 B), per-chunk bases 0.057 (+24 B). Values: at most -12% (swap16 0.046 vs 0.052). Against a larger
+global rank at the same bytes (r = 76 for +24 B, about 0.074) swap16 keeps ~13% (keys); the local subspaces differ from
+each other in many directions, so a few innovations per chunk recover only a third of the per-chunk-basis gain.
