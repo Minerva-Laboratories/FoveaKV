@@ -129,4 +129,9 @@ for both types, best of 10 tilings x 3 pipeline depths: int8/fp16 0.90x (QK^T, d
 10-23 TFLOPs. So on this software stack int8 gives no compute win, and the E27 ladder (int8 everywhere + exact 5-10%) would cost
 about 1.2-1.3x bf16, not 0.58x. Its error result stands (it is a statement about arithmetic), but the compute case on the Orin
 needs either a tuned int8 kernel (TensorRT / CUTLASS sm_87, still to test) or a different lever (sparsity, which E23-E26 measured).
-tools/bench_int8_mm.py, tools/bench_int8_triton.py.
+Register-only peak (tools/cuda/mma_peak.cu, mma.sync from registers): f16 26.2 TFLOP/s, s8 52.3 TOP/s, so the hardware
+does give 2x; the GEMMs do not reach it. Triton with B stored N x K (as keys are; V would be stored transposed): int8/fp16
+1.01-1.06x, fp16 at ~80% of its peak, int8 at ~40%. The int8 GEMM is limited by the kernel (operand staging), not the
+tensor cores; SageAttention's int8 QK kernels report ~2x over FA2 on Ampere-class GPUs with Q kept in registers, so the E27
+cost model is a kernel-engineering target, not something available off the shelf on this stack.
+tools/bench_int8_mm.py, tools/bench_int8_triton.py, tools/cuda/mma_peak.cu.

@@ -1,6 +1,7 @@
 """INT8 vs FP16 tensor-core GEMM throughput with one Triton kernel (same tiling for both), at attention-like shapes.
 torch._int_mm on this PyTorch build (no sm_87 kernels) ran at 0.3x bf16, so this checks the hardware directly."""
-import time, torch, triton, triton.language as tl
+import os, time, torch, triton, triton.language as tl
+LAYOUT = os.environ.get("FOVEAKV_MM_LAYOUT", "kn")
 
 @triton.jit
 def mm(a, b, c, M, N, K, sam, sak, sbk, sbn, scm, scn, BM: tl.constexpr, BN: tl.constexpr, BK: tl.constexpr, INT: tl.constexpr):
@@ -31,6 +32,8 @@ def run(a, b, c, INT, BM, BN, BK, w, ST=3):
 for (M, K, N, what) in [(4096, 256, 8192, "QK^T 4K x 8K, d 256"), (4096, 8192, 256, "PV"), (8192, 4096, 4096, "square 8Kx4Kx4K")]:
     a, b = torch.randn(M, K, device="cuda", dtype=torch.float16), torch.randn(K, N, device="cuda", dtype=torch.float16)
     a8, b8 = torch.randint(-127, 127, (M, K), device="cuda", dtype=torch.int8), torch.randint(-127, 127, (K, N), device="cuda", dtype=torch.int8)
+    if LAYOUT == "nk":                           # B stored N x K (K contiguous), as keys are; V would be stored transposed
+        b, b8 = b.t().contiguous().t(), b8.t().contiguous().t()
     c16, c32 = torch.empty(M, N, device="cuda", dtype=torch.float32), torch.empty(M, N, device="cuda", dtype=torch.int32)
     fl = 2 * M * K * N
     best = {}
@@ -43,5 +46,5 @@ for (M, K, N, what) in [(4096, 256, 8192, "QK^T 4K x 8K, d 256"), (4096, 8192, 2
                 continue
             best[INT] = min(best.get(INT, 1e9), t)
     torch.testing.assert_close((a8[:64].float() @ b8[:, :64].float()), c32[:64, :64].float()) if False else None
-    print(f"{what}: triton fp16 {fl/best[False]/1e12:.1f} TFLOPs, int8 {fl/best[True]/1e12:.1f} TOPS -> int8/fp16 {best[False]/best[True]:.2f}x", flush=True)
+    print(f"[B {LAYOUT}] {what}: triton fp16 {fl/best[False]/1e12:.1f} TFLOPs, int8 {fl/best[True]/1e12:.1f} TOPS -> int8/fp16 {best[False]/best[True]:.2f}x", flush=True)
 print("TRITON_INT8_DONE")
