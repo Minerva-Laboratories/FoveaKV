@@ -51,3 +51,41 @@ behind FoveaKV's per-token 2-bit tail on this model (0.023 at a similar byte bud
 - Learned compressor (item 2 above).
 - Prior-art check before naming anything: NSA / DSA / CSA (DeepSeek), MRA, H-Transformer-1D, Fast Multipole
   Attention, Quest, MagicPIG, SpeCache.
+
+## Overnight 2026-10-15/16 (all numbers: Qwen3.5-9B, 5 corpora x 4 layers, fp16 reference, decode at 8K, error of the
+## layer's residual contribution after gate and o_proj unless noted)
+
+**E21 full** (attention-output error, pre-gate). 9B: moments beat dropping at <= 13% refined blocks, lose at 25%
+(drop 0.061, moments r=8 0.049 at 25% but with more bytes). Qwen3.5-35B-A3B: moments beat dropping at every budget
+(13%: 0.091 drop vs 0.049 r=2; 25%: 0.058 vs 0.032). Mass error per block: mean pooling -2.6 / -2.2 nats (9B / MoE),
+second moments rank 8 about 1.0 / 0.7 nats.
+
+**E22 gate.** Gate-weighted votes and per-head budgets change nothing (0.0311 in every arm): the gate never closes a
+head (head rms 0.04-0.7, 2-3x spread inside a layer); it is channel selective (a quarter of the channels carry 51-88% of
+the gate energy; layer 3 has 70% of its channels below 0.05). Untested: gate-weighted value coding per channel.
+
+**E23 backward sparsity.** Dropping (head, token) pairs by p_i ||w (v_i - o)|| against an error budget: 2-3x better than
+top-k and 1.4-2x better than top-p at equal pairs kept; coarse 2-bit estimates of p and o almost as good as exact.
+Ablation: the gain comes from the value-deviation term (gate weighting adds ~10%, pooling the budget over heads little).
+Kernel granularity (layers 11, 27): per-query marks of 5-25% become 18-59% as a union over 16 consecutive queries and
+32-79% over 64; choosing the dropped tokens per 16-query tile gives about 2x the compute of per-query marks at the same
+error (31% for 0.010, 17% for 0.028), the same curve as using the whole union.
+
+**E24 Barnes-Hut nodes** (rank-2 second-cumulant nodes, opened by estimated mass, compute incl. node evaluations):
+
+| nodes | 20% compute | 30% compute |
+|---|---|---|
+| positional 64-token blocks | 0.090 | 0.062 |
+| k-means on keys | 0.030 | 0.017 |
+| gain strata x spherical shapes | 0.044 | 0.024 |
+| k-means in the query metric E[qq^T]^(1/2) (Li & Gong 2008) | 0.028 | 0.016 |
+| same, Sigma scaled by 0.5 (crossover kernel, Ito et al. 2020) | **0.026** | **0.013** |
+| same, oracle opening | 0.018 | 0.009 |
+
+Opening rules that do not beat estimated mass (smoke test, layer 11): the Barnes-Hut radius bound (much worse), mass x
+value deviation, mass x (deviation + spread), a regression of the true node error on cheap features (plain or
+error-weighted, cross-fitted). The remaining oracle gap needs information the summaries do not carry.
+Comparison at equal total compute: top-k needs a scoring pass (INT4 ~ 1/8 of dense): top-k 20% + pass ~ 32% -> 0.016;
+E23 backward (coarse est.) 17% + pass ~ 30% -> 0.010; tree 30% -> 0.013. At 8K the tree is between the two; its case
+is long context (node evaluations ~ T/64 x 4 vs a T/8 scoring pass, and a two-level tree evaluates fewer nodes).
+Prior art to cite for clustered keys: ClusterKV, PQCache, RetrievalAttention (selection only; unselected clusters dropped).
