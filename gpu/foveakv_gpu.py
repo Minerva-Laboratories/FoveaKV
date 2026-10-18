@@ -53,7 +53,7 @@ for _c in range(8):
 
 
 _PASS_FIELDS = ["kb", "vb", "khi", "klo", "vhi", "vlo", "kg8", "vg8", "kglut", "vglut", "kg16", "vg16", "kmu", "vmu",
-                "mu_block", "klev", "vlev", "kfine", "vfine", "kc", "vc", "kbits", "ksc", "kzp", "vsc", "vzp", "logits", "pages"]
+                "mu_block", "klev", "vlev", "kfine", "vfine", "kc", "vc", "kbits", "ksc", "kzp", "vsc", "vzp", "logits", "pages", "n_dev"]
 _INT_DEFAULT = {"mu_block": 1, "kfine": 0, "vfine": 0, "kbits": 0}
 
 

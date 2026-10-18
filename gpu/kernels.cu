@@ -69,6 +69,8 @@ struct Params {
   // page mode: the block's tokens are whole 128-token pages pages[h * pages_stride + i] (i < n / 128), n = 128 m
   // (a page list chosen outside, e.g. by Riffle's selection kernels)
   const int* pages; int pages_stride;
+  // optional token count read on the GPU (graph-capturable callers): n = *n_dev, the grid sized for the host n bound
+  const int* n_dev;
 };
 
 __device__ __forceinline__ float warp_sum(float x) {
@@ -242,7 +244,8 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
 
   const int per_warp = (p.tokens_per_block + WARPS - 1) / WARPS;
   const int b0 = blockIdx.x * p.tokens_per_block + w * per_warp;
-  const int b1 = min(min(b0 + per_warp, (int)(blockIdx.x + 1) * p.tokens_per_block), p.n);
+  const int n_tok = p.n_dev ? *p.n_dev : p.n;
+  const int b1 = min(min(b0 + per_warp, (int)(blockIdx.x + 1) * p.tokens_per_block), n_tok);
   unsigned char* vb_w = vbuf + w * TILE * VROW;
   // iteration index -> cache token (range, index list, or page list; 32-token tiles never straddle a page)
   auto tok_of = [&](int it) -> int {
@@ -622,7 +625,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
           c10::optional<torch::Tensor> klev, c10::optional<torch::Tensor> vlev, int64_t kfine, int64_t vfine,
           c10::optional<torch::Tensor> kc, c10::optional<torch::Tensor> vc, int64_t kbits,
           c10::optional<torch::Tensor> ksc, c10::optional<torch::Tensor> kzp, c10::optional<torch::Tensor> vsc, c10::optional<torch::Tensor> vzp,
-          c10::optional<torch::Tensor> logits, c10::optional<torch::Tensor> pages) {
+          c10::optional<torch::Tensor> logits, c10::optional<torch::Tensor> pages, c10::optional<torch::Tensor> n_dev) {
   Params p{};
   p.Hkv = Hkv; p.Tcap = Tcap; p.t0 = t0; p.n = n;
   p.idx = (const int*)ptr(idx); p.idx_stride = idx.has_value() ? idx->size(1) : 0;
@@ -640,6 +643,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
   p.logits = (float*)ptr(logits);
   p.klut = g_klut;
   p.pages = (const int*)ptr(pages); p.pages_stride = pages.has_value() ? pages->size(1) : 0;
+  p.n_dev = (const int*)ptr(n_dev);
   const int nb = (n + tokens_per_block - 1) / tokens_per_block;
   if (nb == 0) return;
   dim3 grid(nb, Hkv), block(32 * WARPS);
