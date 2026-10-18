@@ -66,6 +66,9 @@ struct Params {
   // GS coarse keys through a per-step query table (set_klut): T[group of 2 dims][nibble] = q . (lev[c0], lev[c1]) for
   // the 4 query heads as 2 half2, built once per block; one 8-byte shared load + 4 adds per 2 dims.
   int klut;
+  // page mode: the block's tokens are whole 128-token pages pages[h * pages_stride + i] (i < n / 128), n = 128 m
+  // (a page list chosen outside, e.g. by Riffle's selection kernels)
+  const int* pages; int pages_stride;
 };
 
 __device__ __forceinline__ float warp_sum(float x) {
@@ -241,10 +244,15 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
   const int b0 = blockIdx.x * p.tokens_per_block + w * per_warp;
   const int b1 = min(min(b0 + per_warp, (int)(blockIdx.x + 1) * p.tokens_per_block), p.n);
   unsigned char* vb_w = vbuf + w * TILE * VROW;
+  // iteration index -> cache token (range, index list, or page list; 32-token tiles never straddle a page)
+  auto tok_of = [&](int it) -> int {
+    if (p.pages) return p.pages[h * p.pages_stride + (it >> 7)] * 128 + (it & 127);
+    return p.idx ? p.idx[h * p.idx_stride + it] : p.t0 + it;
+  };
 
   for (int it0 = b0; it0 < b1; it0 += TILE) {
     if (blockwise) {
-      const int bb = (p.t0 + it0) / ablk;
+      const int bb = tok_of(it0) / ablk;
       if (bb != cur_b) {
         if (cur_b >= 0 && FMT == F_GS) {
 #pragma unroll
@@ -287,7 +295,7 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
     // ---------------- loads (lane-per-token): K codes to registers, V codes staged to shared memory
     const int it = it0 + lane;
     int t = -1;
-    if (it < b1) t = p.idx ? p.idx[h * p.idx_stride + it] : p.t0 + it;
+    if (it < b1) t = tok_of(it);
     const size_t row = (size_t)h * p.Tcap + (t < 0 ? 0 : t);
     uint4 ka[D / 32];                                          // KIVI key codes (2-bit: RU4 used, 4-bit: 2*RU4)
     float kgain = 0.f;
@@ -468,7 +476,7 @@ __global__ void __launch_bounds__(32 * WARPS) attn_pass(Params p) {
       }
     } else {
       for (int j = 0; j < nt; j++) {
-        const int tj = p.idx ? p.idx[h * p.idx_stride + it0 + j] : p.t0 + it0 + j;
+        const int tj = tok_of(it0 + j);
         if (tj < 0) continue;
         const float4 pj = ps[w][j];
         float x[LD];
@@ -614,7 +622,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
           c10::optional<torch::Tensor> klev, c10::optional<torch::Tensor> vlev, int64_t kfine, int64_t vfine,
           c10::optional<torch::Tensor> kc, c10::optional<torch::Tensor> vc, int64_t kbits,
           c10::optional<torch::Tensor> ksc, c10::optional<torch::Tensor> kzp, c10::optional<torch::Tensor> vsc, c10::optional<torch::Tensor> vzp,
-          c10::optional<torch::Tensor> logits) {
+          c10::optional<torch::Tensor> logits, c10::optional<torch::Tensor> pages) {
   Params p{};
   p.Hkv = Hkv; p.Tcap = Tcap; p.t0 = t0; p.n = n;
   p.idx = (const int*)ptr(idx); p.idx_stride = idx.has_value() ? idx->size(1) : 0;
@@ -631,6 +639,7 @@ void pass(int64_t fmt, torch::Tensor q, int64_t Hkv, int64_t Tcap, int64_t t0, i
   p.pm = pm.data_ptr<float>() + boff * HG; p.pl = pl.data_ptr<float>() + boff * HG; p.pacc = pacc.data_ptr<float>() + boff * HG * D;
   p.logits = (float*)ptr(logits);
   p.klut = g_klut;
+  p.pages = (const int*)ptr(pages); p.pages_stride = pages.has_value() ? pages->size(1) : 0;
   const int nb = (n + tokens_per_block - 1) / tokens_per_block;
   if (nb == 0) return;
   dim3 grid(nb, Hkv), block(32 * WARPS);

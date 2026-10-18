@@ -231,7 +231,7 @@ output. On Qwen3 the default int8 reference failed this check (outlier channels)
 ```
 foveakv/        NumPy reference: codebooks, gain-shape coding, rotation, attention, selection, Qwen3.5 forward pass
 gpu/            CUDA kernels (kernels.cu), GPU cache classes, kernel tests, benchmarks, end-to-end evaluation
-exp/            offline experiments E1-E19 (one script each)
+exp/            offline experiments E1-E31 (one script each)
 tools/          KV capture (GPU, or one layer at a time on CPU), memory-guarded runners, HF reference dump
 tests/          unit tests
 results/        experiment reports (*.md), raw results, plots; other models in results/<model>/, summary in MODELS.md
@@ -239,6 +239,11 @@ docs/           handoff notes, remaining work, roadmap for bigger models
 paper/          LaTeX source, generated tables and figures, citation ledger, main.pdf
 reference/      the original synthetic tests that motivated the project
 ```
+
+Related repositories: page selection for decode (summaries, top pages, the rest dropped) is
+[Riffle](https://github.com/Minerva-Laboratories/riffle); the combined long-context stack (Terrace prefill, FoveaKV
+pages, Riffle selection) is [Cairn](https://github.com/Minerva-Laboratories/cairn). The decode pass here accepts a
+page list (`pages=`) for that use.
 
 ## Related work
 

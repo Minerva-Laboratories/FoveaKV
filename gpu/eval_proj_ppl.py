@@ -1,5 +1,5 @@
 """End-to-end perplexity of sequence-fitted low-rank cache projections (gpu/proj_cache.py; E29 in the model) against bf16
-and FoveaKV, protocol of gpu/eval_tree_ppl.py (exact prefill of L-N tokens, N tokens teacher-forced through each
+and FoveaKV, protocol of gpu/eval_e2e.py ppl (exact prefill of L-N tokens, N tokens teacher-forced through each
 cache). The fixed ('static', MLA-like) bases come from one 8K-token calibration prefill of wikitext-2 TEST (the prose
 windows are from train). Writes results/<tag>/proj_ppl.jsonl (resumable). FOVEAKV_PROJ_QUICK=1: one doc at 16K, N=64."""
 import json, math, os, sys, time

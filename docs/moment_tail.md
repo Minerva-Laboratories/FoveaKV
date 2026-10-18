@@ -143,3 +143,19 @@ error; s8 adds nothing on top); + exact 5%: 0.58 -> 0.0044 (E27 int8 on raw keys
 + exact 10%: 0.63 -> 0.0024. Coarse 2-bit first + fine refinement is worse than fine s8 directly (0.68 -> 0.0077).
 A uniform 4-bit code (MSE 0.0115 vs 0.0095) allows s4 QK: 0.375 -> 0.084, + exact 5% 0.45 -> 0.011, + 10% 0.50 -> 0.0063.
 Same caveat as E27: the compute column assumes int8 at 2x / int4 at 4x tensor-core time, which needs a hand-written kernel.
+
+## Where the selection work went (2026-10-17)
+
+The decode-side line of this track (E24-E25 node summaries, the end-to-end Barnes-Hut tree, its "drop" result, and the
+graph-capturable page-selection kernels built from it) is now its own method repository, **Riffle**
+(github.com/Minerva-Laboratories/riffle): summary-scored page selection, kernels, PyTorch reference, the tree study and
+its end-to-end perplexity results. The combination with FoveaKV 2+2-bit pages and Terrace prefill (the "stack") is in
+**Cairn** (github.com/Minerva-Laboratories/cairn), with its latency and perplexity results. FoveaKV keeps the codecs and
+one generic hook for them: the decode pass accepts a page list (`pages=`, whole 128-token pages per KV head).
+
+**In-model projections** (`gpu/eval_proj_ppl.py`, 9B; exact prefill, 256 tokens teacher-forced through the cache,
+prose + code x 16K / 32K x 2 docs): rank 96 of 256 for keys and 128 for values,
+static (calibration) or fitted per sequence. Every projection arm loses to plain quantization: keys at rank 96 +2.1%
+(per-sequence KPCA) to +4.7% (static), values at rank 128 +0.65% (VPCA) to +2.1%, both together at equal bytes to
+gs4 +5.4% (query-weighted + output PCA) / +8.4% (static), against gs2 +0.78% and dyn5 +0.06%. Rank reduction is not
+competitive with the gain-shape codes at these budgets on the 9B.

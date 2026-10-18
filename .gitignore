@@ -15,3 +15,6 @@ paper/*.bbl
 paper/*.blg
 paper/*.synctex.gz
 paper/arxiv.tar.gz
+# smoke and quick runs (not part of the results)
+results/*-smoke/
+results/**/*_quick.jsonl

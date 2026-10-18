@@ -60,7 +60,7 @@ class LinCache:
 
 class Recorder(Base):
     """Stores raw K/V only (used during the shared exact prefill); also accumulates E[q q^T] per KV head (the query
-    metric used by the Barnes-Hut tree cache, gpu/tree_cache.py), over every 4th prefill query."""
+    metric used by query-metric selection studies, e.g. Riffle's research tree), over every 4th prefill query."""
     full_raw = True
     qq, nq = None, 0
 
