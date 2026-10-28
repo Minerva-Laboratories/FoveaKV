@@ -367,6 +367,32 @@ class GainShape(Base):
             if self.residual:
                 (self.klo if name == "k" else self.vlo)[:, a:b] = pack2(lo).transpose(0, 1)
 
+    def encode_block_dev(self, kx, vx, page):
+        """Graph-capturable encode of ONE 128-token block (mode 'gs', block means) at block index `page` ((1,) long on
+        the GPU): the same arithmetic as _encode(a, a + BLK, kx, vx) op for op, with every write an index_copy_ at a
+        device offset instead of a Python slice, so a CUDA graph can replay it as the cache grows (decode-time encodes
+        happen one block at a time; eager they cost ~30 small launches per block and layer)."""
+        assert self.mode == "gs" and self.block_mean and not self.offload and kx.shape[0] == BLK
+        tok = page * BLK + torch.arange(BLK, device=self.dev)
+        n_lev = 1 << self.gain_bits
+        for name in ("k", "v"):
+            x = (kx if name == "k" else vx).float()                                # (BLK, Hkv, D)
+            M = x.view(1, BLK, self.Hkv, D).mean(1).repeat_interleave(BLK, 0).half().float()   # = _means(name, x, a, b)
+            mus = (M[::BLK] @ self.Rt).half()                                       # (1, Hkv, D) rotated
+            (self.kmu if name == "k" else self.vmu).index_copy_(1, page, mus.transpose(0, 1).contiguous())
+            y = (x - M) @ self.Rt
+            g = torch.linalg.norm(y, dim=-1)
+            z = y / g.clamp_min(1e-30)[..., None] * math.sqrt(D)
+            lg = torch.log(g.clamp_min(1e-30))
+            lo_, hi_ = self.glo[name], self.ghi[name]
+            gc = ((lg - lo_) / (hi_ - lo_).clamp_min(1e-12) * n_lev).floor().clamp(0, n_lev - 1).to(torch.uint8)
+            (self.kg8 if name == "k" else self.vg8).index_copy_(1, tok, gc.t().contiguous())
+            c = torch.bucketize(z, self.bnd16)
+            hi, lo = c >> 2, c & 3
+            (self.khi if name == "k" else self.vhi).index_copy_(1, tok, pack2(hi).transpose(0, 1).contiguous())
+            if self.residual:
+                (self.klo if name == "k" else self.vlo).index_copy_(1, tok, pack2(lo).transpose(0, 1).contiguous())
+
     # ------------------------------------------------------------------ kernel launch helpers
     def _gs_args(self, kfine, vfine, klev, vlev):
         a = dict(khi=self.khi, klo=self.klo, vhi=self.vhi, vlo=self.vlo, klev=klev, vlev=vlev, kfine=kfine, vfine=vfine)
