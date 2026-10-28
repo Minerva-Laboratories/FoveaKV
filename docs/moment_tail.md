@@ -147,10 +147,10 @@ Same caveat as E27: the compute column assumes int8 at 2x / int4 at 4x tensor-co
 ## Where the selection work went (2026-10-17)
 
 The decode-side line of this track (E24-E25 node summaries, the end-to-end Barnes-Hut tree, its "drop" result, and the
-graph-capturable page-selection kernels built from it) is now its own method repository, **Riffle**
-(github.com/Minerva-Laboratories/riffle): summary-scored page selection, kernels, PyTorch reference, the tree study and
-its end-to-end perplexity results. The combination with FoveaKV 2+2-bit pages and Terrace prefill (the "stack") is in
-**Cairn** (github.com/Minerva-Laboratories/cairn), with its latency and perplexity results. FoveaKV keeps the codecs and
+graph-capturable page-selection kernels built from it) is now its own method repository, **SparsePage**
+(github.com/Minerva-Laboratories/sparsepage): summary-scored page selection, kernels, PyTorch reference, the tree study and
+its end-to-end perplexity results. The combination with FoveaKV 2+2-bit pages and DepthSkip prefill (the "stack") is in
+**HgRT** (github.com/Minerva-Laboratories/hgrt), with its latency and perplexity results. FoveaKV keeps the codecs and
 one generic hook for them: the decode pass accepts a page list (`pages=`, whole 128-token pages per KV head).
 
 **In-model projections** (`gpu/eval_proj_ppl.py`, 9B; exact prefill, 256 tokens teacher-forced through the cache,

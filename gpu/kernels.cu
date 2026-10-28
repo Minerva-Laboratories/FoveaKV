@@ -67,7 +67,7 @@ struct Params {
   // the 4 query heads as 2 half2, built once per block; one 8-byte shared load + 4 adds per 2 dims.
   int klut;
   // page mode: the block's tokens are whole 128-token pages pages[h * pages_stride + i] (i < n / 128), n = 128 m
-  // (a page list chosen outside, e.g. by Riffle's selection kernels)
+  // (a page list chosen outside, e.g. by SparsePage's selection kernels)
   const int* pages; int pages_stride;
   // optional token count read on the GPU (graph-capturable callers): n = *n_dev, the grid sized for the host n bound
   const int* n_dev;

@@ -241,8 +241,8 @@ reference/      the original synthetic tests that motivated the project
 ```
 
 Related repositories: page selection for decode (summaries, top pages, the rest dropped) is
-[Riffle](https://github.com/Minerva-Laboratories/riffle); the combined long-context stack (Terrace prefill, FoveaKV
-pages, Riffle selection) is [Cairn](https://github.com/Minerva-Laboratories/cairn). The decode pass here accepts a
+[SparsePage](https://github.com/Minerva-Laboratories/sparsepage); the combined long-context stack (DepthSkip prefill, FoveaKV
+pages, SparsePage selection) is [HgRT](https://github.com/Minerva-Laboratories/hgrt). The decode pass here accepts a
 page list (`pages=`) for that use.
 
 ## Related work
