@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77"]                     # PEP 639 license metadata (SPDX string + license-files)
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "foveakv"
+version = "0.1.0"
+description = "Foveated KV caches for long-context decoding: every token kept as a 2-bit code, the tokens a query attends to refined to 4 bits with a 2-bit residual, both merged exactly in one softmax."
+readme = "README.md"
+authors = [{ name = "Minerva Laboratories" }]
+keywords = ["llm", "inference", "kv-cache", "quantization", "long-context", "cuda"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+# The NumPy reference (package foveakv). The CUDA kernels and GPU cache classes live in gpu/ and run from a checkout.
+dependencies = ["numpy>=2.0", "tokenizers>=0.20"]
+
+[project.optional-dependencies]
+gguf = ["gguf"]                                   # FOVEAKV_GGUF: weights from a llama.cpp GGUF
+data = ["pyarrow>=15"]                            # WikiText export from the HF datasets cache
+gpu = ["torch>=2.5", "transformers>=5.0"]
+test = ["pytest>=8", "scipy>=1.11"]
+
+[project.urls]
+Homepage = "https://github.com/Minerva-Laboratories/FoveaKV"
+Repository = "https://github.com/Minerva-Laboratories/FoveaKV"
+Results = "https://github.com/Minerva-Laboratories/FoveaKV/tree/main/results"
+
+[tool.setuptools]
+packages = ["foveakv"]

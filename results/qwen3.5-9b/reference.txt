@@ -1,1 +1,1 @@
-pipeline check int8 0.022 fp16 0.003 (int8 for every model, the paper's deployment reference) -> reference int8
+pipeline check int8 0.022 fp16 0.003 (int8 for every model, the deployment reference) -> reference int8

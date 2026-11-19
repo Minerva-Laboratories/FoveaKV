@@ -1,4 +1,4 @@
-"""E13 Selection criteria derived from the first-order error model (paper §Method):
+"""E13 Selection criteria derived from the first-order error model (README, "How it works"):
    E||o_hat - o||^2 ≈ sum_i p_i^2 [ Var(eps_i) ||v_i - o||^2 + E||dv_i||^2 ],
    Var(eps_i) = ||q||^2 g_{k,i}^2 D / d^2  (logit noise),  E||dv_i||^2 = g_{v,i}^2 D  (value noise),
    so refining token i removes (D_c - D_f) * w_i with  w_i = sum_h p_{h,i}^2 [ ||q_h||^2 g_{k,i}^2 ||v_i - o_h||^2 / d^2 + g_{v,i}^2 ].

@@ -262,7 +262,7 @@ class GainShape(Base):
         self.residual = (bits >= 3) if residual is None else residual
         self.offload = offload            # residual (lo) planes in pinned host memory, read by the kernels over PCIe
         self.mode, self.bits, self.block_mean, self.gain_bits = mode, bits, block_mean, gain_bits
-        # shrinkage correction (paper §nested): key shapes renormalized (x 1/sqrt(1-D)), value residuals unbiased (x 1/(1-D));
+        # shrinkage correction (nested codes, see README): key shapes renormalized (x 1/sqrt(1-D)), value residuals unbiased (x 1/(1-D));
         # default on for our gain-shape code, off for TurboQuant (published method)
         self.shrink = (mode == "gs") if shrink is None else shrink
         R = torch.tensor(rht_matrix(D, seed), dtype=torch.float32, device=device)

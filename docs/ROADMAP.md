@@ -48,7 +48,7 @@ This step needs no code changes. Set `FOVEAKV_MODEL`, then in order:
 3. `gpu/bench_kernels.py`, `gpu/bench_e2e.py` (contexts via `BENCH_CTX` / `BENCH_LENS`) and `gpu/bench_memory.py`.
 
 Copy `results/` to `results/<model>/` before switching models, because the scripts overwrite the 0.8B files. Then add the
-numbers to `paper/make_tables.py`.
+numbers to the README tables.
 
 ## Step 3: dense and other models end to end
 
@@ -80,6 +80,6 @@ For each new model:
 - a row in `results/MODELS.md`;
 - end-to-end perplexity and retrieval against bf16 and 4-bit;
 - latency and memory at the longest context that fits;
-- the paper tables regenerated.
+- the README tables updated.
 
 Report negative results the same way as positive ones.

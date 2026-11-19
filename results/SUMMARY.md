@@ -2,7 +2,7 @@
 
 > **Update (phase 2):** improvements (exact recent window outside the budget + 128-token block means, E11) and a CUDA/GPU
 > benchmark vs TurboQuant-MSE, KIVI and Quest (results/12_gpu_benchmark.md): FoveaKV-5% is within +0.3% of bf16 perplexity at
-> 16K/32K at ~2.4 bits read, better than TurboQuant-MSE 4b. Paper draft: paper/main.pdf. The phase-1 summary below is unchanged.
+> 16K/32K at ~2.4 bits read, better than TurboQuant-MSE 4b. The phase-1 summary below is unchanged.
 
 **TL;DR:** On real Qwen3.5-0.8B activations the dynamic scheme (2.03 resident bits, ~2.13 read bits at k=5%) matches uniform
 gain-shape 4-bit: per-layer attention error 0.0610 vs 0.0590, end-to-end PPL within ±0.8% (inside the measurement noise), needle retrieval identical.

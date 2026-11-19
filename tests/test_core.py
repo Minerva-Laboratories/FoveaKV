@@ -123,7 +123,11 @@ def test_kivi_shapes_and_error():
 
 
 def test_config_matches_kvdata_constants():
-    c = load_config(snapshot_dir())
+    try:
+        snap = snapshot_dir()
+    except FileNotFoundError:
+        pytest.skip("model snapshot not in the local Hugging Face cache (see Quick start)")
+    c = load_config(snap)
     rp = c["rope_parameters"]
     assert int(c["head_dim"] * rp["partial_rotary_factor"]) == kvdata.ROT_DIM
     assert rp["rope_theta"] == kvdata.THETA and c["head_dim"] == kvdata.HD

@@ -18,8 +18,8 @@ Kernels: all compressed schemes 3–8× faster than bf16 SDPA at 128K, but the g
   token-by-token through the compressed cache.
 
 ## Results
-See `paper/tables/tab_kernel.tex`, `tab_ppl.tex`, `tab_retrieval.tex` (generated from `gpu_kernel_bench.json`, `gpu_ppl.json`,
-`gpu_retrieval.json` by `paper/make_tables.py`) and `paper/figs/`.
+Raw results: `gpu_kernel_bench.json`, `gpu_ppl.json` and `gpu_retrieval.json` in this folder; the summary tables are in
+the README.
 
 ## Caveats
 - 3 docs × 256 tokens per cell: PPL differences < ~0.3% are not significant; retrieval: 8 samples per cell.

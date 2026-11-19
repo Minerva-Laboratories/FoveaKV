@@ -5,16 +5,9 @@ gpu/build/
 __pycache__/
 *.pyc
 .pytest_cache/
-# LaTeX intermediates
-paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.fls
-paper/*.fdb_latexmk
-paper/*.bbl
-paper/*.blg
-paper/*.synctex.gz
-paper/arxiv.tar.gz
 # smoke and quick runs (not part of the results)
 results/*-smoke/
 results/**/*_quick.jsonl
+build/
+*.egg-info/
+dist/

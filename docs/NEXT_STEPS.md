@@ -1,7 +1,7 @@
 # Next steps and handoff
 
-State on 2026-10-04 (commit after `6333806`). Everything in the paper and README is generated from `results/` by
-`paper/make_tables.py`, so new experiments only need to write their raw files and re-run that script.
+State on 2026-10-04 (commit after `6333806`). Every number in the README traces to a file in `results/`, so new experiments only need to write
+their raw files there.
 
 ## Where things stand
 
@@ -13,7 +13,6 @@ Done and measured on Qwen3.5-0.8B (RTX 4050 Laptop GPU, 6 GB, PCIe 6.7 GB/s):
 - Latency: per attention layer 8K-128K and full decoding step 16K/32K/64K, with and without offloading.
 - Memory: measured GPU and host bytes of every cache (`gpu/bench_memory.py`).
 - Real offloading: FoveaKV residual planes (and SpeCache-style copies) in pinned host memory, read over PCIe.
-- Paper draft (`paper/main.pdf`) with a verified citation ledger (`paper/CITATIONS.md`, 90 references).
 - Offline study on Qwen3.5-2B, Qwen3.5-4B and dense Qwen3-0.6B (head_dim 128), summarized in `results/MODELS.md`.
   Key smoothing is needed on Qwen3 (E19 predicts when); the int8 reference is lossy there, so it uses fp16.
 - Kernels support head_dim 128 (`FOVEAKV_HEAD_DIM=128`); all 21 variants pass on Qwen3-0.6B data.
@@ -75,17 +74,7 @@ The step-by-step plan for bigger models is in [`ROADMAP.md`](ROADMAP.md).
 6. **Original SpeCache.** Our SpeCache-style path is our own implementation of its attention and transfers (no speculative
    prefetching). Running their code would make that comparison stronger.
 
-## Paper items still open
-
-- Authors and the citation block (`paper/main.tex`, `README.md`).
-- Three references marked "UNVERIFIED parts" in `paper/CITATIONS.md` (PolarQuant venue, Qwen3-Next blog title, Sabin & Gray
-  full text) and quotes marked "(via fetch)" in `paper/citations/G1-G3.md`.
-- A method figure (coarse plane, residual plane, selection, delta correction).
-- After new experiments: add their numbers to `paper/make_tables.py`, then `python paper/citations/build_ledger.py` if
-  citations changed, and `latexmk -pdf main.tex` in `paper/`.
-
 ## Repository conventions
 
-- Commits carry no Claude trailer or co-author line.
 - README: plain, short sentences; gist in the first paragraph; every number traceable to `results/`.
 - Run heavy jobs under a memory cap on small machines (we used `systemd-run --user --scope -p MemoryMax=4G`).
