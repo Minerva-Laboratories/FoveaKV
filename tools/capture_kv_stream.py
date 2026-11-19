@@ -18,7 +18,7 @@ from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
-from foveakv.load import snapshot_dir, SafeTensors, bf16_to_f32
+from foveakv.load import attention_geometry, snapshot_dir, SafeTensors, bf16_to_f32
 from foveakv.text import CORPUS
 
 ap = argparse.ArgumentParser()
@@ -76,10 +76,8 @@ types = getattr(cfg, "layer_types", None) or ["full_attention"] * cfg.num_hidden
 attn_ids = [i for i, t in enumerate(types) if t == "full_attention"]
 if args.layers:
     attn_ids = [i for i in map(int, args.layers.split(",")) if i in attn_ids]
-hd, Hq, Hkv = cfg.head_dim, cfg.num_attention_heads, cfg.num_key_value_heads
-rp = getattr(cfg, "rope_parameters", None) or {}
-theta = float(rp.get("rope_theta", getattr(cfg, "rope_theta", 1e4)))
-rot_dim = int(hd * float(rp.get("partial_rotary_factor", getattr(cfg, "partial_rotary_factor", 1.0))))
+geo = attention_geometry(cfg)
+hd, Hq, Hkv, theta, rot_dim = geo["head_dim"], geo["Hq"], geo["Hkv"], geo["theta"], geo["rot_dim"]
 amp = torch.autocast(dev, dtype=torch.bfloat16)
 
 

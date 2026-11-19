@@ -30,7 +30,7 @@ args = ap.parse_args()
 
 import sys
 sys.path.insert(0, ROOT)
-from foveakv.load import snapshot_dir
+from foveakv.load import attention_geometry, snapshot_dir
 from foveakv.text import CORPUS
 mdir = snapshot_dir()          # FOVEAKV_MODEL selects the checkpoint; FOVEAKV_KV_DIR the output folder
 dev = args.device
@@ -48,12 +48,9 @@ types = getattr(cfg, "layer_types", None) or ["full_attention"] * cfg.num_hidden
 attn_ids = [i for i, t in enumerate(types) if t == "full_attention"]
 if args.layers:
     attn_ids = [i for i in map(int, args.layers.split(",")) if i in attn_ids]
-hd = cfg.head_dim
-Hq = cfg.num_attention_heads
+geo = attention_geometry(cfg)
+hd, Hq, theta, rot_dim = geo["head_dim"], geo["Hq"], geo["theta"], geo["rot_dim"]
 gated = layers[attn_ids[0]].self_attn.q_proj.out_features == 2 * Hq * hd      # Qwen3.5 output gate
-rp = getattr(cfg, "rope_parameters", None) or {}
-theta = float(rp.get("rope_theta", getattr(cfg, "rope_theta", 1e4)))
-rot_dim = int(hd * float(rp.get("partial_rotary_factor", getattr(cfg, "partial_rotary_factor", 1.0))))
 apply_rotary_pos_emb = sys.modules[type(layers[attn_ids[0]].self_attn).__module__].apply_rotary_pos_emb
 amp = torch.autocast(dev, dtype=torch.bfloat16)
 print("attention layers", attn_ids, "| gated", gated, "| rot_dim", rot_dim, "theta", theta)

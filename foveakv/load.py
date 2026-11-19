@@ -69,3 +69,22 @@ def load_config(folder):
     with open(os.path.join(folder, "config.json")) as f:
         cfg = json.load(f)
     return cfg.get("text_config", cfg)
+
+
+def attention_geometry(cfg):
+    """Attention shape and RoPE of a Hugging Face config, for both layouts in use:
+    Qwen3.5 (nested ``text_config``, ``rope_parameters`` with ``rope_theta`` / ``partial_rotary_factor``) and
+    Qwen3 / Llama-style flat configs (top-level ``rope_theta``, full rotary). ``cfg`` is a config.json dict or a
+    transformers config object. Returns head_dim, rot_dim (rotated channels per head), theta, Hq and Hkv."""
+    get = (lambda k, d=None: cfg.get(k, d)) if isinstance(cfg, dict) else (lambda k, d=None: getattr(cfg, k, d))
+    tc = get("text_config")
+    if tc is not None and tc is not cfg:
+        return attention_geometry(tc)
+    rp = get("rope_parameters") or {}
+    if not isinstance(rp, dict):
+        rp = vars(rp)
+    Hq = int(get("num_attention_heads"))
+    hd = int(get("head_dim") or get("hidden_size") // Hq)
+    theta = float(rp.get("rope_theta", get("rope_theta", 1e4)))
+    prf = float(rp.get("partial_rotary_factor", get("partial_rotary_factor", 1.0)))
+    return dict(head_dim=hd, rot_dim=int(hd * prf), theta=theta, Hq=Hq, Hkv=int(get("num_key_value_heads", Hq)))

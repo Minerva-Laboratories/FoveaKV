@@ -6,7 +6,7 @@ from foveakv.quant import NestedCodebook, lloyd_max, gaussian_mse, GainShape, Lo
 from foveakv.rotate import rht_matrix, hadamard
 from foveakv.attention import mixed, delta_corrected, exact, scores
 from foveakv.select import select, always_hot, k_for
-from foveakv.load import bf16_to_f32, load_config, snapshot_dir
+from foveakv.load import attention_geometry, bf16_to_f32, load_config, snapshot_dir
 from foveakv import kvdata
 
 CB = NestedCodebook(4, 2)
@@ -122,12 +122,40 @@ def test_kivi_shapes_and_error():
     assert np.mean((Kq - K) ** 2) < 0.05 and np.mean((kivi_values(V, 2, 32) - V) ** 2) < 0.3
 
 
+CONFIGS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs")
+
+
+def _cfg(name):
+    with open(os.path.join(CONFIGS, name + ".json")) as f:
+        return json.load(f)
+
+
+@pytest.mark.parametrize("name, want", [
+    # Qwen3.5: nested text_config, rope_parameters, partial rotary (0.25 of 256 channels)
+    ("Qwen3.5-0.8B", dict(head_dim=256, rot_dim=64, theta=1e7, Hq=8, Hkv=2)),
+    ("Qwen3.5-9B", dict(head_dim=256, rot_dim=64, theta=1e7, Hq=16, Hkv=4)),
+    # Qwen3: flat config, top-level rope_theta, full rotary
+    ("Qwen3-0.6B", dict(head_dim=128, rot_dim=128, theta=1e6, Hq=16, Hkv=8)),
+])
+def test_attention_geometry(name, want):
+    c = _cfg(name)
+    assert attention_geometry(c) == want
+    assert attention_geometry(c.get("text_config", c)) == want              # what load_config returns
+    from types import SimpleNamespace                                       # transformers-style config object
+    t = c.get("text_config", c)
+    assert attention_geometry(SimpleNamespace(**t)) == want
+
+
+def test_kvdata_defaults_match_qwen35():
+    g = attention_geometry(_cfg("Qwen3.5-0.8B"))
+    assert (g["rot_dim"], g["theta"], g["head_dim"]) == (kvdata.ROT_DIM, kvdata.THETA, kvdata.HD)
+
+
 def test_config_matches_kvdata_constants():
+    """Same check on the model in the local Hugging Face cache, when it is there."""
     try:
         snap = snapshot_dir()
     except FileNotFoundError:
         pytest.skip("model snapshot not in the local Hugging Face cache (see Quick start)")
-    c = load_config(snap)
-    rp = c["rope_parameters"]
-    assert int(c["head_dim"] * rp["partial_rotary_factor"]) == kvdata.ROT_DIM
-    assert rp["rope_theta"] == kvdata.THETA and c["head_dim"] == kvdata.HD
+    g = attention_geometry(load_config(snap))
+    assert (g["rot_dim"], g["theta"], g["head_dim"]) == (kvdata.ROT_DIM, kvdata.THETA, kvdata.HD)

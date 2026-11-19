@@ -15,7 +15,7 @@ Hook for experiments: `attn_hook(layer_idx, q, k, v, k_pre, positions) -> out or
   If it returns an array (T, Hq, d) it replaces the exact attention output (before the gate).
 """
 import numpy as np
-from .load import SafeTensors, load_config, snapshot_dir
+from .load import SafeTensors, attention_geometry, load_config, snapshot_dir
 
 P = "model.language_model."
 
@@ -83,13 +83,9 @@ class Qwen35:
         self.L = c["num_hidden_layers"]
         self.layer_types = c["layer_types"]
         self.eps = c["rms_norm_eps"]
-        self.hd = c["head_dim"]
-        self.Hq = c["num_attention_heads"]
-        self.Hkv = c["num_key_value_heads"]
-        rp = c["rope_parameters"]
-        self.rot_dim = int(self.hd * rp.get("partial_rotary_factor", 1.0))
-        self.theta = rp["rope_theta"]
-        assert rp["rope_type"] == "default"
+        g = attention_geometry(c)
+        self.hd, self.Hq, self.Hkv, self.rot_dim, self.theta = g["head_dim"], g["Hq"], g["Hkv"], g["rot_dim"], g["theta"]
+        assert (c.get("rope_parameters") or {}).get("rope_type", "default") == "default"
         self.lin = dict(nk=c["linear_num_key_heads"], nv=c["linear_num_value_heads"],
                         dk=c["linear_key_head_dim"], dv=c["linear_value_head_dim"],
                         kconv=c["linear_conv_kernel_dim"])
