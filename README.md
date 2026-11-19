@@ -17,7 +17,7 @@ from SpeCache (Jie et al., ICML 2025), which fetches full 16-bit copies of the s
 instead fetches only a 2-bit residual of the same code, so it needs no full-precision copy and moves 8 times less data per
 refined token. The error model below comes from Laus et al. (2026). See [Related work](#related-work).
 
-![Attention error versus bits read per step](docs/assets/frontier.png)
+![Attention error versus bits read per step](https://raw.githubusercontent.com/Minerva-Laboratories/FoveaKV/main/docs/assets/frontier.png)
 
 ## Results
 
@@ -77,7 +77,7 @@ Offline findings on the captured cache (attention-output error, 5 texts x 6 laye
 ### Other models (offline)
 
 The same offline study on three more models. Attention-output error with 5% hot tokens (about 2.3 bits per value),
-next to 4-bit baselines. Full tables: [`results/MODELS.md`](results/MODELS.md).
+next to 4-bit baselines. Full tables: [`results/MODELS.md`](https://github.com/Minerva-Laboratories/FoveaKV/blob/main/results/MODELS.md).
 
 | | Qwen3.5-0.8B | Qwen3.5-2B | Qwen3.5-4B | Qwen3-0.6B (dense) |
 |---|---:|---:|---:|---:|
@@ -221,7 +221,7 @@ still needs `config.json` and the tokenizer files.
 Run the check in `exp/e19_smoothing.py` before anything else. It compares our offline attention with the model's own
 output. On Qwen3 the default int8 reference failed this check (outlier channels), so that model uses fp16
 (`FOVEAKV_REF=fp16`). Kernels support head_dim 256 and 128 (`FOVEAKV_HEAD_DIM=128`). More in
-[`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md); the plan for bigger models is in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+[`docs/NEXT_STEPS.md`](https://github.com/Minerva-Laboratories/FoveaKV/blob/main/docs/NEXT_STEPS.md); the plan for bigger models is in [`docs/ROADMAP.md`](https://github.com/Minerva-Laboratories/FoveaKV/blob/main/docs/ROADMAP.md).
 
 ## Repository layout
 
@@ -283,5 +283,5 @@ A paper is in preparation. Until then, please cite the repository:
 
 ## License
 
-Apache-2.0, see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). Model weights (Qwen3.5, Qwen3) are not included; they are
+Apache-2.0, see [`LICENSE`](https://github.com/Minerva-Laboratories/FoveaKV/blob/main/LICENSE) and [`NOTICE`](https://github.com/Minerva-Laboratories/FoveaKV/blob/main/NOTICE). Model weights (Qwen3.5, Qwen3) are not included; they are
 downloaded from their original repositories and keep their own licenses.
